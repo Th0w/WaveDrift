@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Linq;
+using UniRx;
 
 [Serializable]
 public class PoolData
@@ -37,6 +38,21 @@ public class PoolManager : MonoBehaviour {
             {
                 pools.Add(CreatePool(data));
             });
+
+        // TODO To be removed. Testing purpose only
+        Test();
+    }
+
+    private void Test()
+    {
+        Observable.Interval(TimeSpan.FromSeconds(2.0))
+            .Where(_ => pools[0].empty == false)
+            .Subscribe(_ =>
+            {
+                pools[0].Spawn(Vector3.zero);
+            })
+            .AddTo(this);
+        //pools[0].Spawn(Vector3.zero);
     }
     
     private Pool CreatePool(PoolData data)

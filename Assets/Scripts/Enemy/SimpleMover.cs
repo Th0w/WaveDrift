@@ -5,22 +5,27 @@ using UniRx.Triggers;
 using UnityEngine;
 
 public class SimpleMover : BaseMovingUnit {
-    
-	// Use this for initialization
-	void Start () {
+
+    public override Poolable Init(Pool parent)
+    {
+        gameObject.SetActive(false);
+
+        this.parent = parent;
 
         this.OnEnableAsObservable()
             .Subscribe(_ =>
             {
-                target = GameObject.FindGameObjectsWithTag("Player")
+                var tar = GameObject.FindGameObjectsWithTag("Player")
                     .OrderBy(go => (transform.position - go.transform.position).magnitude)
-                    .FirstOrDefault()
-                    .transform;
+                    .FirstOrDefault();
+
+                target = tar != null ? tar.transform : null;
+                if (target == null)
+                {
+                    Debug.LogError("No player found!");
+                }
 
             }).AddTo(this);
-
-        gameObject.SetActive(false);
-        gameObject.SetActive(true);
 
         var update = this.UpdateAsObservable()
             .Where(_ => HasTarget)
@@ -29,7 +34,16 @@ public class SimpleMover : BaseMovingUnit {
 
         update
             .Where(dist => dist.magnitude > attackRange)
-            .Subscribe(dist => transform.position += dist.normalized * Time.deltaTime * speed)
+            .Subscribe(dist =>
+            {
+                RaycastHit hit;
+                if (Physics.Raycast(transform.position, transform.forward, out hit, 1.0f)) {
+                    Debug.Log(hit.transform.name);
+                    return;
+                }
+                transform.rotation = Quaternion.LookRotation(dist);
+                transform.position += transform.forward * Time.deltaTime * speed;
+            })
             .AddTo(this);
 
         update.Where(dist => dist.magnitude <= attackRange)
@@ -46,5 +60,24 @@ public class SimpleMover : BaseMovingUnit {
                     .AddTo(this);
             })
             .AddTo(this);
-	}
+
+        return this;
+    }
+
+    public override void Recycle()
+    {
+        transform.position = Vector3.zero;
+        gameObject.SetActive(false);
+    }
+
+    public override void Spawn(object args)
+    {
+        if (args is Vector3 == false)
+        {
+            Debug.LogErrorFormat("Wrong args on {0}'s spawn methods", name);
+            return;
+        }
+        transform.position = (Vector3)args;
+        gameObject.SetActive(true);
+    }
 }
