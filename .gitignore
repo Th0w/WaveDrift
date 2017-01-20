@@ -1,0 +1,36 @@
+# .gitignore for unity
+
+# =============== #
+# Unity generated #
+# =============== #
+[Tt]emp/
+[Ll]ibrary/
+
+#Unity3D Generated File On Crash Reports
+sysinfo.txt
+
+# ===================================== #
+# Visual Studio / MonoDevelop generated #
+# ===================================== #
+ExportedObj/
+[Oo]bj/
+*.svd
+*.userprefs
+/*.csproj
+*.pidb
+*.suo
+/*.sln
+*.user
+*.unityproj
+*.booproj
+
+# ============ #
+# OS generated #
+# ============ #
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
