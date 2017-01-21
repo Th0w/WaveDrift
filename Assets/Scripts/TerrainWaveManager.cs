@@ -5,8 +5,9 @@ using UnityEngine;
 public enum drawType { Line, Circle };
 public class TerrainWaveManager : MonoBehaviour {
 
-	public Vector3 baseRotation;
+	public Vector3 basePosition;
 	public GameObject wavePrefab;
+	public GameObject cubePrefab;
 	public drawType terrainType;
 	public enum modifierType { equal, randomEqual, randomSeperate, delayed, progressive }
 	public modifierType generationType;
@@ -58,6 +59,7 @@ public class TerrainWaveManager : MonoBehaviour {
 		}
 		yield return null;
 		transform.rotation = Quaternion.LookRotation(Vector3.up);
+		transform.position = basePosition;
 	}
 
 	// Update is called once per frame
@@ -168,6 +170,7 @@ public class TerrainWaveManager : MonoBehaviour {
 	{
 		sd.source = source;
 		sd.drawParent = sd.transform;
+		sd.prefab = cubePrefab;
 		sd.centerCircle = sd.transform;
 		sd.type = terrainType;
 		sd.maxVisualScale = maxVisualScale;

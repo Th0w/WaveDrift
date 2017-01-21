@@ -18,10 +18,8 @@ public class SimpleMover : BaseMovingUnit {
     {
 		var ship = target.GetComponent<ShipBehaviour_V2>();
         if (ship == null) { return; }
-        if (!ship.death && !ship.invulnerability && ship.currentCoroutine == null)
-        {
-            ship.currentCoroutine = StartCoroutine(ship.Death(ship.deathDelay));
-        }
+		if (!ship.death && !ship.invulnerability && !ship.airProtection)
+			StartCoroutine(ship.Death ());
     }
 
     protected virtual void MoveFunction(Vector3 distance)

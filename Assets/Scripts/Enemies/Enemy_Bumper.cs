@@ -35,8 +35,8 @@ public class Enemy_Bumper : MonoBehaviour {
 		foreach (ShipBehaviour_V2 sb in ShipDetector.allShipBehaviours) {
 
 			float playerDist = Vector3.Distance (sb.transform.position, transform.position);
-			if (!sb.death && !sb.invulnerability && col.a > 0.5f && playerDist > circleLineRenderer.radius - 1 && playerDist < circleLineRenderer.radius + 1)
-				StartCoroutine(sb.Death (sb.deathDelay));
+			if (!sb.death && !sb.invulnerability && !sb.airProtection && col.a > 0.5f && playerDist > circleLineRenderer.radius - 1 && playerDist < circleLineRenderer.radius + 1)
+				StartCoroutine(sb.Death());
 		}
 	}
 

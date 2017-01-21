@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4822880772917946}
   - component: {fileID: 114368770713881676}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: TarrainWaveRange
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -53,6 +53,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 0
   drawParent: {fileID: 0}
+  prefab: {fileID: 0}
   rmsValue: 0
   dbValue: 0
   pitchValue: 0

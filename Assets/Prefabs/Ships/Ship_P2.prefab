@@ -370,8 +370,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c7aad869930bfd46a3c909e3b63d5ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: 0
+  player: 1
   playerPrefix: 
+  spawnPos: {x: 10, y: 0, z: 10}
   leftStickHorizontalInput: 0
   rightTriggerInput: 0
   ship: {fileID: 4035089014769962}
@@ -400,7 +401,7 @@ MonoBehaviour:
   deathGroup: {fileID: 1326269402465154}
   death: 0
   deathDelay: 2
-  spawnTimeProtection: 1
+  spawnTimeProtection: 2
   barrier: {fileID: 0}
   textureOffsetFactor: {x: -0.189, y: 0.12}
 --- !u!135 &135060624028765120
