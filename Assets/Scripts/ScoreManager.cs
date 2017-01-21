@@ -21,6 +21,7 @@ public class ScoreManager : MonoBehaviour {
 
     private void OnDestroy()
     {
+        if (MessagingCenter.Instance == null) { return; }
         MessagingCenter.Instance.UnregisterMessage(
             "UnitKilled", 
             "UnitTookDamage", 

@@ -108,7 +108,10 @@ public class SimpleMover : BaseMovingUnit {
     }
 
 	public void OnParticleCollision (GameObject other) {
-		TakeDamage (1, 1);
+        string name = other.transform.parent.parent.name;
+        name = name.Substring(name.Length - 1);
+
+		TakeDamage (1, int.Parse(name));
 	}
 
     #endregion
