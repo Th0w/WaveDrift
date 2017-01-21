@@ -75,9 +75,9 @@ public class PoolManager : MonoBehaviour
     {
         get
         {
-            Debug.LogFormat("Name to find: {0}", name);
+//            Debug.LogFormat("Name to find: {0}", name);
             var found = pools.Where(pool => pool.name.Contains(name)).FirstOrDefault();
-            Debug.LogFormat("Found name: {0}", found.name);
+//            Debug.LogFormat("Found name: {0}", found.name);
             return found;
         }
     }

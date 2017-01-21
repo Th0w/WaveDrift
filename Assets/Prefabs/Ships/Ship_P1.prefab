@@ -55,12 +55,11 @@ GameObject:
   - component: {fileID: 4939722990677130}
   - component: {fileID: 135720276429198336}
   - component: {fileID: 54774218499772132}
-  - component: {fileID: 135167595949167202}
   - component: {fileID: 114306938526163594}
   - component: {fileID: 95910306683011024}
   m_Layer: 9
   m_Name: Ship_P1
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -401,20 +400,9 @@ MonoBehaviour:
   deathGroup: {fileID: 1480637664865656}
   death: 0
   deathDelay: 2
+  spawnTimeProtection: 2
   barrier: {fileID: 0}
   textureOffsetFactor: {x: -0.189, y: 0.12}
---- !u!135 &135167595949167202
-SphereCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1303922440304432}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 2.5
-  m_Center: {x: 0, y: 0.18419793, z: 0.10105622}
 --- !u!135 &135720276429198336
 SphereCollider:
   m_ObjectHideFlags: 1
@@ -865,7 +853,7 @@ ParticleSystem:
     enabled: 1
     serializedVersion: 3
     rateOverTime:
-      scalar: 128
+      scalar: 0
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2987,7 +2975,7 @@ ParticleSystem:
   moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: 790587178
+  randomSeed: -1800235635
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -3370,7 +3358,7 @@ ParticleSystem:
     enabled: 1
     serializedVersion: 3
     rateOverTime:
-      scalar: 128
+      scalar: 0
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -5091,11 +5079,11 @@ ParticleSystem:
     radiusScale: 1
     collidesWith:
       serializedVersion: 2
-      m_Bits: 256
+      m_Bits: 1280
     maxCollisionShapes: 256
     quality: 0
     voxelSize: 0.5
-    collisionMessages: 0
+    collisionMessages: 1
     collidesWithDynamic: 1
     interiorCollisions: 1
   TriggerModule:
@@ -5917,7 +5905,7 @@ ParticleSystem:
     enabled: 1
     serializedVersion: 3
     rateOverTime:
-      scalar: 128
+      scalar: 0
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -8039,7 +8027,7 @@ ParticleSystem:
   moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: -1518527866
+  randomSeed: -841058470
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -8089,7 +8077,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 2
           time: 0
-          value: 0.75
+          value: 0.75000006
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -10143,11 +10131,11 @@ ParticleSystem:
     radiusScale: 1
     collidesWith:
       serializedVersion: 2
-      m_Bits: 256
+      m_Bits: 1280
     maxCollisionShapes: 256
     quality: 0
     voxelSize: 0.5
-    collisionMessages: 0
+    collisionMessages: 1
     collidesWithDynamic: 1
     interiorCollisions: 1
   TriggerModule:

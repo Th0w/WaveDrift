@@ -99,7 +99,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1603877302181682}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 20, y: 0, z: 0}
+  m_LocalPosition: {x: 58.3, y: 0, z: 10.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4622427584320394}
@@ -222,14 +222,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   head: {fileID: 4398879705910594}
-  aimDistance: 40
+  aimDistance: 64
   players: []
   target: {fileID: 0}
   LR: {fileID: 120857126761143186}
   laserPS: {fileID: 198164670340200810}
   raycastMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 768
   keepGizmos: 0
 --- !u!120 &120857126761143186
 LineRenderer:

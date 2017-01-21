@@ -121,12 +121,11 @@ GameObject:
   - component: {fileID: 4409255968091490}
   - component: {fileID: 135060624028765120}
   - component: {fileID: 54654744708041554}
-  - component: {fileID: 135068992921209260}
   - component: {fileID: 114643149895857706}
   - component: {fileID: 95257269651931804}
   m_Layer: 9
   m_Name: Ship_P2
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -228,7 +227,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1645885779334612}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 21.85, y: 0, z: 21.27}
+  m_LocalPosition: {x: -22.8, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4035089014769962}
@@ -371,7 +370,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c7aad869930bfd46a3c909e3b63d5ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: 1
+  player: 0
   playerPrefix: 
   leftStickHorizontalInput: 0
   rightTriggerInput: 0
@@ -401,21 +400,10 @@ MonoBehaviour:
   deathGroup: {fileID: 1326269402465154}
   death: 0
   deathDelay: 2
+  spawnTimeProtection: 1
   barrier: {fileID: 0}
   textureOffsetFactor: {x: -0.189, y: 0.12}
 --- !u!135 &135060624028765120
-SphereCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1645885779334612}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 2.5
-  m_Center: {x: 0, y: 0.18419793, z: 0.10105622}
---- !u!135 &135068992921209260
 SphereCollider:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -865,7 +853,7 @@ ParticleSystem:
     enabled: 1
     serializedVersion: 3
     rateOverTime:
-      scalar: 128
+      scalar: 0
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -5492,7 +5480,7 @@ ParticleSystem:
   moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: -1518527866
+  randomSeed: -841058470
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -5542,7 +5530,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 2
           time: 0
-          value: 0.75
+          value: 0.75000006
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -7596,11 +7584,11 @@ ParticleSystem:
     radiusScale: 1
     collidesWith:
       serializedVersion: 2
-      m_Bits: 256
+      m_Bits: 1280
     maxCollisionShapes: 256
     quality: 0
     voxelSize: 0.5
-    collisionMessages: 0
+    collisionMessages: 1
     collidesWithDynamic: 1
     interiorCollisions: 1
   TriggerModule:
@@ -8039,7 +8027,7 @@ ParticleSystem:
   moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: -812235564
+  randomSeed: 883089722
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -8422,7 +8410,7 @@ ParticleSystem:
     enabled: 1
     serializedVersion: 3
     rateOverTime:
-      scalar: 128
+      scalar: 0
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -10544,7 +10532,7 @@ ParticleSystem:
   moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: 537807620
+  randomSeed: -1262803738
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -10927,7 +10915,7 @@ ParticleSystem:
     enabled: 1
     serializedVersion: 3
     rateOverTime:
-      scalar: 128
+      scalar: 0
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -12648,11 +12636,11 @@ ParticleSystem:
     radiusScale: 1
     collidesWith:
       serializedVersion: 2
-      m_Bits: 256
+      m_Bits: 1280
     maxCollisionShapes: 256
     quality: 0
     voxelSize: 0.5
-    collisionMessages: 0
+    collisionMessages: 1
     collidesWithDynamic: 1
     interiorCollisions: 1
   TriggerModule:
@@ -13091,7 +13079,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: 1405723494
+  randomSeed: 2043251892
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -13252,7 +13240,7 @@ ParticleSystem:
         m_NumColorKeys: 2
         m_NumAlphaKeys: 2
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0, g: 0.627451, b: 1, a: 1}
+      maxColor: {r: 0, g: 0.7529412, b: 1, a: 1}
       minMaxState: 0
     startSize:
       scalar: 1
@@ -15703,8 +15691,8 @@ ParticleSystemRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 2100000, guid: 0240746352140cc4d8abc19f74eb03a5, type: 2}
-  - {fileID: 2100000, guid: 0240746352140cc4d8abc19f74eb03a5, type: 2}
+  - {fileID: 2100000, guid: a6a27158df75296439d5ef363f5e5b44, type: 2}
+  - {fileID: 2100000, guid: a6a27158df75296439d5ef363f5e5b44, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -15753,8 +15741,8 @@ ParticleSystemRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 2100000, guid: 0240746352140cc4d8abc19f74eb03a5, type: 2}
-  - {fileID: 2100000, guid: 0240746352140cc4d8abc19f74eb03a5, type: 2}
+  - {fileID: 2100000, guid: a6a27158df75296439d5ef363f5e5b44, type: 2}
+  - {fileID: 2100000, guid: a6a27158df75296439d5ef363f5e5b44, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

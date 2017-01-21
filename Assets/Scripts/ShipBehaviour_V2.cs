@@ -62,6 +62,7 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 	[Space(10)]
 	public bool death;
 	public float deathDelay;
+	public float spawnTimeProtection;
 	[Space(6)]
 	public Transform barrier;
 	private Renderer barrierRenderer;
@@ -70,6 +71,9 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 	private Rigidbody selfRB;
 	public Vector2 textureOffsetFactor;
 	private Animator selfAnimator;
+	[HideInInspector]
+	public Coroutine currentCoroutine;
+	private UI_DeathOL deathOL;
 
 	void Start () {
 
@@ -85,17 +89,19 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 
 		if (barrier)
 			barrierRenderer = barrier.GetComponent<Renderer> ();
+
+		deathOL = FindObjectOfType<UI_DeathOL>();
 	}
 
 	void Update () {
 
 		// DEV CHEATS
 		if (Input.GetKeyDown (KeyCode.T))
-			StartCoroutine(Death (deathDelay));
+			currentCoroutine = StartCoroutine(Death (deathDelay));
 
 		// Out of bounds!
-		if (transform.position.magnitude > 176 && !death)
-			StartCoroutine(Death (deathDelay));
+		if (transform.position.magnitude > 177 && !death)
+			currentCoroutine = StartCoroutine(Death (deathDelay));
 
 		// DEATH LOCK!!
 		if (death)
@@ -128,6 +134,9 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 
 		// Jump
 		if (Input.GetButtonDown (playerPrefix + "Button_A") && !jump) {
+
+			if (currentCoroutine != null)
+				currentCoroutine = null;
 			
 			selfAnimator.Play ("Anim_Ship_Jump", 0, 0);
 			jump = true;
@@ -183,6 +192,7 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 
 	public IEnumerator Death (float deathDelay) {
 
+		SlowMo.selfAnimator.Play ("Anim_SlowMo", 0, 0);
 
 		ship.gameObject.SetActive (false);
 		deathGroup.SetActive (true);
@@ -201,6 +211,9 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 
 		death = true;
 		jump = false;
+		invulnerability = true;
+
+		deathOL.RenderDeathOL ();
 
 		yield return new WaitForSeconds (deathDelay);
 
@@ -210,8 +223,15 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 		driftTime = maxDriftTime;
 
 		transform.position = Vector3.zero;
+		transform.rotation = Quaternion.identity;
 
 		death = false;
+
+		yield return new WaitForSeconds (spawnTimeProtection);
+
+		invulnerability = false;
+
+		currentCoroutine = null;
 	}
 
 	public void Land () {

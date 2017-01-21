@@ -14,7 +14,7 @@ public class Slaloming : SimpleMover {
 
     #endregion Serialized
 
-    private BoxCollider bc;
+    private SphereCollider bc;
     private float progress;
 
     #endregion Fields
@@ -25,7 +25,7 @@ public class Slaloming : SimpleMover {
     {
         progress += Time.deltaTime;
 
-        bc = bc ?? GetComponent<BoxCollider>();
+        bc = bc ?? GetComponent<SphereCollider>();
 
         transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(distance), Time.deltaTime * turnSpeed);
         transform.position += transform.forward * Time.deltaTime * speed;

@@ -23,7 +23,7 @@ public class Accelerating : SimpleMover {
         
         if (distance.magnitude <= rushingDistance)
         {
-            Debug.Log("I IZ ACCELERATING!");
+//            Debug.Log("I IZ ACCELERATING!");
             acceleration = Mathf.Clamp(acceleration + maxAcceleration * Time.deltaTime / accelerationRampTime, 0, maxAcceleration);
         } else
         {

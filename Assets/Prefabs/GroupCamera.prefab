@@ -23,10 +23,12 @@ GameObject:
   - component: {fileID: 124969370623619874}
   - component: {fileID: 92849904181112372}
   - component: {fileID: 81369075007987992}
+  - component: {fileID: 114462019695352684}
   - component: {fileID: 114932561176890656}
   - component: {fileID: 114724455279731768}
   - component: {fileID: 114298953741154088}
-  - component: {fileID: 114462019695352684}
+  - component: {fileID: 114170781092022936}
+  - component: {fileID: 114340475366918996}
   m_Layer: 0
   m_Name: MainCamera
   m_TagString: Untagged
@@ -56,14 +58,14 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1722022106910964}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 30}
+  m_LocalRotation: {x: -0.08715578, y: 0, z: 0, w: 0.9961947}
+  m_LocalPosition: {x: -11.4, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4619684643057948}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -10, y: 0, z: 0}
 --- !u!4 &4619684643057948
 Transform:
   m_ObjectHideFlags: 1
@@ -71,7 +73,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1548751153751028}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 89.81004, z: 0}
+  m_LocalPosition: {x: 0, y: 87.685074, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4222779662925702}
@@ -86,7 +88,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 0}
+  m_BackGroundColor: {r: 0.09019608, g: 0.098039225, b: 0.098039225, a: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -140,20 +142,28 @@ MonoBehaviour:
   players:
   - {fileID: 0}
   - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  barycenter: {x: 0, y: 0, z: 30}
-  maxFrame: {x: 150, y: 84.375}
+  barycenter: {x: -11.4, y: 0, z: 0}
+  maxFrame: {x: 180, y: 101.25}
   minFrame: {x: 400, y: 225}
   playersMaxFrame: {x: 109.8, y: 43.3}
-  playersMinFrame: {x: 308.07, y: 164.8}
+  playersMinFrame: {x: 280.18, y: 145.8}
   posLerpRate: 2
   zoomLerpRate: 3
-  zoom: 0.13744856
+  zoom: 0
+--- !u!114 &114170781092022936
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1548751153751028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4739c22ef73ad62488fe344c8fe9addd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  strengthX: 0
+  strengthY: 0
+  fishEyeShader: {fileID: 4800000, guid: 874ceab4425f64bccb1d14032f4452b1, type: 3}
 --- !u!114 &114298953741154088
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -180,6 +190,20 @@ MonoBehaviour:
   shaderFXAAPreset3: {fileID: 4800000, guid: c182fa94a5a0a4c02870641efcd38cd5, type: 3}
   shaderFXAAII: {fileID: 4800000, guid: cd5b323dcc592457790ff18b528f5e67, type: 3}
   shaderFXAAIII: {fileID: 4800000, guid: c547503fff0e8482ea5793727057041c, type: 3}
+--- !u!114 &114340475366918996
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1548751153751028}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 243a781cad112c75d0008dfa8d76c639, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shader: {fileID: 4800000, guid: daf9781cad112c75d0008dfa8d76c639, type: 3}
+  textureRamp: {fileID: 0}
+  rampOffset: -0.179
 --- !u!114 &114462019695352684
 MonoBehaviour:
   m_ObjectHideFlags: 1

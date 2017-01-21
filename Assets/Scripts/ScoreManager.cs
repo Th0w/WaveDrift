@@ -75,6 +75,7 @@ public class ScoreManager : MonoBehaviour {
         string str = ("000000" + playerCachedScore[values.Item1].ToString());
         str = str.Substring(str.Length - 6);
         playerScores[values.Item1].text = str;
+		playerScores [values.Item1].SendMessage ("PlayAnim");
     }
 
     private Tuple<int, int> ObjectToValues(object obj)

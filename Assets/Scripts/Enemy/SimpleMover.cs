@@ -10,12 +10,16 @@ public class SimpleMover : BaseMovingUnit {
     [Header("Turn smoother")]
     [SerializeField]
     protected float turnSpeed = 2.0f  ;
+	public GameObject deathGroup;
     #endregion Serialized
     #endregion Fields
     #region Methods
     protected virtual void Attack()
     {
-        Debug.Log("BOUM I ATTACKED!");
+//        Debug.Log("BOUM I ATTACKED!");
+		ShipBehaviour_V2 ship = target.GetComponent<ShipBehaviour_V2>();
+		if (!ship.death && !ship.invulnerability && ship.currentCoroutine == null)
+			ship.currentCoroutine = StartCoroutine(ship.Death (ship.deathDelay));
     }
 
     protected virtual void MoveFunction(Vector3 distance)
@@ -33,7 +37,7 @@ public class SimpleMover : BaseMovingUnit {
         this.OnEnableAsObservable()
             .Subscribe(_ =>
             {
-                var tar = FindObjectsOfType<ShipBehavior>()
+                var tar = FindObjectsOfType<ShipBehaviour_V2>()
                     .OrderBy(go => (transform.position - go.transform.position).magnitude)
                     .FirstOrDefault();
 
@@ -65,7 +69,7 @@ public class SimpleMover : BaseMovingUnit {
                     .Subscribe(_ =>
                     {
                         IsOccupied = false;
-                        Debug.Log("Done waiting");
+//                        Debug.Log("Done waiting");
                     })
                     .AddTo(this);
             })
@@ -97,7 +101,15 @@ public class SimpleMover : BaseMovingUnit {
 
 
         MessagingCenter.Instance.FireMessage("UnitKilled", new object[] { playerID, scorePerKilled });
+
+		Instantiate (deathGroup, transform.position, Quaternion.identity);
+
+		parent.Recycle (this);
     }
+
+	public void OnParticleCollision (GameObject other) {
+		TakeDamage (1, 1);
+	}
 
     #endregion
 }
