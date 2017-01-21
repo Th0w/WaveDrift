@@ -14,6 +14,7 @@ public class Pool : MonoBehaviour
     private List<Poolable> actives;
     private Subject<Poolable> onSpawn, onRecycle;
 
+    public Poolable Prefab { get { return prefab; } }
     public int ActiveCount { get { return actives.Count; } }
     public int InactiveCount { get { return inactives.Count; } }
     public int totalCount { get { return ActiveCount + InactiveCount; } }

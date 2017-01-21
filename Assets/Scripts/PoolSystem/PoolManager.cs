@@ -21,6 +21,15 @@ public class PoolData
     public string Name { get { return name; } }
 
     public bool IsValid { get { return quantity != -1 && prefab != null; } }
+
+    public PoolData() { }
+
+    public PoolData(string name, int quantity, GameObject prefab)
+    {
+        this.name = name;
+        this.prefab = prefab;
+        this.quantity = quantity;
+    }
 }
 
 public class PoolManager : MonoBehaviour {
@@ -38,9 +47,6 @@ public class PoolManager : MonoBehaviour {
             {
                 pools.Add(CreatePool(data));
             });
-
-        // TODO To be removed. Testing purpose only
-        Test();
     }
 
     private void Test()
@@ -52,7 +58,6 @@ public class PoolManager : MonoBehaviour {
                 pools[0].Spawn(Vector3.zero);
             })
             .AddTo(this);
-        //pools[0].Spawn(Vector3.zero);
     }
     
     private Pool CreatePool(PoolData data)
@@ -62,5 +67,17 @@ public class PoolManager : MonoBehaviour {
         p.name = string.Format("Pool_{0}_{1}", data.Prefab.name, data.Name);
         p.transform.SetParent(transform);
         return p;
+    }
+
+    public Pool this[GameObject prefab]
+    {
+        get
+        {
+            return pools
+                .Where(pool => pool.Prefab.gameObject == prefab)
+                .FirstOrDefault()
+                ?? CreatePool(new PoolData("Error", 10, prefab));
+            
+        }
     }
 }
