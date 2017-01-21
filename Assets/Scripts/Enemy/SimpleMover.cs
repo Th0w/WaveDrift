@@ -36,9 +36,7 @@ public class SimpleMover : BaseMovingUnit {
             .Where(dist => dist.magnitude > attackRange)
             .Subscribe(dist =>
             {
-                RaycastHit hit;
-                if (Physics.Raycast(transform.position, transform.forward, out hit, 1.0f)) {
-                    Debug.Log(hit.transform.name);
+                if (Physics.Raycast(transform.position, transform.forward, 1.0f)) {
                     return;
                 }
                 transform.rotation = Quaternion.LookRotation(dist);

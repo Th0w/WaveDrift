@@ -18,20 +18,31 @@ public class Spawner : MonoBehaviour {
 
     public List<SpawnData> spawnDatas;
 
-    private void Awake()
+    protected Subject<Unit> onSpawnedWave;
+
+    protected virtual void Start()
     {
+        onSpawnedWave = new Subject<Unit>();
+
         poolManager = FindObjectOfType<PoolManager>();
 
         spawnDatas.ForEach(spawnData =>
         {
-            Pool p = poolManager[spawnData.prefab];
-            int i, max = spawnData.quantity;
-            for(i = 0; i < max; ++i)
+            Pool p;
+            int i, max;
+            p = poolManager[spawnData.prefab];
+            max = spawnData.quantity;
+            for (i = 0; i < max; ++i)
             {
-                Vector3 position = transform.position + Quaternion.Euler(0, 360.0f / max * i, 0) * transform.forward * spawnData.distFromSpawn;
+                int i2 = i;
                 Observable.Timer(TimeSpan.FromSeconds(spawnData.timer))
-                    .Subscribe(_ => p.Spawn(position));
+                    .Subscribe(_ => p.Spawn(transform.position + Quaternion.Euler(0, 360.0f / max * i2, 0) * transform.forward * spawnData.distFromSpawn))
+                    .AddTo(this);
             }
+
+            Observable.Timer(TimeSpan.FromSeconds(spawnData.timer + 0.25))
+                .Subscribe(_ => onSpawnedWave.OnNext(Unit.Default))
+                .AddTo(this);
         });
     }
 }
