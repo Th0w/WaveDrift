@@ -45,7 +45,7 @@ public class Pool : MonoBehaviour
         onRecycle = new Subject<Poolable>();
     }
 
-    public void Spawn(object args)
+    public void Spawn(object args, bool force = false)
     {
         if (inactives == null)
         {
@@ -61,8 +61,18 @@ public class Pool : MonoBehaviour
         }
         else
         {
-            // throw new System.IndexOutOfRangeException("Not enough pooled.");
-            Debug.LogError("Not enough pooled.");
+            if (force == true)
+            {
+                var first = actives[0];
+                actives.Remove(first);
+                first.Recycle();
+                actives.Add(first);
+                first.Spawn(args);
+            }
+            else
+            {
+                Debug.LogError("Not enough pooled.");
+            }
         }
     }
 

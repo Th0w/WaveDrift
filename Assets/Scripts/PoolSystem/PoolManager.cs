@@ -60,7 +60,7 @@ public class PoolManager : MonoBehaviour {
             .AddTo(this);
     }
     
-    private Pool CreatePool(PoolData data)
+    public Pool CreatePool(PoolData data)
     {
         Pool p = new GameObject().AddComponent<Pool>();
         p.Init(data.Quantity, data.Prefab.GetComponent<Poolable>());

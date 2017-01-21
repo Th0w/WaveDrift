@@ -2,7 +2,9 @@
 
 public abstract class BaseMovingUnit : Poolable {
 
-    protected Transform target;
+    #region Fields
+
+    #region Serialized
 
     [SerializeField]
     protected float speed;
@@ -16,7 +18,17 @@ public abstract class BaseMovingUnit : Poolable {
     [SerializeField]
     protected float idleTime = 0.5f;
 
+    protected Transform target;
+
+    #endregion Serialized
+
+    #endregion Fields
+
+    #region Properties
+
     public bool IsOccupied { get; protected set; }
 
     public bool HasTarget { get { return target != null; } }
+
+    #endregion Properties
 }
