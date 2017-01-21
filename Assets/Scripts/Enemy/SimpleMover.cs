@@ -18,6 +18,7 @@ public class SimpleMover : BaseMovingUnit {
     {
 //        Debug.Log("BOUM I ATTACKED!");
 		var ship = target.GetComponent<ShipBehaviour_V2>();
+        if (ship == null) { return; }
         if (!ship.death && !ship.invulnerability && ship.currentCoroutine == null)
         {
             ship.currentCoroutine = StartCoroutine(ship.Death(ship.deathDelay));
@@ -106,7 +107,14 @@ public class SimpleMover : BaseMovingUnit {
         if (HasTarget)
         {
             var sb = target.GetComponent<ShipBehaviour_V2>();
-            return (sb.invulnerability || sb.death) ? GetTarget() : true;
+            if (sb != null)
+            {
+                return (sb.invulnerability || sb.death) ? GetTarget() : true;
+            }
+            else
+            {
+                return GetTarget();
+            }            
         }
         else
         {
@@ -121,7 +129,7 @@ public class SimpleMover : BaseMovingUnit {
             .OrderBy(sbe => Vector3.Distance(sbe.transform.position, transform.position))
             .FirstOrDefault();
 
-        return (target = (tar != null) ? tar.transform : null) != null;
+        return (target = ((tar != null) ? tar.transform : null) ?? ShipDetector.DefaultTransform) != null;
     }
 
     #endregion
