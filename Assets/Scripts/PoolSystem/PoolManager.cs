@@ -52,9 +52,14 @@ public class PoolManager : MonoBehaviour
 
     public Pool CreatePool(PoolData data)
     {
+        return CreatePool(data.Name, data.Quantity, data.Prefab.GetComponent<Poolable>());
+    }
+
+    public Pool CreatePool(string name, int quantity, Poolable prefab)
+    {
         Pool p = new GameObject().AddComponent<Pool>();
-        p.Init(data.Quantity, data.Prefab.GetComponent<Poolable>());
-        p.name = string.Format("Pool_{0}_{1}", data.Prefab.name, data.Name);
+        p.Init(quantity, prefab);
+        p.name = string.Format("Pool_{0}_{1}", prefab.name, name);
         p.transform.SetParent(transform);
         return p;
     }
@@ -75,10 +80,7 @@ public class PoolManager : MonoBehaviour
     {
         get
         {
-//            Debug.LogFormat("Name to find: {0}", name);
-            var found = pools.Where(pool => pool.name.Contains(name)).FirstOrDefault();
-//            Debug.LogFormat("Found name: {0}", found.name);
-            return found;
+            return pools.Where(pool => pool.name.Contains(name)).FirstOrDefault(); 
         }
     }
 }

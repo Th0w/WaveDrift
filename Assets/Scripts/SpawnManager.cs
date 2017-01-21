@@ -4,15 +4,27 @@ using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
 
+[Serializable]
+public class WaveData
+{
+    public int distFromSpawn;
+    public int randomToSpawn;
+    public int basicToSpawn;
+    public float delayTilNextWave;
+}
+
 public class SpawnManager : MonoBehaviour
 {
+    [SerializeField]
+    private WaveData[] waveData;
+    [Header("Maximums")]
     [SerializeField]
     private int maxPhaseId;
     [SerializeField]
     private int maxNormalSpawners = 10;
     [SerializeField]
     private int maxTPSpawners = 7;
-
+    [Header("Prefab info")]
     [SerializeField]
     private string[] mobNames;
 
@@ -22,6 +34,9 @@ public class SpawnManager : MonoBehaviour
     [SerializeField]
     private Spawner tpSpawnerPrefab;
 
+    [SerializeField]
+    private Transform spawnedHolder;
+
     private int waveId = 0;
     private int phaseId = 0;
     
@@ -30,6 +45,8 @@ public class SpawnManager : MonoBehaviour
 
     private int normalCount;
     private int tpCount;
+
+    public Transform SpawnedHolder { get { return spawnedHolder; } }
 
     private IEnumerator Start()
     {
@@ -98,65 +115,11 @@ public class SpawnManager : MonoBehaviour
 
     private void HandleSpawn()
     {
-        switch(phaseId)
-        {
-            case 1:
-                {
-                    int distFromSpawn = 5;
-                    int randomToSpawn = 0;
-                    int basicToSpawn = 5;
-                    Spawn(distFromSpawn, randomToSpawn, basicToSpawn);
-
-                    Observable.Timer(TimeSpan.FromSeconds(2.0))
-                        .Subscribe(_ => NextPhase())
-                        .AddTo(this);
-
-                    break;
-                }
-            case 2:
-                {
-                    int distFromSpawn = 5;
-                    int randomToSpawn = 3;
-                    int basicToSpawn = 7;
-                    Spawn(distFromSpawn, randomToSpawn, basicToSpawn);
-
-                    Observable.Timer(TimeSpan.FromSeconds(2.0))
-                        .Subscribe(_ => NextPhase())
-                        .AddTo(this);
-
-                    break;
-                }
-            case 3:
-                {
-                    int distFromSpawn = 5;
-                    int randomToSpawn = 5;
-                    int basicToSpawn = 9;
-                    Spawn(distFromSpawn, randomToSpawn, basicToSpawn);
-
-                    Observable.Timer(TimeSpan.FromSeconds(2.0))
-                        .Subscribe(_ => NextPhase())
-                        .AddTo(this);
-
-                    break;
-                }
-            case 4:
-                {
-                    int distFromSpawn = 5;
-                    int randomToSpawn = 7;
-                    int basicToSpawn = 11;
-                    Spawn(distFromSpawn, randomToSpawn, basicToSpawn);
-
-                    Observable.Timer(TimeSpan.FromSeconds(2.0))
-                        .Subscribe(_ => NextPhase())
-                        .AddTo(this);
-
-                    break;
-                }
-            default:
-                {
-                    break;
-                }
-        }
+        var data = waveData[phaseId - 1];
+        Spawn(data.distFromSpawn, data.randomToSpawn, data.basicToSpawn);
+        Observable.Timer(TimeSpan.FromSeconds(data.delayTilNextWave))
+            .Subscribe(_ => NextPhase())
+            .AddTo(this);
     }
 
     private void Spawn(int distFromSpawn, int randomToSpawn, int basicToSpawn)
