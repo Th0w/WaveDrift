@@ -12,6 +12,8 @@ public partial class UI_TextShadow : MonoBehaviour {
 	void Start () {
 
 		GetTexts ();
+
+		GetComponent<Canvas> ().sortingOrder = -1;
 	}
 
 	void Update () {
