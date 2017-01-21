@@ -9,6 +9,8 @@ public class SoundVisual : MonoBehaviour {
 	public drawType type;
 	[HideInInspector]
 	public Transform drawParent;
+	[HideInInspector]
+	public GameObject prefab;
 
 	private const int SAMPLE_SIZE = 1024;
 
@@ -68,7 +70,8 @@ public class SoundVisual : MonoBehaviour {
 		
 			for (int i = 0; i < amnVisual; i++)
 			{
-				GameObject go = GameObject.CreatePrimitive(PrimitiveType.Cube) as GameObject;
+				GameObject go = Instantiate(prefab, transform.position, Quaternion.identity);	
+			//GameObject go = GameObject.CreatePrimitive(PrimitiveType.Cube) as GameObject;
 				visualList[i] = go.transform;
 				visualList[i].parent = drawParent;
 				visualList[i].localPosition = Vector3.right * i * blocScales * 1.1f;
@@ -91,7 +94,7 @@ public class SoundVisual : MonoBehaviour {
 				float y = center.y + Mathf.Sin(ang) * radius;
 
 				Vector3 pos = center + new Vector3(x, y, 0);
-				GameObject go = GameObject.CreatePrimitive(PrimitiveType.Cube) as GameObject;
+				GameObject go = Instantiate(prefab, transform.position, Quaternion.identity);
 				go.transform.position = pos;
 				go.transform.rotation = Quaternion.LookRotation(Vector3.forward, pos);
 				visualList[i] = go.transform;

@@ -20,6 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4957289287481382}
   - component: {fileID: 114191497791249864}
+  - component: {fileID: 82930019909762548}
   m_Layer: 0
   m_Name: TerrainWaveManager
   m_TagString: Untagged
@@ -40,6 +41,86 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &82930019909762548
+AudioSource:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1018664490196854}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: ac29af3cb85d97d4392301926860f444, type: 3}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
 --- !u!114 &114191497791249864
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -51,25 +132,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f72d2dfe36db13d459c79b89652161cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseRotation: {x: 0, y: 0, z: 0}
+  basePosition: {x: 0, y: -425, z: 0}
   wavePrefab: {fileID: 1227140577982568, guid: 7fe2ed7ab0808c54a83a3b00b32b3937, type: 2}
+  cubePrefab: {fileID: 1557537900781512, guid: 715beab7d1d91af478c0b5aceccfbf7f, type: 2}
   terrainType: 1
   generationType: 3
-  indexOverTime: 2
+  indexOverTime: 1
   indexSpeed: 0.01
-  randomSmooth: 15
+  randomSmooth: 30
   typeDelay: 3
   typeProgressive: 0
   changeSettingsDynamicly: 0
-  maxVisualScale: 15
-  visualModifier: 1000
-  smoothSpeed: 10
-  keepPercentage: 0.06
+  maxVisualScale: 30
+  visualModifier: 10000
+  smoothSpeed: 40
+  keepPercentage: 0.05
   startVisualIndex: 0
   centerCircle: {fileID: 4957289287481382}
-  circleRadius: 16
-  source: {fileID: 0}
+  circleRadius: 250
+  source: {fileID: 82930019909762548}
   amnVisual: 64
-  blocScales: 3
-  width: 24
-  length: 4
+  blocScales: 22
+  width: 64
+  length: 22
