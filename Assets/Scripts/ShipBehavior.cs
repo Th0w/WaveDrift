@@ -15,6 +15,8 @@ public class ShipBehavior : MonoBehaviour
 	public float rotationLerp;
 	public float maxDriftRotation;
 	public float driftRotationLerp;
+	public float minSpeedTurn;
+	public float minSpeedDrift;
 	public GameObject[] driftParticles;
 
 	private string playerPrefix;
@@ -42,14 +44,18 @@ public class ShipBehavior : MonoBehaviour
 
 		actualSpeed = Mathf.Lerp(actualSpeed, inputSpeed * maxSpeed, Time.deltaTime * speedLerp);
 		rgbd.velocity = transform.forward * actualSpeed;
-		
-		float maxTotalRotation = driftInput ? maxDriftRotation : maxRotation;
-		actualRotation = Mathf.Lerp(actualRotation, inputTurn * maxTotalRotation, Time.deltaTime * (driftInput ? driftRotationLerp : rotationLerp));
-		transform.localEulerAngles += new Vector3(transform.localEulerAngles.x, actualRotation, transform.localEulerAngles.z) * Time.deltaTime;
 
-		if (Input.GetButtonDown(playerPrefix + "drift"))
+		bool canDrift = driftInput && actualSpeed > minSpeedDrift;
+		if (actualSpeed > minSpeedTurn)
+		{
+			float maxTotalRotation = canDrift ? maxDriftRotation : maxRotation;
+			actualRotation = Mathf.Lerp(actualRotation, inputTurn * maxTotalRotation, Time.deltaTime * (driftInput ? driftRotationLerp : rotationLerp));
+			transform.localEulerAngles += new Vector3(transform.localEulerAngles.x, actualRotation, transform.localEulerAngles.z) * Time.deltaTime;
+		}
+
+		if (Input.GetButtonDown(playerPrefix + "drift") && canDrift)
 			SetActiveGameObjects(driftParticles, true);
-		else if (Input.GetButtonUp(playerPrefix + "drift"))
+		else if (Input.GetButtonUp(playerPrefix + "drift") && !canDrift)
 			SetActiveGameObjects(driftParticles, false);
 
 	}
