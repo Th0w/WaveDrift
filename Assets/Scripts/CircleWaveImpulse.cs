@@ -15,6 +15,7 @@ public class CircleWaveImpulse : MonoBehaviour {
 	public float cooldown;
 	public float startDelay;
 	private bool recharge;
+	public bool killOnEnd;
 
 	Vector3[] directions;
 	public float radius;
@@ -52,13 +53,18 @@ public class CircleWaveImpulse : MonoBehaviour {
 
 			if (radius > maxRadius)
 			{
-				recharge = true;
-				lr.enabled = false;
-				StartCoroutine(EmitCooldown(cooldown));
-				//Observable.Timer(TimeSpan.FromSeconds(cooldown))
-				//	.Subscribe(_ =>
-				//	{
-				//	}).AddTo(this);
+				if (killOnEnd)
+					Destroy(gameObject);
+				else
+				{
+					recharge = true;
+					lr.enabled = false;
+					StartCoroutine(EmitCooldown(cooldown));
+					//Observable.Timer(TimeSpan.FromSeconds(cooldown))
+					//	.Subscribe(_ =>
+					//	{
+					//	}).AddTo(this);
+				}
 			}
 		}
 	}
