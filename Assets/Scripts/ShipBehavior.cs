@@ -5,7 +5,7 @@ using UnityEngine;
 public class ShipBehavior : MonoBehaviour
 {
 
-	public enum players { P1, P2};
+	public enum players { P1, P2 };
 	public players player;
 
 	public float maxSpeed;
@@ -45,7 +45,6 @@ public class ShipBehavior : MonoBehaviour
 		actualSpeed = Mathf.Lerp(actualSpeed, inputSpeed * maxSpeed, Time.deltaTime * speedLerp);
 		rgbd.velocity = transform.forward * actualSpeed;
 
-<<<<<<< HEAD
 		bool canDrift = driftInput && actualSpeed > minSpeedDrift;
 		if (actualSpeed > minSpeedTurn)
 		{
@@ -53,13 +52,6 @@ public class ShipBehavior : MonoBehaviour
 			actualRotation = Mathf.Lerp(actualRotation, inputTurn * maxTotalRotation, Time.deltaTime * (driftInput ? driftRotationLerp : rotationLerp));
 			transform.localEulerAngles += new Vector3(transform.localEulerAngles.x, actualRotation, transform.localEulerAngles.z) * Time.deltaTime;
 		}
-=======
-		//Debug.Log(driftInput);
-		float maxTotalRotation = driftInput ? maxDriftRotation : maxRotation;
-		float currentRotation = Mathf.Lerp(0, maxTotalRotation, inputTurn);
-		actualRotation = Mathf.Lerp(actualRotation, inputTurn * maxTotalRotation, Time.deltaTime * (driftInput ? driftRotationLerp : rotationLerp));
-		transform.localEulerAngles += new Vector3(transform.localEulerAngles.x, actualRotation, transform.localEulerAngles.z) * Time.deltaTime;
->>>>>>> 3c6a9555b21843d3a20e505326041fbf8b10de43
 
 		if (Input.GetButtonDown(playerPrefix + "drift") && canDrift)
 			SetActiveGameObjects(driftParticles, true);
