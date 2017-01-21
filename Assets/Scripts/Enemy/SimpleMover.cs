@@ -34,14 +34,8 @@ public class SimpleMover : BaseMovingUnit {
 
         update
             .Where(dist => dist.magnitude > attackRange)
-            .Subscribe(dist =>
-            {
-                if (Physics.Raycast(transform.position, transform.forward, 1.0f)) {
-                    return;
-                }
-                transform.rotation = Quaternion.LookRotation(dist);
-                transform.position += transform.forward * Time.deltaTime * speed;
-            })
+            .Where(dist => Physics.Raycast(transform.position, transform.forward, 1.0f) == false)
+            .Subscribe(MoveFunction)
             .AddTo(this);
 
         update.Where(dist => dist.magnitude <= attackRange)
@@ -60,6 +54,12 @@ public class SimpleMover : BaseMovingUnit {
             .AddTo(this);
 
         return this;
+    }
+
+    protected virtual void MoveFunction(Vector3 distance)
+    {
+            transform.rotation = Quaternion.LookRotation(distance);
+            transform.position += transform.forward * Time.deltaTime * speed;
     }
 
     public override void Recycle()
