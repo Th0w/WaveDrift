@@ -13,7 +13,8 @@ public class SpawnData
     public float distFromSpawn;
 }
 
-public class Spawner : MonoBehaviour {
+public class Spawner : MonoBehaviour
+{
     private PoolManager poolManager;
 
     public List<SpawnData> spawnDatas;
@@ -49,6 +50,25 @@ public class Spawner : MonoBehaviour {
         Observable.Timer(TimeSpan.FromSeconds(lastTimer))
             .Subscribe(_ => MessagingCenter.Instance.FireMessage("SpawnEnd", this))
             .AddTo(this);
-        
+
+    }
+
+    internal void Spawn(List<BaseMovingUnit> list, int distFromSpawn)
+    {
+        int i, max;
+        for (i = 0, max = list.Count; i < max; ++i)
+        {
+            list[i].Parent.Spawn(transform.position + Quaternion.Euler(0, 360.0f / max * i, 0) * transform.forward * distFromSpawn);
+        }
+    }
+    internal void Spawn(List<Pool> list, int distFromSpawn)
+    {
+        list.ForEach(pool => Debug.Log(pool.name));
+        Debug.Break();
+        int i, max;
+        for (i = 0, max = list.Count; i < max; ++i)
+        {
+            list[i].Spawn(transform.position + Quaternion.Euler(0, 360.0f / max * i, 0) * transform.forward * distFromSpawn);
+        }
     }
 }

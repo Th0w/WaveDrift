@@ -32,7 +32,8 @@ public class PoolData
     }
 }
 
-public class PoolManager : MonoBehaviour {
+public class PoolManager : MonoBehaviour
+{
     [SerializeField]
     public List<PoolData> poolsToSpawn;
 
@@ -48,7 +49,7 @@ public class PoolManager : MonoBehaviour {
                 pools.Add(CreatePool(data));
             });
     }
-    
+
     public Pool CreatePool(PoolData data)
     {
         Pool p = new GameObject().AddComponent<Pool>();
@@ -66,7 +67,18 @@ public class PoolManager : MonoBehaviour {
                 .Where(pool => pool.Prefab.gameObject == prefab)
                 .FirstOrDefault()
                 ?? CreatePool(new PoolData("Error", 10, prefab));
-            
+
+        }
+    }
+
+    public Pool this[string name]
+    {
+        get
+        {
+            Debug.LogFormat("Name to find: {0}", name);
+            var found = pools.Where(pool => pool.name.Contains(name)).FirstOrDefault();
+            Debug.LogFormat("Found name: {0}", found.name);
+            return found;
         }
     }
 }
