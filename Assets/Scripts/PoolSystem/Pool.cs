@@ -56,7 +56,7 @@ public class Pool : MonoBehaviour
             var obj = inactives.Dequeue();
             actives.Add(obj);
             obj.Spawn(args);
-            obj.transform.SetParent(null);
+            obj.transform.SetParent(transform.parent);
             onSpawn.OnNext(obj);
         }
         else

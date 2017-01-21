@@ -7,15 +7,21 @@ public class MessagingCenter : Singleton<MessagingCenter>
 {
     protected MessagingCenter() { }
 
-    private Dictionary<string, Action<object>> messageDict;
+    [SerializeField]
+    private bool debug = false;
 
+    private Dictionary<string, Action<object>> messageDict;
+    
     public bool RegisterMessage(string messageName, Action<object> messageAction)
     {
         CheckDict();
         if (messageDict.ContainsKey(messageName) == false)
         {
             messageDict.Add(messageName, messageAction);
-            Debug.LogFormat("Added {0}", messageName);
+            if (debug)
+            {
+                Debug.LogFormat("Added {0}", messageName);
+            }
         }
         else
         {
@@ -29,7 +35,10 @@ public class MessagingCenter : Singleton<MessagingCenter>
         CheckDict();
         if (messageDict.ContainsKey(messageName) == false)
         {
-            Debug.LogErrorFormat("Does not contains a message named {0}.", messageName);
+            if (debug)
+            {
+                Debug.LogErrorFormat("Does not contains a message named {0}.", messageName);
+            }
             return false;
         }
 
@@ -44,7 +53,10 @@ public class MessagingCenter : Singleton<MessagingCenter>
         {
             if (messageDict.ContainsKey(messageName) == false)
             {
-                Debug.LogErrorFormat("Does not contains a message named {0}.", messageName);
+                if (debug)
+                {
+                    Debug.LogErrorFormat("Does not contains a message named {0}.", messageName);
+                }
                 return false;
             }
             messageDict.Remove(messageName);

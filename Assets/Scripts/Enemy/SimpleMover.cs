@@ -16,7 +16,6 @@ public class SimpleMover : BaseMovingUnit {
     #region Methods
     protected virtual void Attack()
     {
-//        Debug.Log("BOUM I ATTACKED!");
 		var ship = target.GetComponent<ShipBehaviour_V2>();
         if (ship == null) { return; }
         if (!ship.death && !ship.invulnerability && ship.currentCoroutine == null)
@@ -48,7 +47,6 @@ public class SimpleMover : BaseMovingUnit {
 
         update
             .Where(dist => dist.magnitude > attackRange)
-            //.Where(dist => Physics.Raycast(transform.position, transform.forward, 1.0f) == false)
             .Subscribe(MoveFunction)
             .AddTo(this);
 

@@ -63,7 +63,6 @@ public class Spawner : MonoBehaviour
     }
     internal void Spawn(List<Pool> list, int distFromSpawn)
     {
-//        list.ForEach(pool => Debug.Log(pool.name));
         int i, max;
         for (i = 0, max = list.Count; i < max; ++i)
         {
