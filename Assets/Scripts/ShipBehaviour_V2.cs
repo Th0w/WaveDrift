@@ -1,15 +1,18 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using UniRx;
+using System;
 
 public class ShipBehaviour_V2 : MonoBehaviour {
 
 	// PLAYER
-	public enum Players {Player1, Player2}
+	public enum Players {Player1, Player2, Player3, Player4}
 	[Header("PLAYER")]
 	[Space(10)]
 	public Players player;
 	public string playerPrefix;
+	public Vector3 spawnPos;
 
 	// INPUTS
 	[Header("INPUTS")]
@@ -38,7 +41,7 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 	public bool cooldown;
 	[Space(6)]
 	public bool jump;
-	public bool invulnerability;
+	public bool airProtection;
 
 	//DRIFT
 	[Header("DRIFT")]
@@ -62,6 +65,7 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 	[Space(10)]
 	public bool death;
 	public float deathDelay;
+	public bool invulnerability;
 	public float spawnTimeProtection;
 	[Space(6)]
 	public Transform barrier;
@@ -72,15 +76,21 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 	public Vector2 textureOffsetFactor;
 	private Animator selfAnimator;
 	[HideInInspector]
-	public Coroutine currentCoroutine;
 	private UI_DeathOL deathOL;
+
+	private IDisposable deathDisposable, invulDisposable;
 
 	void Start () {
 
 		if (player == Players.Player1)
 			playerPrefix = "P1_";
-		else
+		else if (player == Players.Player1)
 			playerPrefix = "P2_";
+		else if (player == Players.Player1)
+			playerPrefix = "P3_";
+		else
+			playerPrefix = "P4_";
+			
 
 		selfRB = GetComponent<Rigidbody> ();
 		selfAnimator = GetComponent<Animator> ();
@@ -97,11 +107,11 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 
 		// DEV CHEATS
 		if (Input.GetKeyDown (KeyCode.T))
-			currentCoroutine = StartCoroutine(Death (deathDelay));
+			StartCoroutine(Death ());
 
 		// Out of bounds!
 		if (transform.position.magnitude > 177 && !death)
-			currentCoroutine = StartCoroutine(Death (deathDelay));
+			StartCoroutine(Death ());
 
 		// DEATH LOCK!!
 		if (death)
@@ -134,13 +144,10 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 
 		// Jump
 		if (Input.GetButtonDown (playerPrefix + "Button_A") && !jump) {
-
-			if (currentCoroutine != null)
-				currentCoroutine = null;
 			
 			selfAnimator.Play ("Anim_Ship_Jump", 0, 0);
 			jump = true;
-			invulnerability = true;
+			airProtection = true;
 		}
 
 		// Fire PS
@@ -190,7 +197,60 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 		barrierRenderer.material.SetFloat("_GlobalAlpha", Mathf.InverseLerp(145f, 175f, transform.position.magnitude));
 	}
 
-	public IEnumerator Death (float deathDelay) {
+	/*public void KillPlayer() {
+		
+		SlowMo.selfAnimator.Play ("Anim_SlowMo", 0, 0);
+
+		ship.gameObject.SetActive (false);
+		deathGroup.SetActive (true);
+
+		foreach (ParticleSystem ps in firePS)
+			ps.emissionRate = 0;
+		foreach (ParticleSystem ps in driftPS)
+			ps.emissionRate = 0;
+
+		selfRB.velocity = Vector3.zero;
+
+		driftGauge.fillAmount = 0;
+
+		actualSpeed = 0;
+		actualRotStrength = 0;
+
+		death = true;
+		jump = false;
+		invulnerability = true;
+
+		deathOL.RenderDeathOL ();
+
+		deathDisposable = Observable.Timer (TimeSpan.FromSeconds (deathDelay))
+			.Subscribe (_ => {
+				ship.gameObject.SetActive (true);
+				deathGroup.SetActive (false);
+
+				driftTime = maxDriftTime;
+
+				transform.position = spawnPos;
+				transform.rotation = Quaternion.identity;
+
+				death = false;
+
+				invulDisposable = Observable.Timer(TimeSpan.FromSeconds(spawnTimeProtection))
+					.Subscribe(
+						__ => {if (jump) {invulnerability = false;}},
+						() => {
+							invulDisposable.Dispose();
+							invulDisposable = null;
+						})
+					.AddTo(this);
+				
+		},
+				() => {
+					deathDisposable.Dispose();
+					deathDisposable = null;
+				}).AddTo (this);
+	}*/
+
+	public IEnumerator Death () {
 
 		SlowMo.selfAnimator.Play ("Anim_SlowMo", 0, 0);
 
@@ -222,7 +282,7 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 
 		driftTime = maxDriftTime;
 
-		transform.position = Vector3.zero;
+		transform.position = spawnPos;
 		transform.rotation = Quaternion.identity;
 
 		death = false;
@@ -230,8 +290,6 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 		yield return new WaitForSeconds (spawnTimeProtection);
 
 		invulnerability = false;
-
-		currentCoroutine = null;
 	}
 
 	public void Land () {
@@ -239,8 +297,8 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 		jump = false;
 	}
 
-	public void Vulnerable () {
+	public void RemoveAirProtection () {
 
-		invulnerability = false;
+		airProtection = false;
 	}
 }

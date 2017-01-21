@@ -168,7 +168,7 @@ AnimationClip:
   m_IsEmpty: 0
   m_Events:
   - time: 0.8333333
-    functionName: Vulnerable
+    functionName: RemoveAirProtection
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
