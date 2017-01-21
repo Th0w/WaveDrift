@@ -67,7 +67,7 @@ public class ShipBehavior : MonoBehaviour
 			driftRelease = false;
 		if (Input.GetButtonUp(playerPrefix + "drift"))
 			driftRelease = true;
-		Debug.Log(driftRelease);
+		//Debug.Log(driftRelease);
 		actualSpeed = inputSpeed * speed;
 		rgbd.velocity += transform.forward * actualSpeed;
 		rgbd.velocity *= 0.95f;

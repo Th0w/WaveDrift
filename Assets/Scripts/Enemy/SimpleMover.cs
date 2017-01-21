@@ -90,5 +90,13 @@ public class SimpleMover : BaseMovingUnit {
         gameObject.SetActive(true);
     }
 
+    protected override void Death(int playerID)
+    {
+        // TODO Visual death
+
+
+        MessagingCenter.Instance.FireMessage("UnitKilled", new object[] { playerID, scorePerKilled });
+    }
+
     #endregion
 }

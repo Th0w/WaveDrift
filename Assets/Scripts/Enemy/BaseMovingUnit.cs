@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using UniRx;
+using UnityEngine;
 
 public abstract class BaseMovingUnit : Poolable {
 
@@ -19,6 +20,10 @@ public abstract class BaseMovingUnit : Poolable {
     protected float idleTime = 0.5f;
 
     protected Transform target;
+    protected Subject<Unit> onTakeDamage;
+
+    [SerializeField]
+    protected int scorePerHitPoint, scorePerKilled;
 
     #endregion Serialized
 
@@ -29,6 +34,22 @@ public abstract class BaseMovingUnit : Poolable {
     public bool IsOccupied { get; protected set; }
 
     public bool HasTarget { get { return target != null; } }
+
+    public IObservable<Unit> OnTakeDamage { get { return onTakeDamage; } }
+
+    public void TakeDamage(int v, int playerID)
+    {
+        health -= v;
+
+        MessagingCenter.Instance.FireMessage("UnitTookDamage", new object[] { playerID, scorePerHitPoint });
+
+        if (health <= 0)
+        {
+            Death(playerID);
+        }
+    }
+
+    protected abstract void Death(int playerID);
 
     #endregion Properties
 }
