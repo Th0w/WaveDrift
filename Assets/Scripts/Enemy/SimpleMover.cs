@@ -12,11 +12,15 @@ public class SimpleMover : BaseMovingUnit {
     #endregion Serialized
     #endregion Fields
     #region Methods
+    protected virtual void Attack()
+    {
+        Debug.Log("BOUM I ATTACKED!");
+    }
 
     protected virtual void MoveFunction(Vector3 distance)
     {
-            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(distance), Time.deltaTime * turnSpeed);
-            transform.position += transform.forward * Time.deltaTime * speed;
+        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(distance), Time.deltaTime * turnSpeed);
+        transform.position += transform.forward * Time.deltaTime * speed;
     }
 
     public override Poolable Init(Pool parent)
@@ -45,7 +49,6 @@ public class SimpleMover : BaseMovingUnit {
             .Where(_ => IsOccupied == false)
             .Select(_ => (target.position - transform.position));
 
-        update.Subscribe(dist => Debug.Log(dist));
         update
             .Where(dist => dist.magnitude > attackRange)
             //.Where(dist => Physics.Raycast(transform.position, transform.forward, 1.0f) == false)
@@ -56,7 +59,7 @@ public class SimpleMover : BaseMovingUnit {
             .Subscribe(dist =>
             {
                 IsOccupied = true;
-                Debug.Log("BOUM I ATTACKED!");
+                Attack();
                 Observable.Timer(TimeSpan.FromSeconds(idleTime))
                     .Subscribe(_ =>
                     {

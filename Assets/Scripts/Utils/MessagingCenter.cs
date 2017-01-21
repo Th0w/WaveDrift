@@ -15,6 +15,7 @@ public class MessagingCenter : Singleton<MessagingCenter>
         if (messageDict.ContainsKey(messageName) == false)
         {
             messageDict.Add(messageName, messageAction);
+            Debug.LogFormat("Added {0}", messageName);
         }
         else
         {
@@ -36,15 +37,18 @@ public class MessagingCenter : Singleton<MessagingCenter>
         return true;
     }
 
-    public bool UnregisterMessage(string messageName)
+    public bool UnregisterMessage(params string[] messageNames)
     {
         CheckDict();
-        if (messageDict.ContainsKey(messageName) == false)
+        foreach (var messageName in messageNames)
         {
-            Debug.LogErrorFormat("Does not contains a message named {0}.", messageName);
-            return false;
+            if (messageDict.ContainsKey(messageName) == false)
+            {
+                Debug.LogErrorFormat("Does not contains a message named {0}.", messageName);
+                return false;
+            }
+            messageDict.Remove(messageName);
         }
-        messageDict.Remove(messageName);
         return true;
     }
 

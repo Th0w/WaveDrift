@@ -48,17 +48,6 @@ public class PoolManager : MonoBehaviour {
                 pools.Add(CreatePool(data));
             });
     }
-
-    private void Test()
-    {
-        Observable.Interval(TimeSpan.FromSeconds(2.0))
-            .Where(_ => pools[0].empty == false)
-            .Subscribe(_ =>
-            {
-                pools[0].Spawn(Vector3.zero);
-            })
-            .AddTo(this);
-    }
     
     public Pool CreatePool(PoolData data)
     {

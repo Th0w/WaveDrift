@@ -6,11 +6,7 @@ using UnityEngine;
 
 public class RandomEventSpawner : MonoBehaviour {
     [SerializeField]
-    private List<Transform> levelLimits;
-    [SerializeField]
     private float eventDeltaSpawn;
-
-    private Vector2 min, max;
 
     private List<BaseRandomEvent> eventPrefabs;
 
@@ -20,12 +16,7 @@ public class RandomEventSpawner : MonoBehaviour {
     {
         poolManager = FindObjectOfType<PoolManager>();
 
-        min = new Vector2(
-            Mathf.Min(levelLimits.Select(transform => transform.position.x).ToArray()),
-            Mathf.Min(levelLimits.Select(transform => transform.position.y).ToArray()));
-        max = new Vector2(
-            Mathf.Max(levelLimits.Select(transform => transform.position.x).ToArray()),
-            Mathf.Max(levelLimits.Select(transform => transform.position.y).ToArray()));
+        
 
         eventPrefabs.ForEach(prefab => poolManager.CreatePool(new PoolData(prefab.name, 2, prefab.gameObject)));
 
@@ -36,7 +27,8 @@ public class RandomEventSpawner : MonoBehaviour {
 
     private void SpawnRandomEvent(long frameCount)
     {
-        Vector3 newPos = new Vector3(UnityEngine.Random.Range(min.x, max.x), 0.0f, UnityEngine.Random.Range(min.y, max.y));
+        var dim = ArenaDimensions.Instance;
+        Vector3 newPos = new Vector3(UnityEngine.Random.Range(dim.min.x, dim.max.x), 0.0f, UnityEngine.Random.Range(dim.min.y, dim.max.y));
 
         poolManager[eventPrefabs[UnityEngine.Random.Range(0, eventPrefabs.Count)].gameObject].Spawn(newPos, true);
     }

@@ -25,7 +25,7 @@ public class Spawner : MonoBehaviour {
         onSpawnedWave = new Subject<Unit>();
 
         poolManager = FindObjectOfType<PoolManager>();
-
+        float lastTimer = 0.0f;
         spawnDatas.ForEach(spawnData =>
         {
             Pool p;
@@ -38,11 +38,17 @@ public class Spawner : MonoBehaviour {
                 Observable.Timer(TimeSpan.FromSeconds(spawnData.timer))
                     .Subscribe(_ => p.Spawn(transform.position + Quaternion.Euler(0, 360.0f / max * i2, 0) * transform.forward * spawnData.distFromSpawn))
                     .AddTo(this);
+                if (spawnData.timer > lastTimer) { lastTimer = spawnData.timer; }
             }
 
             Observable.Timer(TimeSpan.FromSeconds(spawnData.timer + 0.25))
                 .Subscribe(_ => onSpawnedWave.OnNext(Unit.Default))
                 .AddTo(this);
         });
+
+        Observable.Timer(TimeSpan.FromSeconds(lastTimer))
+            .Subscribe(_ => MessagingCenter.Instance.FireMessage("SpawnEnd", this))
+            .AddTo(this);
+        
     }
 }
