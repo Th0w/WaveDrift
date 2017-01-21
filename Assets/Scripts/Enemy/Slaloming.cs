@@ -6,7 +6,7 @@ public class Slaloming : SimpleMover {
     #region Fields
 
     #region Serialized
-
+    [Header("Slalom data")]
     [SerializeField]
     private Transform childObject;
     [SerializeField]

@@ -37,8 +37,6 @@ public class CircleWaveImpulse : MonoBehaviour {
 		recharge = true;
 		lr.enabled = false;
 		StartCoroutine(EmitCooldown(startDelay));
-		if (transform == null)
-			baseTranform = transform.parent;
 	}
 	
 	// Update is called once per frame

@@ -7,6 +7,7 @@ using UnityEngine;
 public class SimpleMover : BaseMovingUnit {
     #region Fields
     #region Serialized
+    [Header("Turn smoother")]
     [SerializeField]
     protected float turnSpeed = 2.0f  ;
     #endregion Serialized
@@ -88,6 +89,14 @@ public class SimpleMover : BaseMovingUnit {
         }
         transform.position = (Vector3)args;
         gameObject.SetActive(true);
+    }
+
+    protected override void Death(int playerID)
+    {
+        // TODO Visual death
+
+
+        MessagingCenter.Instance.FireMessage("UnitKilled", new object[] { playerID, scorePerKilled });
     }
 
     #endregion
