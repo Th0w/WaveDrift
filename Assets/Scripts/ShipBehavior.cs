@@ -40,13 +40,10 @@ public class ShipBehavior : MonoBehaviour
 		bool driftInput = Input.GetButton(playerPrefix + "drift");
 		bool jumpInput = Input.GetButtonDown(playerPrefix + "jump");
 
-		float currentSpeed = Mathf.Lerp(0, maxSpeed, inputSpeed);
 		actualSpeed = Mathf.Lerp(actualSpeed, inputSpeed * maxSpeed, Time.deltaTime * speedLerp);
 		rgbd.velocity = transform.forward * actualSpeed;
-
-		Debug.Log(driftInput);
+		
 		float maxTotalRotation = driftInput ? maxDriftRotation : maxRotation;
-		float currentRotation = Mathf.Lerp(0, maxTotalRotation, inputTurn);
 		actualRotation = Mathf.Lerp(actualRotation, inputTurn * maxTotalRotation, Time.deltaTime * (driftInput ? driftRotationLerp : rotationLerp));
 		transform.localEulerAngles += new Vector3(transform.localEulerAngles.x, actualRotation, transform.localEulerAngles.z) * Time.deltaTime;
 
