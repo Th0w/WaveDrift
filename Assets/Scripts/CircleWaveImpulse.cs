@@ -23,6 +23,8 @@ public class CircleWaveImpulse : MonoBehaviour {
 	LineRenderer lr;
 	LayerMask killLayer;
 	ShipBehavior[] players;
+	[HideInInspector]
+	public Transform baseTranform;
 
 
 	// Use this for initialization
@@ -35,6 +37,8 @@ public class CircleWaveImpulse : MonoBehaviour {
 		recharge = true;
 		lr.enabled = false;
 		StartCoroutine(EmitCooldown(startDelay));
+		if (transform == null)
+			baseTranform = transform.parent;
 	}
 	
 	// Update is called once per frame

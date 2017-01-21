@@ -28,8 +28,9 @@ public class ShipBehavior : MonoBehaviour
 	public float maxUsableDrift;
 	public float driftRegenRate;
 	public float driftUseRate;
-	public bool driftUsable;
-	public float currentDriftLevel;
+	bool driftUsable;
+	float currentDriftLevel;
+	public GameObject projectile;
 
 	private string playerPrefix;
 
@@ -55,8 +56,9 @@ public class ShipBehavior : MonoBehaviour
 		float inputTurn = Input.GetAxis(playerPrefix + "turn") < -leftStickDeadZone || Input.GetAxis(playerPrefix + "turn") > leftStickDeadZone ? Input.GetAxis(playerPrefix + "turn") : 0;
 		bool driftInput = Input.GetButton(playerPrefix + "drift");
 		bool jumpInput = Input.GetButtonDown(playerPrefix + "jump");
+		bool fireInput = Input.GetButtonDown(playerPrefix + "fire");
+
 		bool driftRelease = Input.GetButtonUp(playerPrefix + "drift");
-		Debug.Log(driftRelease);
 
 		actualSpeed = inputSpeed * speed;
 		rgbd.velocity += transform.forward * actualSpeed;
@@ -105,6 +107,18 @@ public class ShipBehavior : MonoBehaviour
 			float maxTotalRotation = canDrift ? maxDriftRotation : maxRotation;
 			actualRotation = Mathf.Lerp(actualRotation, inputTurn * maxTotalRotation, Time.deltaTime * (driftInput ? driftRotationLerp : rotationLerp));
 			transform.localEulerAngles += new Vector3(transform.localEulerAngles.x, actualRotation, transform.localEulerAngles.z) * Time.deltaTime;
+		}
+
+		if (fireInput && rgbd.velocity.magnitude <= minSpeedTurn)
+		{
+			for (int i = 0; i < 2; i++)
+			{
+				GameObject emit = Instantiate(projectile, transform.position, Quaternion.identity);
+				CircleWaveImpulse cwi = emit.GetComponent<CircleWaveImpulse>();
+				cwi.killOnEnd = true;
+				cwi.baseTranform = transform;
+				cwi.startDelay = i * 0.1f;
+			}
 		}
 	}
 
