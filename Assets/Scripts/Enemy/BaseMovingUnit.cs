@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public abstract class BaseMovingUnit : MonoBehaviour {
+public abstract class BaseMovingUnit : Poolable {
 
     protected Transform target;
 
