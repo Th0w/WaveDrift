@@ -5,6 +5,19 @@ using UniRx.Triggers;
 using UnityEngine;
 
 public class SimpleMover : BaseMovingUnit {
+    #region Fields
+    #region Serialized
+    [SerializeField]
+    protected float turnSpeed = 2.0f  ;
+    #endregion Serialized
+    #endregion Fields
+    #region Methods
+
+    protected virtual void MoveFunction(Vector3 distance)
+    {
+            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(distance), Time.deltaTime * turnSpeed);
+            transform.position += transform.forward * Time.deltaTime * speed;
+    }
 
     public override Poolable Init(Pool parent)
     {
@@ -15,7 +28,7 @@ public class SimpleMover : BaseMovingUnit {
         this.OnEnableAsObservable()
             .Subscribe(_ =>
             {
-                var tar = GameObject.FindGameObjectsWithTag("Player")
+                var tar = FindObjectsOfType<ShipBehavior>()
                     .OrderBy(go => (transform.position - go.transform.position).magnitude)
                     .FirstOrDefault();
 
@@ -32,9 +45,10 @@ public class SimpleMover : BaseMovingUnit {
             .Where(_ => IsOccupied == false)
             .Select(_ => (target.position - transform.position));
 
+        update.Subscribe(dist => Debug.Log(dist));
         update
             .Where(dist => dist.magnitude > attackRange)
-            .Where(dist => Physics.Raycast(transform.position, transform.forward, 1.0f) == false)
+            //.Where(dist => Physics.Raycast(transform.position, transform.forward, 1.0f) == false)
             .Subscribe(MoveFunction)
             .AddTo(this);
 
@@ -56,12 +70,6 @@ public class SimpleMover : BaseMovingUnit {
         return this;
     }
 
-    protected virtual void MoveFunction(Vector3 distance)
-    {
-            transform.rotation = Quaternion.LookRotation(distance);
-            transform.position += transform.forward * Time.deltaTime * speed;
-    }
-
     public override void Recycle()
     {
         transform.position = Vector3.zero;
@@ -78,4 +86,6 @@ public class SimpleMover : BaseMovingUnit {
         transform.position = (Vector3)args;
         gameObject.SetActive(true);
     }
+
+    #endregion
 }
