@@ -26,8 +26,8 @@
 
  		void surf (Input IN, inout SurfaceOutput o) {
 
-			float mt = tex2D(_Maintex, IN.uv_MainTex);
-			float at = tex2D(_Alphatex, IN.uv_AlphaTex);
+			float4 mt = tex2D(_MainTex, IN.uv_MainTex);
+			float4 at = tex2D(_AlphaTex, IN.uv_AlphaTex);
 
 			o.Albedo = 0;
 			o.Emission = mt.rgb;

@@ -6,10 +6,12 @@ public partial class Enemy_LaserTurret : MonoBehaviour {
 	public float aimDistance = 16;
 
 	public ShipBehaviour_V2[] players;
-	public Transform target;
+	public ShipBehaviour_V2 target;
 
 	public LineRenderer LR;
 	public ParticleSystem laserPS;
+
+	public LayerMask raycastMask;
 
 	public bool keepGizmos;
 
@@ -23,21 +25,26 @@ public partial class Enemy_LaserTurret : MonoBehaviour {
 		float dist = aimDistance;
 		for (int i = 0; i < players.Length; i++) {
 
-			float playerDist = Vector3.Distance (transform.position, players [i].transform.position);
-			if (playerDist < dist) {
-				dist = playerDist;
-				target = players[i].transform;
+			if (!players [i].death) {
+				float playerDist = Vector3.Distance (transform.position, players [i].transform.position);
+				if (playerDist < dist) {
+					dist = playerDist;
+					target = players [i];
+				}
 			}
 		}
 
 		if (head) {
 			if (dist != aimDistance) {
 
-				head.rotation = Quaternion.Slerp(head.rotation, Quaternion.FromToRotation (Vector3.forward, target.position - head.position), 2 * Time.deltaTime);
+				head.rotation = Quaternion.Slerp(head.rotation, Quaternion.FromToRotation (Vector3.forward, target.transform.position - head.position), 2 * Time.deltaTime);
 
 				RaycastHit groundHit;
-				if (Physics.Raycast(head.position + head.forward * 1.5f, head.transform.forward, out groundHit, aimDistance + 4)) {
+				if (Physics.Raycast(head.position + head.forward * 1.5f, head.transform.forward, out groundHit, aimDistance + 4, raycastMask)) {
 
+					if (groundHit.collider.gameObject == target.gameObject && !target.invulnerability)
+						StartCoroutine(target.Death (target.deathDelay));
+					
 					LR.SetPosition(0, head.position + head.transform.forward * 1.5f);
 					LR.SetPosition(1, groundHit.point);
 

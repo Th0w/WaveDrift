@@ -36,6 +36,9 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 	public float minRotToDrift;
 	public bool drift;
 	public bool cooldown;
+	[Space(6)]
+	public bool jump;
+	public bool invulnerability;
 
 	//DRIFT
 	[Header("DRIFT")]
@@ -59,9 +62,14 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 	[Space(10)]
 	public bool death;
 	public float deathDelay;
+	[Space(6)]
+	public Transform barrier;
+	private Renderer barrierRenderer;
 
 	// PRIVATE
 	private Rigidbody selfRB;
+	public Vector2 textureOffsetFactor;
+	private Animator selfAnimator;
 
 	void Start () {
 
@@ -71,8 +79,12 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 			playerPrefix = "P2_";
 
 		selfRB = GetComponent<Rigidbody> ();
+		selfAnimator = GetComponent<Animator> ();
 
 		driftTime = maxDriftTime;
+
+		if (barrier)
+			barrierRenderer = barrier.GetComponent<Renderer> ();
 	}
 
 	void Update () {
@@ -81,6 +93,11 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 		if (Input.GetKeyDown (KeyCode.T))
 			StartCoroutine(Death (deathDelay));
 
+		// Out of bounds!
+		if (transform.position.magnitude > 176 && !death)
+			StartCoroutine(Death (deathDelay));
+
+		// DEATH LOCK!!
 		if (death)
 			return;
 		
@@ -102,16 +119,27 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 		actualRotStrength = Mathf.Lerp (actualRotStrength, leftStickHorizontalInput * targetRotStrength, rotLerpRate * Time.deltaTime);
 
 		// Motion
-		selfRB.velocity += transform.forward * actualSpeed;
-		selfRB.velocity *= 0.9f;	 
-		transform.localEulerAngles += new Vector3 (0, actualRotStrength, 0);
+		if (!jump) {
+			selfRB.velocity += transform.forward * actualSpeed;
+			selfRB.velocity *= 0.9f;
+			transform.localEulerAngles += new Vector3 (0, actualRotStrength, 0);
+		} else
+			transform.localEulerAngles += new Vector3 (0, actualRotStrength * 2, 0);
+
+		// Jump
+		if (Input.GetButtonDown (playerPrefix + "Button_A") && !jump) {
+			
+			selfAnimator.Play ("Anim_Ship_Jump", 0, 0);
+			jump = true;
+			invulnerability = true;
+		}
 
 		// Fire PS
 		foreach (ParticleSystem ps in firePS)
 			ps.emissionRate = actualSpeed / speed * 128f;
 
 		// Drifts!
-		if (drift && Mathf.Abs(actualRotStrength) > minRotToDrift && driftTime > 0 && !cooldown) {
+		if (drift && Mathf.Abs(actualRotStrength) > minRotToDrift && driftTime > 0 && !cooldown && !jump) {
 
 			driftTime = Mathf.Clamp(driftTime - Time.deltaTime, 0, maxDriftTime);
 
@@ -139,11 +167,18 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 				ps.emissionRate = 0;
 		}
 
+		// Drift gauge
 		driftGauge.fillAmount = driftTime / maxDriftTime;
 		if (cooldown)
 			driftGauge.color = new Color ((Mathf.Sin (Time.timeSinceLevelLoad * 12) + 1) / 2, 0, 0, 1);
 		else
 			driftGauge.color = Color.white;
+
+		// Barrier
+		barrier.transform.position = new Vector3(0, transform.position.y, 0);
+		barrier.transform.rotation = Quaternion.FromToRotation (Vector3.forward, transform.position);
+		barrierRenderer.material.SetTextureOffset ("_MainTex", new Vector2(barrier.transform.localEulerAngles.y * textureOffsetFactor.x, transform.position.y * textureOffsetFactor.y));
+		barrierRenderer.material.SetFloat("_GlobalAlpha", Mathf.InverseLerp(145f, 175f, transform.position.magnitude));
 	}
 
 	public IEnumerator Death (float deathDelay) {
@@ -165,6 +200,7 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 		actualRotStrength = 0;
 
 		death = true;
+		jump = false;
 
 		yield return new WaitForSeconds (deathDelay);
 
@@ -176,5 +212,15 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 		transform.position = Vector3.zero;
 
 		death = false;
+	}
+
+	public void Land () {
+
+		jump = false;
+	}
+
+	public void Vulnerable () {
+
+		invulnerability = false;
 	}
 }
