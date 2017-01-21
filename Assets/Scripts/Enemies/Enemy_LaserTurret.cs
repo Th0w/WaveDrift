@@ -36,7 +36,7 @@ public partial class Enemy_LaserTurret : MonoBehaviour {
 				head.rotation = Quaternion.Slerp(head.rotation, Quaternion.FromToRotation (Vector3.forward, target.position - head.position), 2 * Time.deltaTime);
 
 				RaycastHit groundHit;
-				if (Physics.Raycast(head.position + head.forward * 1.5f, head.transform.forward, out groundHit, Mathf.Infinity)) {
+				if (Physics.Raycast(head.position + head.forward * 1.5f, head.transform.forward, out groundHit, aimDistance + 4)) {
 
 					LR.SetPosition(0, head.position + head.transform.forward * 1.5f);
 					LR.SetPosition(1, groundHit.point);
