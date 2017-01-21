@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class Panel_NitroGauge : MonoBehaviour {
+public partial class Panel_NitroGauge : MonoBehaviour {
 
 	public Transform player;
 	public Camera mainCamera;
 
 	public RectTransform mainCanvas;
+	private CanvasScaler mainCanvasScaler;
 	public Image fillImage;
 
 	public Vector2 offset;
@@ -15,7 +16,7 @@ public class Panel_NitroGauge : MonoBehaviour {
 
 	void Start () {
 
-		selfRT = GetComponent<RectTransform> ();
+		GetRT ();
 
 		if (!player.gameObject.activeSelf)
 			gameObject.SetActive (false);
@@ -23,9 +24,19 @@ public class Panel_NitroGauge : MonoBehaviour {
 
 	void Update () {
 
+		FollowPlayer (Screen.width, Screen.height);
+	}
+
+	void FollowPlayer (float w, float h) {
+
 		Vector2 pos = mainCamera.WorldToViewportPoint (player.position);
-		pos.x *= Screen.width / mainCanvas.localScale.x;
-		pos.y *= Screen.height / mainCanvas.localScale.y;
+		pos.x *= w / mainCanvas.localScale.x;
+		pos.y *= h / mainCanvas.localScale.y;
 		selfRT.anchoredPosition = pos + offset;
+	}
+
+	public void GetRT () {
+
+		selfRT = GetComponent<RectTransform> ();
 	}
 }
