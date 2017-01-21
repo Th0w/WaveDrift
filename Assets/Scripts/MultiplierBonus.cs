@@ -11,9 +11,8 @@ public class MultiplierBonus : Poolable {
 
     public override Poolable Init(Pool parent)
     {
+        gameObject.SetActive(false);
         Regex regex = new Regex(@"^Ship_P(\w)$");
-        this.OnTriggerEnterAsObservable()
-            .Subscribe(coll => Debug.Log(coll.name));
         this.OnTriggerEnterAsObservable()
             .Select(collider => regex.Match(collider.name))
             .Where(match => match.Success)

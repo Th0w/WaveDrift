@@ -107,7 +107,7 @@ public class ScoreManager : MonoBehaviour {
 
     private void UpdateScoreMultiplier(int id)
     {
-        if (playerDeath == null || playerDeath[id] == null) { return; }
+        if (playerDeath == null || playerDeath.Length == 0 || playerDeath.Length < id) { return; }
         string str = "000" + playerCachedDeath[id];
         playerDeath[id].text = str.Substring(str.Length - 3);
     }
