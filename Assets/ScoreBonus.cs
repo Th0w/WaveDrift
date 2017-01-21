@@ -18,8 +18,8 @@ public class ScoreBonus : MonoBehaviour
             .Select(collider => regex.Match(collider.name))
             .Where(match => match.Success)
             .Subscribe(match => {
-                int pid = int.Parse(match.Groups[0].Value);
-                MessagingCenter.Instance.FireMessage("AddPlayerScoreMultiplier", new object[] { pid, scoreValue });
+                int pid = int.Parse(match.Groups[1].Value);
+                MessagingCenter.Instance.FireMessage("PlayerGainScore", new object[] { pid, scoreValue });
                 Destroy(gameObject);
             }).AddTo(this);
     }

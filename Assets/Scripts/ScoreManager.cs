@@ -21,7 +21,11 @@ public class ScoreManager : MonoBehaviour {
 
     private void OnDestroy()
     {
-        MessagingCenter.Instance.UnregisterMessage("UnitKilled", "UnitTookDamage", "AddPlayerScoreMultiplier");
+        MessagingCenter.Instance.UnregisterMessage(
+            "UnitKilled", 
+            "UnitTookDamage", 
+            "AddPlayerScoreMultiplier", 
+            "PlayerGainScore");
     }
 
     private void HandlePlayerScoreMultiplier(object obj)
