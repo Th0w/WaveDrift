@@ -6,7 +6,7 @@ public abstract class BaseMovingUnit : Poolable {
     #region Fields
 
     #region Serialized
-
+    [Header("Base enemy info")]
     [SerializeField]
     protected float speed;
 
@@ -22,8 +22,11 @@ public abstract class BaseMovingUnit : Poolable {
     protected Transform target;
     protected Subject<Unit> onTakeDamage;
 
+    [Header("Scoring")]
     [SerializeField]
-    protected int scorePerHitPoint, scorePerKilled;
+    protected int scorePerHitPoint;
+    [SerializeField]
+    protected int scorePerKilled;
 
     #endregion Serialized
 

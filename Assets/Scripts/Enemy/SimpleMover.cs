@@ -7,6 +7,7 @@ using UnityEngine;
 public class SimpleMover : BaseMovingUnit {
     #region Fields
     #region Serialized
+    [Header("Turn smoother")]
     [SerializeField]
     protected float turnSpeed = 2.0f  ;
     #endregion Serialized

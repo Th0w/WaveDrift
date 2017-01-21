@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Accelerating : SimpleMover {
+
     private float acceleration = 0.0f;
+
+    [Header("Acceleration data")]
     [SerializeField]
     private float maxAcceleration = 5.0f;
     [SerializeField]
