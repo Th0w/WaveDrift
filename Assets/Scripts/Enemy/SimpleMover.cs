@@ -17,9 +17,11 @@ public class SimpleMover : BaseMovingUnit {
     protected virtual void Attack()
     {
 //        Debug.Log("BOUM I ATTACKED!");
-		ShipBehaviour_V2 ship = target.GetComponent<ShipBehaviour_V2>();
-		if (!ship.death && !ship.invulnerability && ship.currentCoroutine == null)
-			ship.currentCoroutine = StartCoroutine(ship.Death (ship.deathDelay));
+		var ship = target.GetComponent<ShipBehaviour_V2>();
+        if (!ship.death && !ship.invulnerability && ship.currentCoroutine == null)
+        {
+            ship.currentCoroutine = StartCoroutine(ship.Death(ship.deathDelay));
+        }
     }
 
     protected virtual void MoveFunction(Vector3 distance)
@@ -35,22 +37,11 @@ public class SimpleMover : BaseMovingUnit {
         this.parent = parent;
 
         this.OnEnableAsObservable()
-            .Subscribe(_ =>
-            {
-                var tar = FindObjectsOfType<ShipBehaviour_V2>()
-                    .OrderBy(go => (transform.position - go.transform.position).magnitude)
-                    .FirstOrDefault();
-
-                target = tar != null ? tar.transform : null;
-                if (target == null)
-                {
-                    Debug.LogError("No player found!");
-                }
-
-            }).AddTo(this);
+            .Subscribe(_ => UpdateTarget())
+            .AddTo(this);
 
         var update = this.UpdateAsObservable()
-            .Where(_ => HasTarget)
+            .Where(_ => UpdateTarget())
             .Where(_ => IsOccupied == false)
             .Select(_ => (target.position - transform.position));
 
@@ -69,7 +60,6 @@ public class SimpleMover : BaseMovingUnit {
                     .Subscribe(_ =>
                     {
                         IsOccupied = false;
-//                        Debug.Log("Done waiting");
                     })
                     .AddTo(this);
             })
@@ -97,9 +87,6 @@ public class SimpleMover : BaseMovingUnit {
 
     protected override void Death(int playerID)
     {
-        // TODO Visual death
-
-
         MessagingCenter.Instance.FireMessage("UnitKilled", new object[] { playerID, scorePerKilled });
 
 		Instantiate (deathGroup, transform.position, Quaternion.identity);
@@ -113,6 +100,29 @@ public class SimpleMover : BaseMovingUnit {
 
 		TakeDamage (1, int.Parse(name));
 	}
+
+    private bool UpdateTarget()
+    {
+        if (HasTarget)
+        {
+            var sb = target.GetComponent<ShipBehaviour_V2>();
+            return (sb.invulnerability || sb.death) ? GetTarget() : true;
+        }
+        else
+        {
+            return GetTarget();
+        }
+    }
+
+    private bool GetTarget()
+    {
+        var tar = ShipDetector.allShipBehaviours
+            .Where(sbe => (sbe.invulnerability || sbe.death) == false)
+            .OrderBy(sbe => Vector3.Distance(sbe.transform.position, transform.position))
+            .FirstOrDefault();
+
+        return (target = (tar != null) ? tar.transform : null) != null;
+    }
 
     #endregion
 }
