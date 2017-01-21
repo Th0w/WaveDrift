@@ -7,11 +7,18 @@ public class ShipBehavior : MonoBehaviour
 {
 
 	public enum players { P1, P2 };
+	[Header("PLAYER")]
+	[Space(10)]
 	public players player;
 
+	[Header("MOTION")]
+	[Space(10)]
 	public float speed;
 	public float maxSpeed;
 	public float speedLerp;
+
+	[Header("INPUTS")]
+	[Space(10)]
 	public float leftStickDeadZone;
 	public float maxRotation;
 	public float rotationLerp;
@@ -19,10 +26,15 @@ public class ShipBehavior : MonoBehaviour
 	public float driftRotationLerp;
 	public float minSpeedTurn;
 	public float minSpeedDrift;
+
+	[Header("PARTICLE SYSTEMS")]
+	[Space(10)]
 	public ParticleSystem driftParticlesLeft;
 	public ParticleSystem driftParticlesRight;
-	public float minRotationForDrift;
 
+	[Header("DRIFTS")]
+	[Space(10)]
+	public float minRotationForDrift;
 	public Image driftGauge;
 	public Color driftMinUsableColor;
 	private Color driftGaugeColor;
@@ -33,12 +45,16 @@ public class ShipBehavior : MonoBehaviour
 	bool driftUsable;
 	float currentDriftLevel;
 	public bool driftAtZero;
+
+
 	public GameObject projectile;
 
 	private string playerPrefix;
 
 	private Rigidbody rgbd;
 
+	[Header("MISC")]
+	[Space(10)]
 	public float actualSpeed;
 	public float actualRotation;
 	public bool canDrift;
@@ -57,7 +73,7 @@ public class ShipBehavior : MonoBehaviour
 	void Update()
 	{
 		float inputSpeed = Input.GetAxis(playerPrefix + "accelerate");
-		float inputTurn = Input.GetAxis(playerPrefix + "turn") < -leftStickDeadZone || Input.GetAxis(playerPrefix + "turn") > leftStickDeadZone ? Input.GetAxis(playerPrefix + "turn") : 0;
+		float inputTurn = (Input.GetAxis(playerPrefix + "turn") < -leftStickDeadZone || Input.GetAxis(playerPrefix + "turn") > leftStickDeadZone) ? Input.GetAxis(playerPrefix + "turn") : 0;
 		bool driftInput = Input.GetButton(playerPrefix + "drift");
 		bool jumpInput = Input.GetButtonDown(playerPrefix + "jump");
 		bool fireInput = Input.GetButtonDown(playerPrefix + "fire");
@@ -68,6 +84,7 @@ public class ShipBehavior : MonoBehaviour
 		if (Input.GetButtonUp(playerPrefix + "drift"))
 			driftRelease = true;
 		Debug.Log(driftRelease);
+
 		actualSpeed = inputSpeed * speed;
 		rgbd.velocity += transform.forward * actualSpeed;
 		rgbd.velocity *= 0.95f;

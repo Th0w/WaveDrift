@@ -5,7 +5,7 @@ public partial class Enemy_LaserTurret : MonoBehaviour {
 	public Transform head;
 	public float aimDistance = 16;
 
-	public ShipBehavior[] players;
+	public ShipBehaviour_V2[] players;
 	public Transform target;
 
 	public LineRenderer LR;
@@ -15,7 +15,7 @@ public partial class Enemy_LaserTurret : MonoBehaviour {
 
 	void Start () {
 
-		players = FindObjectsOfType<ShipBehavior> () as ShipBehavior[];
+		players = FindObjectsOfType<ShipBehaviour_V2> () as ShipBehaviour_V2[];
 	}
 	
 	void Update () {

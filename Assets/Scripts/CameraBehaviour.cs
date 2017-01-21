@@ -4,7 +4,7 @@ public partial class CameraBehaviour : MonoBehaviour {
 
 	public Camera mainCamera;
 
-	public ShipBehavior[] players;
+	public ShipBehaviour_V2[] players;
 	public Vector3 barycenter;
 
 	public Vector2 maxFrame;
@@ -35,7 +35,7 @@ public partial class CameraBehaviour : MonoBehaviour {
 
 	public void GetPlayers () {
 
-		players = FindObjectsOfType<ShipBehavior> () as ShipBehavior[];
+		players = FindObjectsOfType<ShipBehaviour_V2> () as ShipBehaviour_V2[];
 	}
 
 	public void CalculateBarycenter () {
@@ -52,7 +52,7 @@ public partial class CameraBehaviour : MonoBehaviour {
 
 		Vector2 playersDistance = Vector2.zero;
 
-		foreach (ShipBehavior sb in players) {
+		foreach (ShipBehaviour_V2 sb in players) {
 
 			float distX = Mathf.Abs(sb.transform.position.x - transform.position.x);
 			if (distX > playersDistance.x)
