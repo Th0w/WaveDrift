@@ -135,10 +135,15 @@ public class ShipBehaviour_V2 : MonoBehaviour
 
 	void Update()
 	{
-        if (thePlayer.GetButtonTimedPressDown("Start", 2.0f))
-        {
-            GameManager.Instance.Reset();
-        }
+		if (thePlayer.GetButtonTimedPressDown("Start", 2.0f))
+		{
+			GameManager.Instance.Reset();
+		}
+
+		if (thePlayer.GetButtonTimedPressDown("Select", 2.0f))
+		{
+			Application.Quit ();
+		}
 
 		if (IsFrozen == true)
 		{

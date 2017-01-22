@@ -67,14 +67,17 @@ public class PowerUps : Poolable {
 	IEnumerator WaveEmit()
 	{
 		float t = (waveEmitTime / delayBetweenWaves);
+		GameObject go = Instantiate(wavePrefab, player.transform.position, Quaternion.identity);
+		go.GetComponent<PlayerWave>().baseCol = player.powerUpWaveEmitColor;
+		go.GetComponent<PlayerWave>().playerID = player.playerID;
 		for (int i=0; i<t; i++)
 		{
 			yield return new WaitForSeconds(delayBetweenWaves);
 			if (player.death)
 				yield break;
-			GameObject go = Instantiate(wavePrefab, player.transform.position, Quaternion.identity);
-			go.GetComponent<PlayerWave>().baseCol = player.powerUpWaveEmitColor;
-			go.GetComponent<PlayerWave>().playerID = player.playerID;
+			GameObject goo = Instantiate(wavePrefab, player.transform.position, Quaternion.identity);
+			goo.GetComponent<PlayerWave>().baseCol = player.powerUpWaveEmitColor;
+			goo.GetComponent<PlayerWave>().playerID = player.playerID;
 		}
 		parent.Recycle(this);
 	}
@@ -99,10 +102,9 @@ public class PowerUps : Poolable {
 
 	public override void Spawn(object args)
 	{
+		Debug.Assert (args is Vector3, "Args is not vector3");
 		transform.position = (Vector3)args;
 		gameObject.SetActive(true);
-		driftMegaMegaGauge.SetActive (false);
-		player.ship.GetComponent<MeshRenderer> ().material = player.baseMat;
 		if (type == powerUp.random)
 		{
 			int random = UnityEngine.Random.Range(0, Enum.GetValues(typeof(powerUp)).Length - 1);
@@ -113,8 +115,6 @@ public class PowerUps : Poolable {
 	public override void Recycle()
 	{
 		gameObject.SetActive(false);
-		driftMegaMegaGauge.SetActive (false);
-		player.ship.GetComponent<MeshRenderer> ().material = player.baseMat;
 		GetComponent<SphereCollider>().enabled = true;
 		taken = false;
         foreach (Transform child in transform) { child.gameObject.SetActive(true); }
