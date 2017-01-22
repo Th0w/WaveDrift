@@ -1,0 +1,172 @@
+Initialize engine version: 5.5.0f3 (38b4efef76f0)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.0]
+    Renderer: NVIDIA GeForce GTX 750 Ti (ID=0x1380)
+    Vendor:   NVIDIA
+    VRAM:     1992 MB
+    Driver:   21.21.13.7254
+Begin MonoManager ReloadAssembly
+Platform assembly: C:\Users\gamejam\Desktop\Wift\BUILDS\Wift_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading C:\Users\gamejam\Desktop\Wift\BUILDS\Wift_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: C:\Users\gamejam\Desktop\Wift\BUILDS\Wift_Data\Managed\Assembly-CSharp-firstpass.dll (this message is harmless)
+Loading C:\Users\gamejam\Desktop\Wift\BUILDS\Wift_Data\Managed\Assembly-CSharp-firstpass.dll into Unity Child Domain
+Platform assembly: C:\Users\gamejam\Desktop\Wift\BUILDS\Wift_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading C:\Users\gamejam\Desktop\Wift\BUILDS\Wift_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: C:\Users\gamejam\Desktop\Wift\BUILDS\Wift_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading C:\Users\gamejam\Desktop\Wift\BUILDS\Wift_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: C:\Users\gamejam\Desktop\Wift\BUILDS\Wift_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading C:\Users\gamejam\Desktop\Wift\BUILDS\Wift_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+Platform assembly: C:\Users\gamejam\Desktop\Wift\BUILDS\Wift_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll (this message is harmless)
+Loading C:\Users\gamejam\Desktop\Wift\BUILDS\Wift_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll into Unity Child Domain
+Platform assembly: C:\Users\gamejam\Desktop\Wift\BUILDS\Wift_Data\Managed\UnityEngine.Analytics.dll (this message is harmless)
+Loading C:\Users\gamejam\Desktop\Wift\BUILDS\Wift_Data\Managed\UnityEngine.Analytics.dll into Unity Child Domain
+Platform assembly: C:\Users\gamejam\Desktop\Wift\BUILDS\Wift_Data\Managed\ProBuilderCore-Unity5.dll (this message is harmless)
+Loading C:\Users\gamejam\Desktop\Wift\BUILDS\Wift_Data\Managed\ProBuilderCore-Unity5.dll into Unity Child Domain
+Platform assembly: C:\Users\gamejam\Desktop\Wift\BUILDS\Wift_Data\Managed\ProBuilderMeshOps-Unity5.dll (this message is harmless)
+Loading C:\Users\gamejam\Desktop\Wift\BUILDS\Wift_Data\Managed\ProBuilderMeshOps-Unity5.dll into Unity Child Domain
+Platform assembly: C:\Users\gamejam\Desktop\Wift\BUILDS\Wift_Data\Managed\KDTree.dll (this message is harmless)
+Loading C:\Users\gamejam\Desktop\Wift\BUILDS\Wift_Data\Managed\KDTree.dll into Unity Child Domain
+Platform assembly: C:\Users\gamejam\Desktop\Wift\BUILDS\Wift_Data\Managed\pb_Stl.dll (this message is harmless)
+Loading C:\Users\gamejam\Desktop\Wift\BUILDS\Wift_Data\Managed\pb_Stl.dll into Unity Child Domain
+Platform assembly: C:\Users\gamejam\Desktop\Wift\BUILDS\Wift_Data\Managed\Triangle.dll (this message is harmless)
+Loading C:\Users\gamejam\Desktop\Wift\BUILDS\Wift_Data\Managed\Triangle.dll into Unity Child Domain
+Platform assembly: C:\Users\gamejam\Desktop\Wift\BUILDS\Wift_Data\Managed\Rewired_Core.dll (this message is harmless)
+Loading C:\Users\gamejam\Desktop\Wift\BUILDS\Wift_Data\Managed\Rewired_Core.dll into Unity Child Domain
+Platform assembly: C:\Users\gamejam\Desktop\Wift\BUILDS\Wift_Data\Managed\Rewired_Windows_Lib.dll (this message is harmless)
+Loading C:\Users\gamejam\Desktop\Wift\BUILDS\Wift_Data\Managed\Rewired_Windows_Lib.dll into Unity Child Domain
+- Completed reload, in  0.047 seconds
+Platform assembly: C:\Users\gamejam\Desktop\Wift\BUILDS\Wift_Data\Managed\System.Core.dll (this message is harmless)
+Platform assembly: C:\Users\gamejam\Desktop\Wift\BUILDS\Wift_Data\Managed\System.dll (this message is harmless)
+desktop: 1920x1080 60Hz; virtual: 3840x1080 at 0,0
+<RI> Initializing input.
+<RI> Input initialized.
+<RI> Initialized touch support.
+UnloadTime: 1.873631 ms
+DontDestroyOnLoad only work for root GameObjects or components on root GameObjects.
+ 
+(Filename:  Line: 447)
+
+Non platform assembly: data-0F2072C8 (this message is harmless)
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/data-0F2072C8.dll
+Non platform assembly: data-0F25DEF8 (this message is harmless)
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/data-0F25DEF8.dll
+Non platform assembly: data-18790020 (this message is harmless)
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/data-18790020.dll
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/steam_api
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/.\steam_api
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/steam_api
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/libsteam_api
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/.\libsteam_api
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/libsteam_api
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/steam_api
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/.\steam_api
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/steam_api
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/libsteam_api
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/.\libsteam_api
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/libsteam_api
+Rewired: Searching for compatible XInput library...
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/xinput1_4.dll
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/.\xinput1_4.dll
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/xinput1_4.dll
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/xinput1_4
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/.\xinput1_4
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/xinput1_4
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/libxinput1_4.dll
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/.\libxinput1_4.dll
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/libxinput1_4.dll
+Rewired: Found Xinput1_3.dll.
+Platform assembly: C:\Users\gamejam\Desktop\Wift\BUILDS\Wift_Data\Managed\System.Xml.dll (this message is harmless)
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/xinput1_4.dll
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/.\xinput1_4.dll
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/xinput1_4.dll
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/xinput1_4
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/.\xinput1_4
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/xinput1_4
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/libxinput1_4.dll
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/.\libxinput1_4.dll
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/libxinput1_4.dll
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/xinput1_4.dll
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/.\xinput1_4.dll
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/xinput1_4.dll
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/xinput1_4
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/.\xinput1_4
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/xinput1_4
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/libxinput1_4.dll
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/.\libxinput1_4.dll
+Fallback handler could not load library C:/Users/gamejam/Desktop/Wift/BUILDS/Wift_Data/Mono/libxinput1_4.dll
+[Singleton] An instance of MessagingCenter is needed in the scene, so '(singleton) MessagingCenter (UnityEngine.GameObject)' was created with DontDestroyOnLoad.
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+[Singleton] Using instance already created: GameManager
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+UNFREEZING!
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+UNFREEZING!
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+UNFREEZING!
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+UNFREEZING!
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Player dead: 1
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Player dead: 3
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Player dead: 1
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Player dead: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Player dead: 2
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Player dead: 3
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Player dead: 2
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Player dead: 1
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Player dead: 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Player dead: 3
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Player dead: 1
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Setting up 2 worker threads for Enlighten.
+  Thread -> id: 2128 -> priority: 1 
+  Thread -> id: 1e58 -> priority: 1 
+[Singleton] An instance of MessagingCenter is needed in the scene, so '(singleton) MessagingCenter (UnityEngine.GameObject)' was created with DontDestroyOnLoad.
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+

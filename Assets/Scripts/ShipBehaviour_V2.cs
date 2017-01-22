@@ -353,6 +353,8 @@ public class ShipBehaviour_V2 : MonoBehaviour
 		invulnerability = true;
 		shield = false;
 
+		deathOL.RenderDeathOL();
+
         // Only for lobby.
         if (GameManager.Instance.IsInGame == false)
         {
@@ -370,8 +372,6 @@ public class ShipBehaviour_V2 : MonoBehaviour
             transform.rotation = Quaternion.identity;
             yield break;
         }
-
-        deathOL.RenderDeathOL();
 
 		MessagingCenter.Instance.FireMessage("PlayerDeath",
 			new object[] { int.Parse(id), deathPos });
