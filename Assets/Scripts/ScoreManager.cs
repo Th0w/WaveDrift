@@ -60,7 +60,7 @@ public class ScoreManager : MonoBehaviour {
                         UnityEngine.Random.Range(-175.0f, 175.0f));
 
                 multiplierPool.Spawn(
-                    new object[] { pos, 5 });
+                    new object[] { pos, 30 });
             })
             .AddTo(this);
         int i, max;
