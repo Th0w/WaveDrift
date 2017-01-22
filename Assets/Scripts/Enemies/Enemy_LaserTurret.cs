@@ -15,7 +15,7 @@ public partial class Enemy_LaserTurret : MonoBehaviour {
 
 	public bool keepGizmos;
 
-	void Start () {
+	void OnEnable () {
 
 		players = FindObjectsOfType<ShipBehaviour_V2> () as ShipBehaviour_V2[];
 	}
@@ -41,9 +41,18 @@ public partial class Enemy_LaserTurret : MonoBehaviour {
 
 				RaycastHit groundHit;
 				if (Physics.Raycast(head.position + head.forward * 1.5f, head.transform.forward, out groundHit, aimDistance + 4, raycastMask)) {
-
-					if (groundHit.collider.gameObject == target.gameObject && !target.invulnerability && !target.airProtection)
-						target.Death ();
+                    if (groundHit.collider.gameObject == target.gameObject)
+                    {
+                        if ((target.invulnerability || target.airProtection) == false)
+                        {
+                            target.Death();
+                        }
+                        else
+                        {
+                            Debug.Log("TARGET IS IMMUNE");
+                        }
+                    }
+						
 					
 					LR.SetPosition(0, head.position + head.transform.forward * 1.5f);
 					LR.SetPosition(1, groundHit.point);

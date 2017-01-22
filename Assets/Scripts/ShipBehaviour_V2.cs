@@ -310,7 +310,10 @@ public class ShipBehaviour_V2 : MonoBehaviour
 			if (cor != null)
 				StopCoroutine(cor);
 			cor = StartCoroutine(CoDeath());
-		}
+		} else
+        {
+            Debug.Log("HAS SHIELD");
+        }
 	}
 
 	public IEnumerator CoDeath()

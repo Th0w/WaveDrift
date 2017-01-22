@@ -13,7 +13,7 @@ public class Enemy_Bumper : MonoBehaviour {
 
 	private LineRenderer lr;
 
-	void Start () {
+	void OnEnable () {
 
 		selfAnimator = GetComponent<Animator> ();
 		lr = circleLineRenderer.gameObject.GetComponent<LineRenderer> ();

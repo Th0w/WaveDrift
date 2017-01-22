@@ -44,7 +44,7 @@ public class PowerUps : Poolable {
 
 	private void HidePowerUp()
 	{
-		GetComponent<MeshRenderer>().enabled = false;
+        foreach(Transform child in transform) { child.gameObject.SetActive(false); }
 		GetComponent<SphereCollider>().enabled = false;
 	}
 
@@ -105,8 +105,8 @@ public class PowerUps : Poolable {
 	public override void Recycle()
 	{
 		gameObject.SetActive(false);
-		GetComponent<MeshRenderer>().enabled = true;
 		GetComponent<SphereCollider>().enabled = true;
 		taken = false;
-	}
+        foreach (Transform child in transform) { child.gameObject.SetActive(true); }
+    }
 }

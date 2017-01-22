@@ -67,12 +67,13 @@ public class GameManager : Singleton<GameManager> {
 
     private void BeginSpawn()
     {
-        CanSpawnBonus = true;
         spawnManager.BeginSpawn();
     }
 
     internal void EndLobby()
     {
+        CanSpawnBonus = true;
+
         playerz.Where(player => player.behaviour.IsFrozen)
             .ForEach(player =>
             {
