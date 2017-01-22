@@ -62,9 +62,9 @@ public class ScoreManager : MonoBehaviour {
         poolManager = FindObjectOfType<PoolManager>();
         multiplierPool = poolManager.CreatePool("scoreMultipliers", 5, multiplierPrefab);
 		powerUpPool = poolManager.CreatePool("powerUps", 3, powerUpPrefab);
-        // TODO  Validate random spawn of bonus
+
         Observable.Interval(TimeSpan.FromSeconds(15.0))
-            .Where(_ => GameManager.Instance.IsInLobby == false)
+            .Where(_ => GameManager.Instance.CanSpawnBonus == true)
             .Where(_ => multiplierPool.empty == false)
             .Subscribe(_ =>
             {
@@ -77,15 +77,14 @@ public class ScoreManager : MonoBehaviour {
             .AddTo(this);
 
 		Observable.Interval(TimeSpan.FromSeconds(powerUpSpawnDelay))
+            .Where(_ => GameManager.Instance.CanSpawnBonus == true)
 			.Where(_ => powerUpPool.empty == false)
 			.Subscribe(_ =>
-			{
-				Vector3 pos = new Vector3(
-						UnityEngine.Random.Range(-mapDimensions, mapDimensions),
-						0.0f,
-						UnityEngine.Random.Range(-mapDimensions, mapDimensions));
+            {
+                Vector3 pos = Quaternion.Euler(0.0f, UnityEngine.Random.Range(0.0f, 360.0f), 0.0f) * Vector3.right
+                    * UnityEngine.Random.Range(15.0f, mapDimensions);
 
-				powerUpPool.Spawn(pos + powerUpOffset);
+                powerUpPool.Spawn(pos + powerUpOffset);
 			})
 			.AddTo(this);
 

@@ -43,6 +43,8 @@ public class GameManager : Singleton<GameManager> {
     [SerializeField]
     private SpawnManager spawnManager;
 
+    public bool CanSpawnBonus { get; private set; }
+
 	// Use this for initialization
 	private IEnumerator Start () {
 
@@ -65,6 +67,7 @@ public class GameManager : Singleton<GameManager> {
 
     private void BeginSpawn()
     {
+        CanSpawnBonus = true;
         spawnManager.BeginSpawn();
     }
 
