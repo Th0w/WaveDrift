@@ -127,12 +127,6 @@ public class ShipBehaviour_V2 : MonoBehaviour
 			.AddTo(this);
     }
 
-	private void OnParticleCollision(GameObject go)
-	{
-		Debug.LogFormat("ON PARTICLE COLLISION! ON {0} FROM {1}.", name, go);
-
-	}
-
 	void Update()
 	{
         if (thePlayer.GetButtonTimedPressDown("Start", 2.0f))
