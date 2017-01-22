@@ -35,7 +35,7 @@ public class ScoreManager : MonoBehaviour {
     private Image[] gauges;
 
     [SerializeField]
-    private float mapDimensions = 160.0f;
+    private float mapDimensions = 170.0f;
 
 	[SerializeField]
 	private Poolable powerUpPrefab;
@@ -64,13 +64,12 @@ public class ScoreManager : MonoBehaviour {
 		powerUpPool = poolManager.CreatePool("powerUps", 3, powerUpPrefab);
         // TODO  Validate random spawn of bonus
         Observable.Interval(TimeSpan.FromSeconds(15.0))
+            .Where(_ => GameManager.Instance.IsInLobby == false)
             .Where(_ => multiplierPool.empty == false)
             .Subscribe(_ =>
             {
-                Vector3 pos = new Vector3(
-                        UnityEngine.Random.Range(-mapDimensions, mapDimensions),
-                        0.0f,
-                        UnityEngine.Random.Range(-mapDimensions, mapDimensions));
+                Vector3 pos = Quaternion.Euler(0.0f, UnityEngine.Random.Range(0.0f, 360.0f), 0.0f) * Vector3.right
+                    * UnityEngine.Random.Range(15.0f, mapDimensions);
 
                 multiplierPool.Spawn(
                     new object[] { pos, 30 });
@@ -124,7 +123,7 @@ public class ScoreManager : MonoBehaviour {
         var objs = (object[])obj;
         var id = (int)(objs[0]) - 1;
         var pos = (Vector3)objs[1];
-        
+        Debug.LogFormat("Player dead: {0}", id);
         // Update Death counter
         playerCachedDeath[id]++;
         UpdateDeathText(id);
@@ -133,7 +132,10 @@ public class ScoreManager : MonoBehaviour {
         int retr = (int)(playerScoreBonusMultiplier[id] * multLostPercentOnDeath);
         playerScoreBonusMultiplier[id] -= retr;
         UpdatePlayerScoreMult(id);
-        multiplierPool.Spawn(new object[] { pos, retr });
+
+        if (retr == 0) { return; }
+        Vector3 rnd = Quaternion.Euler(0, UnityEngine.Random.Range(0.0f, 360.0f), 0.0f) * Vector3.right * 10.0f;
+        multiplierPool.Spawn(new object[] { pos + rnd, retr * powerUpPerPoint });
     }
 
     private void HandlePlayerScoreMultiplier(object obj)
