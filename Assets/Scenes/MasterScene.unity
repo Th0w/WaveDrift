@@ -330,11 +330,6 @@ MonoBehaviour:
     type: 2}
   m_PrefabInternal: {fileID: 163136791}
   m_Script: {fileID: 11500000, guid: 2a7978de12e85e24a9134d164b2e194e, type: 3}
---- !u!1 &126348539 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1552785628840926, guid: 2956cbde01b183647b5deee23d0a3cee,
-    type: 2}
-  m_PrefabInternal: {fileID: 1706797138}
 --- !u!1 &152035488
 GameObject:
   m_ObjectHideFlags: 0
@@ -1233,39 +1228,9 @@ Prefab:
       objectReference: {fileID: 1681018921}
     - target: {fileID: 114977942907680786, guid: db2d811f601df4c4bb618610532ca7a6,
         type: 2}
-      propertyPath: powerUpWaveEmitColor.a
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114977942907680786, guid: db2d811f601df4c4bb618610532ca7a6,
-        type: 2}
-      propertyPath: powerUpWaveEmitColor.r
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114977942907680786, guid: db2d811f601df4c4bb618610532ca7a6,
-        type: 2}
-      propertyPath: powerUpWaveEmitColor.g
-      value: 0.9002029
-      objectReference: {fileID: 0}
-    - target: {fileID: 114977942907680786, guid: db2d811f601df4c4bb618610532ca7a6,
-        type: 2}
-      propertyPath: powerUpWaveEmitColor.b
-      value: 0.09558821
-      objectReference: {fileID: 0}
-    - target: {fileID: 114977942907680786, guid: db2d811f601df4c4bb618610532ca7a6,
-        type: 2}
       propertyPath: driftMegaMegaGauge
       value: 
       objectReference: {fileID: 584879530}
-    - target: {fileID: 114977942907680786, guid: db2d811f601df4c4bb618610532ca7a6,
-        type: 2}
-      propertyPath: baseMat
-      value: 
-      objectReference: {fileID: 2100000, guid: 43fea1bb67dcc694181ff806071e7b87, type: 2}
-    - target: {fileID: 114977942907680786, guid: db2d811f601df4c4bb618610532ca7a6,
-        type: 2}
-      propertyPath: shieldMat
-      value: 
-      objectReference: {fileID: 2100000, guid: 43fea1bb67dcc694181ff806071e7b87, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: db2d811f601df4c4bb618610532ca7a6, type: 2}
   m_IsPrefabParent: 0
@@ -1955,39 +1920,9 @@ Prefab:
       objectReference: {fileID: 1353004690}
     - target: {fileID: 114643149895857706, guid: adf551b46beac63409156f001ba65d4c,
         type: 2}
-      propertyPath: powerUpWaveEmitColor.a
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114643149895857706, guid: adf551b46beac63409156f001ba65d4c,
-        type: 2}
-      propertyPath: powerUpWaveEmitColor.r
-      value: 0.09688579
-      objectReference: {fileID: 0}
-    - target: {fileID: 114643149895857706, guid: adf551b46beac63409156f001ba65d4c,
-        type: 2}
-      propertyPath: powerUpWaveEmitColor.g
-      value: 0.6267511
-      objectReference: {fileID: 0}
-    - target: {fileID: 114643149895857706, guid: adf551b46beac63409156f001ba65d4c,
-        type: 2}
-      propertyPath: powerUpWaveEmitColor.b
-      value: 0.9411765
-      objectReference: {fileID: 0}
-    - target: {fileID: 114643149895857706, guid: adf551b46beac63409156f001ba65d4c,
-        type: 2}
       propertyPath: driftMegaMegaGauge
       value: 
       objectReference: {fileID: 2060641982}
-    - target: {fileID: 114643149895857706, guid: adf551b46beac63409156f001ba65d4c,
-        type: 2}
-      propertyPath: baseMat
-      value: 
-      objectReference: {fileID: 2100000, guid: 43fea1bb67dcc694181ff806071e7b87, type: 2}
-    - target: {fileID: 114643149895857706, guid: adf551b46beac63409156f001ba65d4c,
-        type: 2}
-      propertyPath: shieldMat
-      value: 
-      objectReference: {fileID: 2100000, guid: 43fea1bb67dcc694181ff806071e7b87, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: adf551b46beac63409156f001ba65d4c, type: 2}
   m_IsPrefabParent: 0
@@ -4663,43 +4598,9 @@ Prefab:
       objectReference: {fileID: 893431196}
     - target: {fileID: 114306938526163594, guid: 92a2a2d319c62a946a6379af6a2d97d8,
         type: 2}
-      propertyPath: powerUpWaveEmitColor.r
-      value: 0.86764705
-      objectReference: {fileID: 0}
-    - target: {fileID: 114306938526163594, guid: 92a2a2d319c62a946a6379af6a2d97d8,
-        type: 2}
-      propertyPath: powerUpWaveEmitColor.g
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114306938526163594, guid: 92a2a2d319c62a946a6379af6a2d97d8,
-        type: 2}
-      propertyPath: powerUpWaveEmitColor.b
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1371909813734780, guid: 92a2a2d319c62a946a6379af6a2d97d8, type: 2}
-      propertyPath: m_Layer
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114306938526163594, guid: 92a2a2d319c62a946a6379af6a2d97d8,
-        type: 2}
-      propertyPath: powerUpWaveEmitColor.a
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114306938526163594, guid: 92a2a2d319c62a946a6379af6a2d97d8,
-        type: 2}
       propertyPath: driftMegaMegaGauge
       value: 
       objectReference: {fileID: 684080408}
-    - target: {fileID: 114306938526163594, guid: 92a2a2d319c62a946a6379af6a2d97d8,
-        type: 2}
-      propertyPath: baseMat
-      value: 
-      objectReference: {fileID: 2100000, guid: 43fea1bb67dcc694181ff806071e7b87, type: 2}
-    - target: {fileID: 114306938526163594, guid: 92a2a2d319c62a946a6379af6a2d97d8,
-        type: 2}
-      propertyPath: shieldMat
-      value: 
-      objectReference: {fileID: 2100000, guid: 43fea1bb67dcc694181ff806071e7b87, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 92a2a2d319c62a946a6379af6a2d97d8, type: 2}
   m_IsPrefabParent: 0
@@ -4752,41 +4653,6 @@ Prefab:
       propertyPath: barrier
       value: 
       objectReference: {fileID: 44188498}
-    - target: {fileID: 114459497797407210, guid: 2956cbde01b183647b5deee23d0a3cee,
-        type: 2}
-      propertyPath: powerUpWaveEmitColor.a
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114459497797407210, guid: 2956cbde01b183647b5deee23d0a3cee,
-        type: 2}
-      propertyPath: powerUpWaveEmitColor.r
-      value: 0.07050162
-      objectReference: {fileID: 0}
-    - target: {fileID: 114459497797407210, guid: 2956cbde01b183647b5deee23d0a3cee,
-        type: 2}
-      propertyPath: powerUpWaveEmitColor.g
-      value: 0.85294116
-      objectReference: {fileID: 0}
-    - target: {fileID: 114459497797407210, guid: 2956cbde01b183647b5deee23d0a3cee,
-        type: 2}
-      propertyPath: powerUpWaveEmitColor.b
-      value: 0.006271632
-      objectReference: {fileID: 0}
-    - target: {fileID: 114459497797407210, guid: 2956cbde01b183647b5deee23d0a3cee,
-        type: 2}
-      propertyPath: driftMegaMegaGauge
-      value: 
-      objectReference: {fileID: 126348539}
-    - target: {fileID: 114459497797407210, guid: 2956cbde01b183647b5deee23d0a3cee,
-        type: 2}
-      propertyPath: baseMat
-      value: 
-      objectReference: {fileID: 2100000, guid: 43fea1bb67dcc694181ff806071e7b87, type: 2}
-    - target: {fileID: 114459497797407210, guid: 2956cbde01b183647b5deee23d0a3cee,
-        type: 2}
-      propertyPath: shieldMat
-      value: 
-      objectReference: {fileID: 2100000, guid: 43fea1bb67dcc694181ff806071e7b87, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 2956cbde01b183647b5deee23d0a3cee, type: 2}
   m_IsPrefabParent: 0
@@ -5646,23 +5512,6 @@ MonoBehaviour:
     type: 2}
   m_PrefabInternal: {fileID: 163136791}
   m_Script: {fileID: 11500000, guid: 2a7978de12e85e24a9134d164b2e194e, type: 3}
---- !u!1 &1926248209 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1371909813734780, guid: 92a2a2d319c62a946a6379af6a2d97d8,
-    type: 2}
-  m_PrefabInternal: {fileID: 1701326318}
---- !u!135 &1926248212
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1926248209}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 2.8316278
-  m_Center: {x: 0, y: 0.18419793, z: 0.10105622}
 --- !u!1001 &1936703421
 Prefab:
   m_ObjectHideFlags: 0

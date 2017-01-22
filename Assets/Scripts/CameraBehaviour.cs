@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Linq;
 
 public partial class CameraBehaviour : MonoBehaviour {
 
@@ -25,9 +26,14 @@ public partial class CameraBehaviour : MonoBehaviour {
 	}
 
 	void Update () {
-
-		CalculateBarycenter ();
-
+		
+		if (players.Length == 1)
+			barycenter = players [0].transform.position;
+		else if (players.Length == 0)
+			barycenter = Vector3.zero;
+		else
+			CalculateBarycenter ();
+		
 		transform.position = Vector3.Lerp(transform.position, barycenter, posLerpRate * Time.deltaTime);
 
 		CalculateZoom ();
@@ -35,7 +41,9 @@ public partial class CameraBehaviour : MonoBehaviour {
 
 	public void GetPlayers () {
 
-		players = FindObjectsOfType<ShipBehaviour_V2> () as ShipBehaviour_V2[];
+		players = FindObjectsOfType<ShipBehaviour_V2> ()
+			.Where(ship => ship.IsFrozen == false)
+			.ToArray();
 	}
 
 	public void CalculateBarycenter () {

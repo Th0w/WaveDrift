@@ -227,7 +227,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1645885779334612}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -22.8, y: 0, z: 0}
+  m_LocalPosition: {x: 10, y: 0, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4035089014769962}
@@ -371,7 +371,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: 1
-  playerPrefix: 
+  playerID: 0
   spawnPos: {x: 10, y: 0, z: 10}
   leftStickHorizontalInput: 0
   rightTriggerInput: 0
@@ -387,10 +387,11 @@ MonoBehaviour:
   drift: 0
   cooldown: 0
   jump: 0
-  invulnerability: 0
+  airProtection: 0
   driftTime: 1
   maxDriftTime: 1
   driftRecoveryFactor: 0.5
+  driftLossRatio: 1
   driftGauge: {fileID: 0}
   firePS:
   - {fileID: 198188875189086194}
@@ -401,8 +402,14 @@ MonoBehaviour:
   deathGroup: {fileID: 1326269402465154}
   death: 0
   deathDelay: 2
+  invulnerability: 0
   spawnTimeProtection: 2
   barrier: {fileID: 0}
+  driftMegaMegaGauge: {fileID: 0}
+  powerUpWaveEmitColor: {r: 0.09688579, g: 0.6267511, b: 0.9411765, a: 1}
+  shield: 0
+  baseMat: {fileID: 2100000, guid: 43fea1bb67dcc694181ff806071e7b87, type: 2}
+  shieldMat: {fileID: 2100000, guid: 43fea1bb67dcc694181ff806071e7b87, type: 2}
   textureOffsetFactor: {x: -0.189, y: 0.12}
 --- !u!135 &135060624028765120
 SphereCollider:
@@ -5864,7 +5871,7 @@ ParticleSystem:
     enabled: 1
     serializedVersion: 3
     rateOverTime:
-      scalar: 128
+      scalar: 0
       maxCurve:
         serializedVersion: 2
         m_Curve:

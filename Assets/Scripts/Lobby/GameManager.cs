@@ -28,6 +28,8 @@ public class PlayerData
             shadow.enabled = true;
             shadow.gameObject.SetActive(true);
         });
+
+		GameObject.FindObjectOfType<CameraBehaviour> ().GetPlayers ();
     }
 }
 

@@ -74,7 +74,8 @@ GameObject:
   - component: {fileID: 4519589310213366}
   - component: {fileID: 33756778809010124}
   - component: {fileID: 23228033576198572}
-  m_Layer: 9
+  - component: {fileID: 135665075841768724}
+  m_Layer: 0
   m_Name: Body
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -281,7 +282,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1303922440304432}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -10, y: 0, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4519589310213366}
@@ -371,7 +372,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: 0
-  playerPrefix: 
+  playerID: 0
   spawnPos: {x: -10, y: 0, z: 10}
   leftStickHorizontalInput: 0
   rightTriggerInput: 0
@@ -387,10 +388,11 @@ MonoBehaviour:
   drift: 0
   cooldown: 0
   jump: 0
-  invulnerability: 0
+  airProtection: 0
   driftTime: 1
   maxDriftTime: 1
   driftRecoveryFactor: 0.5
+  driftLossRatio: 1
   driftGauge: {fileID: 0}
   firePS:
   - {fileID: 198534342012621706}
@@ -401,9 +403,27 @@ MonoBehaviour:
   deathGroup: {fileID: 1480637664865656}
   death: 0
   deathDelay: 2
+  invulnerability: 0
   spawnTimeProtection: 2
   barrier: {fileID: 0}
+  driftMegaMegaGauge: {fileID: 0}
+  powerUpWaveEmitColor: {r: 0.86764705, g: 0, b: 0, a: 1}
+  shield: 0
+  baseMat: {fileID: 2100000, guid: 43fea1bb67dcc694181ff806071e7b87, type: 2}
+  shieldMat: {fileID: 2100000, guid: 43fea1bb67dcc694181ff806071e7b87, type: 2}
   textureOffsetFactor: {x: -0.189, y: 0.12}
+--- !u!135 &135665075841768724
+SphereCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1371909813734780}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 2.8316278
+  m_Center: {x: 0, y: 0.18419793, z: 0.10105622}
 --- !u!135 &135720276429198336
 SphereCollider:
   m_ObjectHideFlags: 1
@@ -8411,7 +8431,7 @@ ParticleSystem:
     enabled: 1
     serializedVersion: 3
     rateOverTime:
-      scalar: 128
+      scalar: 0
       maxCurve:
         serializedVersion: 2
         m_Curve:
