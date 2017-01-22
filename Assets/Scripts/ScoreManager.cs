@@ -64,7 +64,7 @@ public class ScoreManager : MonoBehaviour {
 		powerUpPool = poolManager.CreatePool("powerUps", 3, powerUpPrefab);
 
         Observable.Interval(TimeSpan.FromSeconds(15.0))
-            .Where(_ => GameManager.Instance.CanSpawnBonus == true)
+            .Where(_ => GameManager.Instance.IsInGame == true)
             .Where(_ => multiplierPool.empty == false)
             .Subscribe(_ =>
             {
@@ -77,7 +77,7 @@ public class ScoreManager : MonoBehaviour {
             .AddTo(this);
 
 		Observable.Interval(TimeSpan.FromSeconds(powerUpSpawnDelay))
-            .Where(_ => GameManager.Instance.CanSpawnBonus == true)
+            .Where(_ => GameManager.Instance.IsInGame == true)
 			.Where(_ => powerUpPool.empty == false)
 			.Subscribe(_ =>
             {

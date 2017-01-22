@@ -39,11 +39,12 @@ public class GameManager : Singleton<GameManager> {
 
     [SerializeField]
     private PlayerData[] playerz;
+    public PlayerData[] Players { get { return playerz; } }
 
     [SerializeField]
     private SpawnManager spawnManager;
 
-    public bool CanSpawnBonus { get; private set; }
+    public bool IsInGame { get; private set; }
 
 	// Use this for initialization
 	private IEnumerator Start () {
@@ -72,7 +73,7 @@ public class GameManager : Singleton<GameManager> {
 
     internal void EndLobby()
     {
-        CanSpawnBonus = true;
+        IsInGame = true;
 
         playerz.Where(player => player.behaviour.IsFrozen)
             .ForEach(player =>
