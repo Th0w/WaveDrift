@@ -7433,12 +7433,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f47dc9d7b10b4ec4e98e87d7d322c3df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 1
+  type: 0
   random: 0
-  unlimitedDriftTime: 5
+  unlimitedDriftTime: 10
   waveEmitTime: 4
   delayBetweenWaves: 1
   wavePrefab: {fileID: 1853358008278510, guid: 8d361dd4e57abe54a925e9ae098794f8, type: 2}
+  shieldTime: 7
 --- !u!1 &1495316307
 GameObject:
   m_ObjectHideFlags: 0
@@ -8210,6 +8211,7 @@ MonoBehaviour:
   - {fileID: 266669995}
   - {fileID: 136340414}
   - {fileID: 330644706}
+  mapDimensions: 160
 --- !u!4 &1605225274
 Transform:
   m_ObjectHideFlags: 0

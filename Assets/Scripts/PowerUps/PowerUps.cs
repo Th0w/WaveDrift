@@ -13,6 +13,7 @@ public class PowerUps : MonoBehaviour {
 	public float waveEmitTime;
 	public float delayBetweenWaves;
 	public GameObject wavePrefab;
+	public float shieldTime;
 	Coroutine cor;
 
 
@@ -85,13 +86,10 @@ public class PowerUps : MonoBehaviour {
 		}
 	}
 
-	private void Shield()
+	IEnumerator Shield()
 	{
 		player.shield = true;
-		Observable.Timer(System.TimeSpan.FromSeconds(unlimitedDriftTime))
-			.Subscribe(_ =>
-			{
-				player.shield = false;
-			}).AddTo(this);
+		yield return new WaitForSeconds(shieldTime);
+		player.shield = false;
 	}
 }

@@ -329,6 +329,7 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 		death = true;
 		jump = false;
 		invulnerability = true;
+		shield = false;
 
 		deathOL.RenderDeathOL ();
 

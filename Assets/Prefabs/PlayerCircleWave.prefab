@@ -54,9 +54,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   frequency: 2
-  circleMaxRadius: 20
+  circleMaxRadius: 40
   circleLife: 0
-  speed: 50
+  speed: 100
   baseCol: {r: 0, g: 0, b: 0, a: 0}
   playerID: 0
 --- !u!114 &114314755709816080
