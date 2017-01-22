@@ -199,10 +199,7 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 		// Drifts!
 		if (drift && Mathf.Abs(actualRotStrength) > minRotToDrift && driftTime > 0 && !cooldown && !jump) {
 
-            if (GameManager.Instance.IsInLobby == false)
-            {
-                driftTime = Mathf.Clamp(driftTime - Time.deltaTime * driftLossRatio, 0, maxDriftTime);
-            }
+			driftTime = Mathf.Clamp(driftTime - Time.deltaTime * driftLossRatio, 0, maxDriftTime);
 
 			if (driftTime == 0)
 				cooldown = true;

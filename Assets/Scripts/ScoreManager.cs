@@ -37,6 +37,16 @@ public class ScoreManager : MonoBehaviour {
     [SerializeField]
     private float mapDimensions = 160.0f;
 
+	[SerializeField]
+	private Poolable powerUpPrefab;
+
+	[SerializeField]
+	private float powerUpSpawnDelay = 30.0f;
+	[SerializeField]
+	private Vector3 powerUpOffset;
+
+	private Pool powerUpPool;
+
     private void Start () {
         playerScoreBonusMultiplier = new [] { 1, 1, 1, 1 };
         playerCachedScore = new[] { 0, 0, 0, 0 };
@@ -50,8 +60,8 @@ public class ScoreManager : MonoBehaviour {
         MessagingCenter.Instance.RegisterMessage("PlayerDeath", HandlePlayerDeath);
 
         poolManager = FindObjectOfType<PoolManager>();
-        multiplierPool = poolManager.CreatePool("PowerUps", 5, multiplierPrefab);
-        
+        multiplierPool = poolManager.CreatePool("scoreMultipliers", 5, multiplierPrefab);
+		powerUpPool = poolManager.CreatePool("powerUps", 3, powerUpPrefab);
         // TODO  Validate random spawn of bonus
         Observable.Interval(TimeSpan.FromSeconds(15.0))
             .Where(_ => multiplierPool.empty == false)
@@ -66,7 +76,21 @@ public class ScoreManager : MonoBehaviour {
                     new object[] { pos, 30 });
             })
             .AddTo(this);
-        int i, max;
+
+		Observable.Interval(TimeSpan.FromSeconds(powerUpSpawnDelay))
+			.Where(_ => powerUpPool.empty == false)
+			.Subscribe(_ =>
+			{
+				Vector3 pos = new Vector3(
+						UnityEngine.Random.Range(-mapDimensions, mapDimensions),
+						0.0f,
+						UnityEngine.Random.Range(-mapDimensions, mapDimensions));
+
+				powerUpPool.Spawn(pos + powerUpOffset);
+			})
+			.AddTo(this);
+
+		int i, max;
         for(i = 0, max = 4; i < max; ++i)
         {
             UpdateDeathText(i);
