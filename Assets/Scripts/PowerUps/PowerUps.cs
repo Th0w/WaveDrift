@@ -116,6 +116,7 @@ public class PowerUps : Poolable {
 	{
 		gameObject.SetActive(false);
 		GetComponent<SphereCollider>().enabled = true;
+		type = powerUp.random;
 		taken = false;
         foreach (Transform child in transform) { child.gameObject.SetActive(true); }
     }
