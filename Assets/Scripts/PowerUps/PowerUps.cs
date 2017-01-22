@@ -2,37 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UniRx;
+using System;
 
-public class PowerUps : MonoBehaviour {
+public class PowerUps : Poolable {
 
-	public enum powerUp { unlimitedDrift,  waveEmit, shield}
+	public enum powerUp { unlimitedDrift,  waveEmit, shield, random}
 	public powerUp type;
-
-	public bool random;
+	
 	public float unlimitedDriftTime;
 	public float waveEmitTime;
 	public float delayBetweenWaves;
 	public GameObject wavePrefab;
 	public float shieldTime;
 	Coroutine cor;
-
-
+	
 	bool taken;
 	ShipBehaviour_V2 player;
 
-	// Use this for initialization
-	void Start () {
-		if (random)
-		{
-			float random = Random.Range(0.0f, System.Enum.GetValues(typeof(powerUp)).Length);
-			type = (powerUp)random;
-		}
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 	public void OnTriggerEnter(Collider other)
 	{
 		if (other.gameObject.tag == "Player" && !taken)
@@ -40,6 +26,7 @@ public class PowerUps : MonoBehaviour {
 			HidePowerUp();
 			taken = true;
 			player = other.transform.parent.gameObject.GetComponent<ShipBehaviour_V2>();
+			Debug.Assert(player != null, "Player is null");
 			switch (type)
 			{
 				case powerUp.unlimitedDrift:
@@ -49,7 +36,7 @@ public class PowerUps : MonoBehaviour {
 					cor = StartCoroutine(WaveEmit());
 					break;
 				case powerUp.shield:
-					Shield();
+					cor = StartCoroutine(Shield());
 					break;
 			}
 		}
@@ -64,10 +51,11 @@ public class PowerUps : MonoBehaviour {
 	private void UnlimitedDrift()
 	{
 		player.driftLossRatio = -1f;
-		Observable.Timer(System.TimeSpan.FromSeconds(unlimitedDriftTime))
+		Observable.Timer(TimeSpan.FromSeconds(unlimitedDriftTime))
 			.Subscribe(_ =>
 			{
 				player.driftLossRatio = 1f;
+				parent.Recycle(this);
 			}).AddTo(this);
 	}
 
@@ -84,6 +72,7 @@ public class PowerUps : MonoBehaviour {
 			go.GetComponent<PlayerWave>().baseCol = player.powerUpWaveEmitColor;
 			go.GetComponent<PlayerWave>().playerID = player.playerID;
 		}
+		parent.Recycle(this);
 	}
 
 	IEnumerator Shield()
@@ -91,5 +80,33 @@ public class PowerUps : MonoBehaviour {
 		player.shield = true;
 		yield return new WaitForSeconds(shieldTime);
 		player.shield = false;
+		parent.Recycle(this);
+	}
+
+	public override Poolable Init(Pool parent)
+	{
+		this.parent = parent;
+		gameObject.SetActive(false);
+		taken = false;
+		return this;
+	}
+
+	public override void Spawn(object args)
+	{
+		transform.position = (Vector3)args;
+		gameObject.SetActive(true);
+		if (type == powerUp.random)
+		{
+			int random = UnityEngine.Random.Range(0, Enum.GetValues(typeof(powerUp)).Length - 1);
+			type = (powerUp)random;
+		}
+	}
+
+	public override void Recycle()
+	{
+		gameObject.SetActive(false);
+		GetComponent<MeshRenderer>().enabled = true;
+		GetComponent<SphereCollider>().enabled = true;
+		taken = false;
 	}
 }

@@ -34,7 +34,6 @@ public class PlayerData
 public class GameManager : Singleton<GameManager> {
     protected GameManager() { }
 
-    public bool IsInLobby { get; protected set; }
     private Enemy_LaserTurret[] laserz;
     private Enemy_Bumper[] bumperz;
 
@@ -46,7 +45,6 @@ public class GameManager : Singleton<GameManager> {
 
 	// Use this for initialization
 	private IEnumerator Start () {
-        IsInLobby = true;
 
         yield return new WaitForSeconds(0.25f);
 
@@ -83,7 +81,6 @@ public class GameManager : Singleton<GameManager> {
         laserz.ForEach(laser => laser.gameObject.SetActive(true));
         bumperz.ForEach(bumper => bumper.gameObject.SetActive(true));
 
-        IsInLobby = false;
 
         Observable.Timer(TimeSpan.FromSeconds(1.0))
             .Subscribe(_ => spawnManager.BeginSpawn())

@@ -1,4 +1,4 @@
-﻿﻿using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using UniRx;
@@ -6,10 +6,11 @@ using System;
 using Rewired;
 using UniRx.Triggers;
 
-public class ShipBehaviour_V2 : MonoBehaviour {
+public class ShipBehaviour_V2 : MonoBehaviour
+{
 
 	// PLAYER
-	public enum Players {Player1, Player2, Player3, Player4}
+	public enum Players { Player1, Player2, Player3, Player4 }
 	[Header("PLAYER")]
 	[Space(10)]
 	public Players player;
@@ -91,12 +92,13 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 	private IDisposable deathDisposable, invulDisposable;
 
 	private Player thePlayer;
-    
-    public bool IsFrozen { get; set; }
 
-	void Start () {
+	public bool IsFrozen { get; set; }
 
-        playerID = (int)player;
+	void Start()
+	{
+
+		playerID = (int)player;
 		//if (player == Players.Player1)
 		//	playerID = 0;
 		//else if (player == Players.Player2)
@@ -108,46 +110,47 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 
 		thePlayer = ReInput.players.GetPlayer(playerID);
 
-		selfRB = GetComponent<Rigidbody> ();
-		selfAnimator = GetComponent<Animator> ();
+		selfRB = GetComponent<Rigidbody>();
+		selfAnimator = GetComponent<Animator>();
 
 		driftTime = maxDriftTime;
 
 		if (barrier)
-			barrierRenderer = barrier.GetComponent<Renderer> ();
+			barrierRenderer = barrier.GetComponent<Renderer>();
 
 		deathOL = FindObjectOfType<UI_DeathOL>();
-        IsFrozen = false;
+		IsFrozen = false;
 
-        this.OnParticleTriggerAsObservable()
-            //.Where(_ => IsFrozen)
-            .Subscribe(_ => Debug.Log("SHOULD UNFROZE!"))
-            .AddTo(this);
+		this.OnParticleTriggerAsObservable()
+			//.Where(_ => IsFrozen)
+			.Subscribe(_ => Debug.Log("SHOULD UNFROZE!"))
+			.AddTo(this);
 	}
 
-    private void OnParticleCollision(GameObject go)
-    {
-        Debug.LogFormat("ON PARTICLE COLLISION! ON {0} FROM {1}.", name, go);
-        
-    }
+	private void OnParticleCollision(GameObject go)
+	{
+		Debug.LogFormat("ON PARTICLE COLLISION! ON {0} FROM {1}.", name, go);
 
-    void Update () {
-        if (IsFrozen == true)
-        {
-            if(thePlayer.GetButtonDown("Button A"))
-            {
-                GameManager.Instance.Unfreeze(playerID);
-                Debug.Log("UNFREEZING!");
-            }
-            return;
-        }
-        // DEV CHEATS
-        if (Input.GetKeyDown (KeyCode.T))
-			Death ();
+	}
+
+	void Update()
+	{
+		if (IsFrozen == true)
+		{
+			if (thePlayer.GetButtonDown("Button A"))
+			{
+				GameManager.Instance.Unfreeze(playerID);
+				Debug.Log("UNFREEZING!");
+			}
+			return;
+		}
+		// DEV CHEATS
+		if (Input.GetKeyDown(KeyCode.T))
+			Death();
 
 		// Out of bounds!
 		if (transform.position.magnitude > 177 && !death)
-			Death ();
+			Death();
 
 		// DEATH LOCK!!
 		if (death)
@@ -164,30 +167,33 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 		//if (Input.GetButton (playerPrefix + "Button_X")) 
 		if (thePlayer.GetButton("Button X"))
 		{
-			
+
 			targetRotStrength += additionnalDriftRotStrength;
 			drift = true;
-		} else
+		}
+		else
 			drift = false;
 
 		// Speed & rot lerps
-		actualSpeed = Mathf.Lerp (actualSpeed, speed * rightTriggerInput, speedLerprate * Time.deltaTime);
-		actualRotStrength = Mathf.Lerp (actualRotStrength, leftStickHorizontalInput * targetRotStrength, rotLerpRate * Time.deltaTime);
+		actualSpeed = Mathf.Lerp(actualSpeed, speed * rightTriggerInput, speedLerprate * Time.deltaTime);
+		actualRotStrength = Mathf.Lerp(actualRotStrength, leftStickHorizontalInput * targetRotStrength, rotLerpRate * Time.deltaTime);
 
 		// Motion
-		if (!jump) {
+		if (!jump)
+		{
 			selfRB.velocity += transform.forward * actualSpeed;
 			selfRB.velocity *= 0.9f;
-			transform.localEulerAngles += new Vector3 (0, actualRotStrength, 0);
-		} else
-			transform.localEulerAngles += new Vector3 (0, actualRotStrength * 2, 0);
+			transform.localEulerAngles += new Vector3(0, actualRotStrength, 0);
+		}
+		else
+			transform.localEulerAngles += new Vector3(0, actualRotStrength * 2, 0);
 
 		// Jump
 		//if (Input.GetButtonDown (playerPrefix + "Button_A") && !jump) 
 		if (thePlayer.GetButtonDown("Button A") && !jump)
 		{
-			
-			selfAnimator.Play ("Anim_Ship_Jump", 0, 0);
+
+			selfAnimator.Play("Anim_Ship_Jump", 0, 0);
 			jump = true;
 			airProtection = true;
 		}
@@ -197,27 +203,29 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 			ps.emissionRate = actualSpeed / speed * 128f;
 
 		// Drifts!
-		if (drift && Mathf.Abs(actualRotStrength) > minRotToDrift && driftTime > 0 && !cooldown && !jump) {
-
-            if (GameManager.Instance.IsInLobby == false)
-            {
-                driftTime = Mathf.Clamp(driftTime - Time.deltaTime * driftLossRatio, 0, maxDriftTime);
-            }
+		if (drift && Mathf.Abs(actualRotStrength) > minRotToDrift && driftTime > 0 && !cooldown && !jump)
+		{
+			driftTime = Mathf.Clamp(driftTime - Time.deltaTime * driftLossRatio, 0, maxDriftTime);
 
 			if (driftTime == 0)
 				cooldown = true;
 
-			if (actualRotStrength > 0) { // Rot left
-				
-				driftPS [0].emissionRate = 256;
-				driftPS [1].emissionRate = 0;
+			if (actualRotStrength > 0)
+			{ // Rot left
 
-			} else { // Rot right
+				driftPS[0].emissionRate = 256;
+				driftPS[1].emissionRate = 0;
 
-				driftPS [0].emissionRate = 0;
-				driftPS [1].emissionRate = 256;
 			}
-		} else {
+			else
+			{ // Rot right
+
+				driftPS[0].emissionRate = 0;
+				driftPS[1].emissionRate = 256;
+			}
+		}
+		else
+		{
 
 			driftTime = Mathf.Clamp(driftTime + Time.deltaTime * driftRecoveryFactor, 0, maxDriftTime);
 
@@ -231,17 +239,17 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 		// Drift gauge
 		driftGauge.fillAmount = driftTime / maxDriftTime;
 		if (cooldown)
-			driftGauge.color = new Color ((Mathf.Sin (Time.timeSinceLevelLoad * 12) + 1) / 2, 0, 0, 1);
+			driftGauge.color = new Color((Mathf.Sin(Time.timeSinceLevelLoad * 12) + 1) / 2, 0, 0, 1);
 		else
 			driftGauge.color = Color.white;
 
 		// Barrier
 		barrier.transform.position = new Vector3(0, transform.position.y, 0);
-		barrier.transform.rotation = Quaternion.FromToRotation (Vector3.forward, transform.position);
-		barrierRenderer.material.SetTextureOffset ("_MainTex", new Vector2(barrier.transform.localEulerAngles.y * textureOffsetFactor.x, transform.position.y * textureOffsetFactor.y));
+		barrier.transform.rotation = Quaternion.FromToRotation(Vector3.forward, transform.position);
+		barrierRenderer.material.SetTextureOffset("_MainTex", new Vector2(barrier.transform.localEulerAngles.y * textureOffsetFactor.x, transform.position.y * textureOffsetFactor.y));
 		barrierRenderer.material.SetFloat("_GlobalAlpha", Mathf.InverseLerp(145f, 175f, transform.position.magnitude));
 	}
-    
+
 	/*public void KillPlayer() {
 		
 		SlowMo.selfAnimator.Play ("Anim_SlowMo", 0, 0);
@@ -295,7 +303,8 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 				}).AddTo (this);
 	}*/
 
-	public void Death () {
+	public void Death()
+	{
 		if (!shield)
 		{
 			if (cor != null)
@@ -304,15 +313,16 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 		}
 	}
 
-	public IEnumerator CoDeath () {
-        string id = player.ToString();
-        id = id.Substring(id.Length - 1);
-        Vector3 deathPos = transform.position;
+	public IEnumerator CoDeath()
+	{
+		string id = player.ToString();
+		id = id.Substring(id.Length - 1);
+		Vector3 deathPos = transform.position;
 
-		SlowMo.selfAnimator.Play ("Anim_SlowMo", 0, 0);
+		SlowMo.selfAnimator.Play("Anim_SlowMo", 0, 0);
 
-		ship.gameObject.SetActive (false);
-		deathGroup.SetActive (true);
+		ship.gameObject.SetActive(false);
+		deathGroup.SetActive(true);
 
 		foreach (ParticleSystem ps in firePS)
 			ps.emissionRate = 0;
@@ -331,15 +341,15 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 		invulnerability = true;
 		shield = false;
 
-		deathOL.RenderDeathOL ();
+		deathOL.RenderDeathOL();
 
-        MessagingCenter.Instance.FireMessage("PlayerDeath",
-            new object[] { int.Parse(id), deathPos });
+		MessagingCenter.Instance.FireMessage("PlayerDeath",
+			new object[] { int.Parse(id), deathPos });
 
-        yield return new WaitForSeconds (deathDelay);
+		yield return new WaitForSeconds(deathDelay);
 
-		ship.gameObject.SetActive (true);
-		deathGroup.SetActive (false);
+		ship.gameObject.SetActive(true);
+		deathGroup.SetActive(false);
 
 		driftTime = maxDriftTime;
 
@@ -348,15 +358,16 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 
 		death = false;
 
-		yield return new WaitForSeconds (spawnTimeProtection);
+		yield return new WaitForSeconds(spawnTimeProtection);
 
 		invulnerability = false;
 	}
 
-	public void Respawn () {
+	public void Respawn()
+	{
 
-		ship.gameObject.SetActive (true);
-		deathGroup.SetActive (false);
+		ship.gameObject.SetActive(true);
+		deathGroup.SetActive(false);
 
 		driftTime = maxDriftTime;
 
@@ -366,12 +377,14 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 		death = false;
 	}
 
-	public void Land () {
+	public void Land()
+	{
 
 		jump = false;
 	}
 
-	public void RemoveAirProtection () {
+	public void RemoveAirProtection()
+	{
 
 		airProtection = false;
 		invulnerability = false;
