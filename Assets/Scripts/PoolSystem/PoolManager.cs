@@ -34,7 +34,6 @@ public class PoolData
 
 public class PoolManager : MonoBehaviour
 {
-    [SerializeField]
     public List<PoolData> poolsToSpawn;
 
     private List<Pool> pools;
@@ -61,7 +60,8 @@ public class PoolManager : MonoBehaviour
         p.Init(quantity, prefab);
         p.name = string.Format("Pool_{0}_{1}", prefab.name, name);
         p.transform.SetParent(transform);
-        return p;
+
+		return p;
     }
 
     public Pool this[GameObject prefab]
