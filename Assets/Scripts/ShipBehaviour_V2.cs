@@ -196,7 +196,7 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 		barrierRenderer.material.SetTextureOffset ("_MainTex", new Vector2(barrier.transform.localEulerAngles.y * textureOffsetFactor.x, transform.position.y * textureOffsetFactor.y));
 		barrierRenderer.material.SetFloat("_GlobalAlpha", Mathf.InverseLerp(145f, 175f, transform.position.magnitude));
 	}
-
+    
 	/*public void KillPlayer() {
 		
 		SlowMo.selfAnimator.Play ("Anim_SlowMo", 0, 0);
@@ -251,6 +251,10 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 	}*/
 
 	public IEnumerator Death () {
+        string id = player.ToString();
+        id = id.Substring(id.Length - 1);
+        MessagingCenter.Instance.FireMessage("PlayerDeath", 
+            new object[] { int.Parse(id), transform.position });
 
 		SlowMo.selfAnimator.Play ("Anim_SlowMo", 0, 0);
 

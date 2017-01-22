@@ -19,7 +19,7 @@ public class MultiplierBonus : Poolable {
             .Subscribe(match => {
                 int pid = int.Parse(match.Groups[1].Value);
                 MessagingCenter.Instance.FireMessage("AddPlayerScoreMultiplier", new object[] { pid, multiplierValue });
-                Destroy(gameObject);
+                parent.Recycle(this);
             }).AddTo(this);
         return this;
     }

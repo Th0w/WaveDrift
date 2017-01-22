@@ -1,4 +1,5 @@
-﻿using UniRx;
+﻿using System;
+using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,7 +15,7 @@ public class ScoreManager : MonoBehaviour {
     private int[] playerPowerUpJauge;
 
     [SerializeField]
-    private Transform[] players;
+    private Text[] playerMultText;
 
     [SerializeField]
     private int powerUpPerPoint = 10;
@@ -30,6 +31,9 @@ public class ScoreManager : MonoBehaviour {
     private Poolable multiplierPrefab;
     private Pool multiplierPool;
 
+    [SerializeField]
+    private Image[] gauges;
+
     private void Start () {
         playerScoreBonusMultiplier = new [] { 1, 1, 1, 1 };
         playerCachedScore = new[] { 0, 0, 0, 0 };
@@ -44,6 +48,28 @@ public class ScoreManager : MonoBehaviour {
 
         poolManager = FindObjectOfType<PoolManager>();
         multiplierPool = poolManager.CreatePool("PowerUps", 5, multiplierPrefab);
+
+        // TODO  Validate random spawn of bonus
+        Observable.Interval(TimeSpan.FromSeconds(15.0))
+            .Where(_ => multiplierPool.empty == false)
+            .Subscribe(_ =>
+            {
+                Vector3 pos = new Vector3(
+                        UnityEngine.Random.Range(-175.0f, 175.0f),
+                        0.0f,
+                        UnityEngine.Random.Range(-175.0f, 175.0f));
+
+                multiplierPool.Spawn(
+                    new object[] { pos, 5 });
+            })
+            .AddTo(this);
+        int i, max;
+        for(i = 0, max = 4; i < max; ++i)
+        {
+            UpdateDeathText(i);
+            UpdateGauge(i);
+            UpdatePlayerScoreMult(i);
+        }
     }
 
     private void OnDestroy()
@@ -74,11 +100,12 @@ public class ScoreManager : MonoBehaviour {
         
         // Update Death counter
         playerCachedDeath[id]++;
-        UpdateScoreMultiplier(id);
+        UpdateDeathText(id);
 
         // Penalties on dead player!
         int retr = (int)(playerScoreBonusMultiplier[id] * multLostPercentOnDeath);
         playerScoreBonusMultiplier[id] -= retr;
+        UpdatePlayerScoreMult(id);
         multiplierPool.Spawn(new object[] { pos, retr });
     }
 
@@ -95,17 +122,29 @@ public class ScoreManager : MonoBehaviour {
         var nobj = (object[])obj;
         var id = (int)nobj[0] - 1;
         var val = (int)nobj[1];
-        playerScoreBonusMultiplier[id] += val;
         playerPowerUpJauge[id] += val;
         if (playerPowerUpJauge[id] >= powerUpPerPoint)
         {
             playerScoreBonusMultiplier[id]++;
+            UpdatePlayerScoreMult(id);
             playerPowerUpJauge[id] -= powerUpPerPoint;
+            UpdateDeathText(id);
         }
-        UpdateScoreMultiplier(id);
+        UpdateGauge(id);
     }
 
-    private void UpdateScoreMultiplier(int id)
+    private void UpdatePlayerScoreMult(int id)
+    {
+        string str = "000" + playerScoreBonusMultiplier[id].ToString();
+        playerMultText[id].text = str.Substring(str.Length - 3);
+    }
+
+    private void UpdateGauge(int id)
+    {
+        gauges[id].fillAmount = ((float)playerPowerUpJauge[id] / (float)powerUpPerPoint);
+    }
+
+    private void UpdateDeathText(int id)
     {
         if (playerDeath == null || playerDeath.Length == 0 || playerDeath.Length < id) { return; }
         string str = "000" + playerCachedDeath[id];
