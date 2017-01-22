@@ -77,8 +77,12 @@ public class ShipBehaviour_V2 : MonoBehaviour
 
 	[Header("PowerUps")]
 	[Space(10)]
+	public GameObject driftMegaMegaGauge;
 	public Color powerUpWaveEmitColor;
 	public bool shield;
+	[HideInInspector]
+	public Material baseMat;
+	public Material shieldMat;
 
 	// PRIVATE
 	private Rigidbody selfRB;
@@ -118,6 +122,8 @@ public class ShipBehaviour_V2 : MonoBehaviour
 		if (barrier)
 			barrierRenderer = barrier.GetComponent<Renderer>();
 
+		baseMat = ship.GetComponent<MeshRenderer> ().material;
+
 		deathOL = FindObjectOfType<UI_DeathOL>();
 		IsFrozen = false;
 
@@ -154,9 +160,10 @@ public class ShipBehaviour_V2 : MonoBehaviour
 			Death();
 
 		// Out of bounds!
-		if (transform.position.magnitude > 177 && !death)
-			Death();
-
+		if (transform.position.magnitude > 177 && !death) {
+			shield = false;
+			Death ();
+		}
 		// DEATH LOCK!!
 		if (death)
 			return;
@@ -330,6 +337,7 @@ public class ShipBehaviour_V2 : MonoBehaviour
 		SlowMo.selfAnimator.Play("Anim_SlowMo", 0, 0);
 
 		ship.gameObject.SetActive(false);
+		ship.GetComponent<MeshRenderer> ().material = baseMat;
 		deathGroup.SetActive(true);
 
 		foreach (ParticleSystem ps in firePS)

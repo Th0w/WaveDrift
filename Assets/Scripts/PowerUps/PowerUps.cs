@@ -8,7 +8,8 @@ public class PowerUps : Poolable {
 
 	public enum powerUp { unlimitedDrift,  waveEmit, shield, random}
 	public powerUp type;
-	
+
+	public GameObject driftMegaMegaGauge;
 	public float unlimitedDriftTime;
 	public float waveEmitTime;
 	public float delayBetweenWaves;
@@ -51,10 +52,13 @@ public class PowerUps : Poolable {
 	private void UnlimitedDrift()
 	{
 		player.driftLossRatio = -1f;
+		driftMegaMegaGauge = player.driftMegaMegaGauge;
+		driftMegaMegaGauge.SetActive (true);
 		Observable.Timer(TimeSpan.FromSeconds(unlimitedDriftTime))
 			.Subscribe(_ =>
 			{
 				player.driftLossRatio = 1f;
+				driftMegaMegaGauge.SetActive(false);
 				parent.Recycle(this);
 			}).AddTo(this);
 	}
@@ -78,8 +82,10 @@ public class PowerUps : Poolable {
 	IEnumerator Shield()
 	{
 		player.shield = true;
+		player.ship.GetComponent<MeshRenderer> ().material = player.shieldMat;
 		yield return new WaitForSeconds(shieldTime);
 		player.shield = false;
+		player.ship.GetComponent<MeshRenderer> ().material = player.baseMat;
 		parent.Recycle(this);
 	}
 
@@ -95,6 +101,8 @@ public class PowerUps : Poolable {
 	{
 		transform.position = (Vector3)args;
 		gameObject.SetActive(true);
+		driftMegaMegaGauge.SetActive (false);
+		player.ship.GetComponent<MeshRenderer> ().material = player.baseMat;
 		if (type == powerUp.random)
 		{
 			int random = UnityEngine.Random.Range(0, Enum.GetValues(typeof(powerUp)).Length - 1);
@@ -105,6 +113,8 @@ public class PowerUps : Poolable {
 	public override void Recycle()
 	{
 		gameObject.SetActive(false);
+		driftMegaMegaGauge.SetActive (false);
+		player.ship.GetComponent<MeshRenderer> ().material = player.baseMat;
 		GetComponent<SphereCollider>().enabled = true;
 		taken = false;
         foreach (Transform child in transform) { child.gameObject.SetActive(true); }
