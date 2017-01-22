@@ -43,7 +43,7 @@ public partial class Enemy_LaserTurret : MonoBehaviour {
 				if (Physics.Raycast(head.position + head.forward * 1.5f, head.transform.forward, out groundHit, aimDistance + 4, raycastMask)) {
 
 					if (groundHit.collider.gameObject == target.gameObject && !target.invulnerability && !target.airProtection)
-						StartCoroutine(target.Death ());
+						target.Death ();
 					
 					LR.SetPosition(0, head.position + head.transform.forward * 1.5f);
 					LR.SetPosition(1, groundHit.point);

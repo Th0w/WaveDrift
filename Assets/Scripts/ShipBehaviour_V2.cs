@@ -77,6 +77,8 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 	private Animator selfAnimator;
 	[HideInInspector]
 	private UI_DeathOL deathOL;
+	[HideInInspector]
+	public Coroutine cor;
 
 	private IDisposable deathDisposable, invulDisposable;
 
@@ -107,11 +109,11 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 
 		// DEV CHEATS
 		if (Input.GetKeyDown (KeyCode.T))
-			StartCoroutine(Death ());
+			Death ();
 
 		// Out of bounds!
 		if (transform.position.magnitude > 177 && !death)
-			StartCoroutine(Death ());
+			Death ();
 
 		// DEATH LOCK!!
 		if (death)
@@ -250,7 +252,14 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 				}).AddTo (this);
 	}*/
 
-	public IEnumerator Death () {
+	public void Death () {
+
+		if (cor != null)
+			StopCoroutine (cor);
+		cor = StartCoroutine (CoDeath ());
+	}
+
+	public IEnumerator CoDeath () {
 
 		SlowMo.selfAnimator.Play ("Anim_SlowMo", 0, 0);
 
@@ -292,6 +301,19 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 		invulnerability = false;
 	}
 
+	public void Respawn () {
+
+		ship.gameObject.SetActive (true);
+		deathGroup.SetActive (false);
+
+		driftTime = maxDriftTime;
+
+		transform.position = spawnPos;
+		transform.rotation = Quaternion.identity;
+
+		death = false;
+	}
+
 	public void Land () {
 
 		jump = false;
@@ -300,5 +322,6 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 	public void RemoveAirProtection () {
 
 		airProtection = false;
+		invulnerability = false;
 	}
 }
