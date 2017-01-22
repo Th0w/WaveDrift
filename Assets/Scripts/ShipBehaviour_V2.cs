@@ -50,6 +50,7 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 	public float driftTime;
 	public float maxDriftTime;
 	public float driftRecoveryFactor = 1;
+	public float driftLossRatio = 1;
 	[Space(6)]
 	public Image driftGauge;
 
@@ -71,6 +72,12 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 	[Space(6)]
 	public Transform barrier;
 	private Renderer barrierRenderer;
+
+
+	[Header("PowerUps")]
+	[Space(10)]
+	public Color powerUpWaveEmitColor;
+	public bool shield;
 
 	// PRIVATE
 	private Rigidbody selfRB;
@@ -170,7 +177,7 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 		// Drifts!
 		if (drift && Mathf.Abs(actualRotStrength) > minRotToDrift && driftTime > 0 && !cooldown && !jump) {
 
-			driftTime = Mathf.Clamp(driftTime - Time.deltaTime, 0, maxDriftTime);
+			driftTime = Mathf.Clamp(driftTime - Time.deltaTime * driftLossRatio, 0, maxDriftTime);
 
 			if (driftTime == 0)
 				cooldown = true;
@@ -264,10 +271,12 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 	}*/
 
 	public void Death () {
-
-		if (cor != null)
-			StopCoroutine (cor);
-		cor = StartCoroutine (CoDeath ());
+		if (!shield)
+		{
+			if (cor != null)
+				StopCoroutine(cor);
+			cor = StartCoroutine(CoDeath());
+		}
 	}
 
 	public IEnumerator CoDeath () {
@@ -305,6 +314,7 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 		deathGroup.SetActive (false);
 
 		driftTime = maxDriftTime;
+		driftLossRatio = 1f;
 
 		transform.position = spawnPos;
 		transform.rotation = Quaternion.identity;
