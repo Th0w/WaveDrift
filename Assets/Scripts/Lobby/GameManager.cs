@@ -95,4 +95,9 @@ public class GameManager : Singleton<GameManager> {
     {
         playerz[playerID].SetActive(true);
     }
+
+    internal void Reset()
+    {
+        Application.LoadLevel(Application.loadedLevel);
+    }
 }
