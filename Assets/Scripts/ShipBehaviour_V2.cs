@@ -133,12 +133,6 @@ public class ShipBehaviour_V2 : MonoBehaviour
 			.AddTo(this);
     }
 
-	private void OnParticleCollision(GameObject go)
-	{
-		Debug.LogFormat("ON PARTICLE COLLISION! ON {0} FROM {1}.", name, go);
-
-	}
-
 	void Update()
 	{
         if (thePlayer.GetButtonTimedPressDown("Start", 2.0f))
@@ -322,10 +316,7 @@ public class ShipBehaviour_V2 : MonoBehaviour
 			if (cor != null)
 				StopCoroutine(cor);
 			cor = StartCoroutine(CoDeath());
-		} else
-        {
-            Debug.Log("HAS SHIELD");
-        }
+		}
 	}
 
 	public IEnumerator CoDeath()
@@ -357,7 +348,25 @@ public class ShipBehaviour_V2 : MonoBehaviour
 		invulnerability = true;
 		shield = false;
 
-		deathOL.RenderDeathOL();
+        // Only for lobby.
+        if (GameManager.Instance.IsInGame == false)
+        {
+            GameManager.Instance.Players[playerID].SetActive(false);
+            invulnerability = false;
+
+            ship.gameObject.SetActive(true);
+            deathGroup.SetActive(false);
+
+            driftTime = maxDriftTime;
+
+            death = false;
+
+            transform.position = spawnPos;
+            transform.rotation = Quaternion.identity;
+            yield break;
+        }
+
+        deathOL.RenderDeathOL();
 
 		MessagingCenter.Instance.FireMessage("PlayerDeath",
 			new object[] { int.Parse(id), deathPos });
@@ -374,10 +383,10 @@ public class ShipBehaviour_V2 : MonoBehaviour
 
 		death = false;
 
-		yield return new WaitForSeconds(spawnTimeProtection);
+        yield return new WaitForSeconds(spawnTimeProtection);
 
 		invulnerability = false;
-	}
+    }
 
 	public void Respawn()
 	{
@@ -391,7 +400,7 @@ public class ShipBehaviour_V2 : MonoBehaviour
 		transform.rotation = Quaternion.identity;
 
 		death = false;
-	}
+    }
 
 	public void Land()
 	{
