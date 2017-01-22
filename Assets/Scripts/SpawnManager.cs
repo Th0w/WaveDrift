@@ -48,18 +48,20 @@ public class SpawnManager : MonoBehaviour
 
     public Transform SpawnedHolder { get { return spawnedHolder; } }
 
-    private IEnumerator Start()
-    {
-        yield return new WaitForSeconds(0.5f);
+    public bool IsSpawning { get; private set; }
 
-        Init();
-    }
-
-    private void Init()
+    public void Init()
     {
         spawners = new List<Spawner>(2);
         poolManager = FindObjectOfType<PoolManager>();
-        
+    }
+
+    public void BeginSpawn()
+    {
+        if (IsSpawning == true) { return; }
+
+        IsSpawning = true;
+
         AddNormalSpawner();
         AddNormalSpawner();
 

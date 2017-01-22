@@ -1,9 +1,10 @@
-﻿using UnityEngine;
+﻿﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using UniRx;
 using System;
 using Rewired;
+using UniRx.Triggers;
 
 public class ShipBehaviour_V2 : MonoBehaviour {
 
@@ -73,7 +74,6 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 	public Transform barrier;
 	private Renderer barrierRenderer;
 
-
 	[Header("PowerUps")]
 	[Space(10)]
 	public Color powerUpWaveEmitColor;
@@ -91,18 +91,20 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 	private IDisposable deathDisposable, invulDisposable;
 
 	private Player thePlayer;
+    
+    public bool IsFrozen { get; set; }
 
 	void Start () {
 
-
-		if (player == Players.Player1)
-			playerID = 0;
-		else if (player == Players.Player2)
-			playerID = 1;
-		else if (player == Players.Player3)
-			playerID = 2;
-		else
-			playerID = 3;
+        playerID = (int)player;
+		//if (player == Players.Player1)
+		//	playerID = 0;
+		//else if (player == Players.Player2)
+		//	playerID = 1;
+		//else if (player == Players.Player3)
+		//	playerID = 2;
+		//else
+		//	playerID = 3;
 
 		thePlayer = ReInput.players.GetPlayer(playerID);
 
@@ -115,12 +117,32 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 			barrierRenderer = barrier.GetComponent<Renderer> ();
 
 		deathOL = FindObjectOfType<UI_DeathOL>();
+        IsFrozen = false;
+
+        this.OnParticleTriggerAsObservable()
+            //.Where(_ => IsFrozen)
+            .Subscribe(_ => Debug.Log("SHOULD UNFROZE!"))
+            .AddTo(this);
 	}
 
-	void Update () {
+    private void OnParticleCollision(GameObject go)
+    {
+        Debug.LogFormat("ON PARTICLE COLLISION! ON {0} FROM {1}.", name, go);
+        
+    }
 
-		// DEV CHEATS
-		if (Input.GetKeyDown (KeyCode.T))
+    void Update () {
+        if (IsFrozen == true)
+        {
+            if(thePlayer.GetButtonDown("Button A"))
+            {
+                GameManager.Instance.Unfreeze(playerID);
+                Debug.Log("UNFREEZING!");
+            }
+            return;
+        }
+        // DEV CHEATS
+        if (Input.GetKeyDown (KeyCode.T))
 			Death ();
 
 		// Out of bounds!
@@ -177,7 +199,10 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 		// Drifts!
 		if (drift && Mathf.Abs(actualRotStrength) > minRotToDrift && driftTime > 0 && !cooldown && !jump) {
 
-			driftTime = Mathf.Clamp(driftTime - Time.deltaTime * driftLossRatio, 0, maxDriftTime);
+            if (GameManager.Instance.IsInLobby == false)
+            {
+                driftTime = Mathf.Clamp(driftTime - Time.deltaTime * driftLossRatio, 0, maxDriftTime);
+            }
 
 			if (driftTime == 0)
 				cooldown = true;
@@ -282,8 +307,7 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 	public IEnumerator CoDeath () {
         string id = player.ToString();
         id = id.Substring(id.Length - 1);
-        MessagingCenter.Instance.FireMessage("PlayerDeath", 
-            new object[] { int.Parse(id), transform.position });
+        Vector3 deathPos = transform.position;
 
 		SlowMo.selfAnimator.Play ("Anim_SlowMo", 0, 0);
 
@@ -308,13 +332,15 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 
 		deathOL.RenderDeathOL ();
 
-		yield return new WaitForSeconds (deathDelay);
+        MessagingCenter.Instance.FireMessage("PlayerDeath",
+            new object[] { int.Parse(id), deathPos });
+
+        yield return new WaitForSeconds (deathDelay);
 
 		ship.gameObject.SetActive (true);
 		deathGroup.SetActive (false);
 
 		driftTime = maxDriftTime;
-		driftLossRatio = 1f;
 
 		transform.position = spawnPos;
 		transform.rotation = Quaternion.identity;

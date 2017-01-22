@@ -87,6 +87,11 @@ public class PowerUps : MonoBehaviour {
 
 	private void Shield()
 	{
-
+		player.shield = true;
+		Observable.Timer(System.TimeSpan.FromSeconds(unlimitedDriftTime))
+			.Subscribe(_ =>
+			{
+				player.shield = false;
+			}).AddTo(this);
 	}
 }

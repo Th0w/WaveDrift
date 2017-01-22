@@ -34,6 +34,9 @@ public class ScoreManager : MonoBehaviour {
     [SerializeField]
     private Image[] gauges;
 
+    [SerializeField]
+    private float mapDimensions = 160.0f;
+
     private void Start () {
         playerScoreBonusMultiplier = new [] { 1, 1, 1, 1 };
         playerCachedScore = new[] { 0, 0, 0, 0 };
@@ -48,16 +51,16 @@ public class ScoreManager : MonoBehaviour {
 
         poolManager = FindObjectOfType<PoolManager>();
         multiplierPool = poolManager.CreatePool("PowerUps", 5, multiplierPrefab);
-
+        
         // TODO  Validate random spawn of bonus
         Observable.Interval(TimeSpan.FromSeconds(15.0))
             .Where(_ => multiplierPool.empty == false)
             .Subscribe(_ =>
             {
                 Vector3 pos = new Vector3(
-                        UnityEngine.Random.Range(-175.0f, 175.0f),
+                        UnityEngine.Random.Range(-mapDimensions, mapDimensions),
                         0.0f,
-                        UnityEngine.Random.Range(-175.0f, 175.0f));
+                        UnityEngine.Random.Range(-mapDimensions, mapDimensions));
 
                 multiplierPool.Spawn(
                     new object[] { pos, 30 });
