@@ -1,10 +1,10 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
+﻿using Rewired;
+using System;
 using System.Collections;
 using UniRx;
-using System;
-using Rewired;
 using UniRx.Triggers;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class ShipBehaviour_V2 : MonoBehaviour
 {
@@ -125,7 +125,7 @@ public class ShipBehaviour_V2 : MonoBehaviour
 			//.Where(_ => IsFrozen)
 			.Subscribe(_ => Debug.Log("SHOULD UNFROZE!"))
 			.AddTo(this);
-	}
+    }
 
 	private void OnParticleCollision(GameObject go)
 	{
@@ -135,6 +135,11 @@ public class ShipBehaviour_V2 : MonoBehaviour
 
 	void Update()
 	{
+        if (thePlayer.GetButtonTimedPressDown("Start", 2.0f))
+        {
+            GameManager.Instance.Reset();
+        }
+
 		if (IsFrozen == true)
 		{
 			if (thePlayer.GetButtonDown("Button A"))
@@ -310,7 +315,10 @@ public class ShipBehaviour_V2 : MonoBehaviour
 			if (cor != null)
 				StopCoroutine(cor);
 			cor = StartCoroutine(CoDeath());
-		}
+		} else
+        {
+            Debug.Log("HAS SHIELD");
+        }
 	}
 
 	public IEnumerator CoDeath()

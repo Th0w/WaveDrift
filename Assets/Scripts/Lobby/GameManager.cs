@@ -67,12 +67,13 @@ public class GameManager : Singleton<GameManager> {
 
     private void BeginSpawn()
     {
-        CanSpawnBonus = true;
         spawnManager.BeginSpawn();
     }
 
     internal void EndLobby()
     {
+        CanSpawnBonus = true;
+
         playerz.Where(player => player.behaviour.IsFrozen)
             .ForEach(player =>
             {
@@ -93,5 +94,10 @@ public class GameManager : Singleton<GameManager> {
     internal void Unfreeze(int playerID)
     {
         playerz[playerID].SetActive(true);
+    }
+
+    internal void Reset()
+    {
+        Application.LoadLevel(Application.loadedLevel);
     }
 }
