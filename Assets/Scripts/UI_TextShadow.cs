@@ -1,39 +1,48 @@
-﻿using UnityEngine;
+﻿using System;
+using UniRx;
+using UnityEngine;
 using UnityEngine.UI;
 
 public partial class UI_TextShadow : MonoBehaviour {
+    private Canvas canvas;
+    private void OnEnable()
+    {
+        (selfRT = selfRT ?? GetComponent<RectTransform>()).anchoredPosition = selfRT.anchoredPosition + Vector2.one * float.Epsilon;
+        (canvas = canvas ?? GetComponent<Canvas>()).sortingOrder = -1;
+    }
 
-	private Text selfText;
-	private Text parentText;
+    private Text selfText;
+    private Text parentText;
 
-	private RectTransform selfRT;
-	private RectTransform parentRT;
+    private RectTransform selfRT;
+    private RectTransform parentRT;
 
-	void Start () {
+    //void Start () {
 
-		GetTexts ();
+    //	GetTexts ();
 
-		GetComponent<Canvas> ().sortingOrder = -1;
-	}
+    //	GetComponent<Canvas> ().sortingOrder = -1;
+    //}
 
-	void Update () {
+    //void Update () {
 
-		selfText.text = parentText.text;
-	}
+    //	selfText.text = parentText.text;
+    //}
 
-	void GetTexts () {
+    void GetTexts()
+    {
 
-		if (!selfText)
-			selfText = GetComponent<Text> ();
-		if (!parentText)
-			parentText = transform.parent.GetComponent<Text> ();
-	}
+        if (!selfText)
+            selfText = GetComponent<Text>();
+        if (!parentText)
+            parentText = transform.parent.GetComponent<Text>();
+    }
 
-//	void GetRTs () {
-//
-//		if (!selfRT)
-//			selfRT = GetComponent<RectTransform> ();
-//		if (!parentRT)
-//			parentRT = GetComponent<RectTransform> ();
-//	}
+    //	void GetRTs () {
+    //
+    //		if (!selfRT)
+    //			selfRT = GetComponent<RectTransform> ();
+    //		if (!parentRT)
+    //			parentRT = GetComponent<RectTransform> ();
+    //	}
 }

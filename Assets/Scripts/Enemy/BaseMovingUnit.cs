@@ -52,6 +52,11 @@ public abstract class BaseMovingUnit : Poolable {
         }
     }
 
+	public void Kill(int playerId)
+	{
+		Death(playerId + 1);
+	}
+
     protected abstract void Death(int playerID);
 
     #endregion Properties
