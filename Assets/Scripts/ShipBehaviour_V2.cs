@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 using UniRx;
 using System;
+using Rewired;
 
 public class ShipBehaviour_V2 : MonoBehaviour {
 
@@ -11,7 +12,7 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 	[Header("PLAYER")]
 	[Space(10)]
 	public Players player;
-	public string playerPrefix;
+	public int playerID;
 	public Vector3 spawnPos;
 
 	// INPUTS
@@ -80,17 +81,21 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 
 	private IDisposable deathDisposable, invulDisposable;
 
+	private Player thePlayer;
+
 	void Start () {
 
+
 		if (player == Players.Player1)
-			playerPrefix = "P1_";
-		else if (player == Players.Player1)
-			playerPrefix = "P2_";
-		else if (player == Players.Player1)
-			playerPrefix = "P3_";
+			playerID = 0;
+		else if (player == Players.Player2)
+			playerID = 1;
+		else if (player == Players.Player3)
+			playerID = 2;
 		else
-			playerPrefix = "P4_";
-			
+			playerID = 3;
+
+		thePlayer = ReInput.players.GetPlayer(playerID);
 
 		selfRB = GetComponent<Rigidbody> ();
 		selfAnimator = GetComponent<Animator> ();
@@ -116,14 +121,18 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 		// DEATH LOCK!!
 		if (death)
 			return;
-		
+
 		// Inputs
-		rightTriggerInput = Input.GetAxis (playerPrefix + "RightTrigger");
-		leftStickHorizontalInput = Input.GetAxis (playerPrefix + "LeftStick_Horizontal");
+		//rightTriggerInput = Input.GetAxis (playerPrefix + "RightTrigger");
+		//leftStickHorizontalInput = Input.GetAxis (playerPrefix + "LeftStick_Horizontal");
+		rightTriggerInput = thePlayer.GetAxis("Right Trigger");
+		leftStickHorizontalInput = thePlayer.GetAxis("Left Stick X");
 
 		// Drift input
 		float targetRotStrength = rotStrength;
-		if (Input.GetButton (playerPrefix + "Button_X")) {
+		//if (Input.GetButton (playerPrefix + "Button_X")) 
+		if (thePlayer.GetButton("Button X"))
+		{
 			
 			targetRotStrength += additionnalDriftRotStrength;
 			drift = true;
@@ -143,7 +152,9 @@ public class ShipBehaviour_V2 : MonoBehaviour {
 			transform.localEulerAngles += new Vector3 (0, actualRotStrength * 2, 0);
 
 		// Jump
-		if (Input.GetButtonDown (playerPrefix + "Button_A") && !jump) {
+		//if (Input.GetButtonDown (playerPrefix + "Button_A") && !jump) 
+		if (thePlayer.GetButtonDown("Button A") && !jump)
+		{
 			
 			selfAnimator.Play ("Anim_Ship_Jump", 0, 0);
 			jump = true;

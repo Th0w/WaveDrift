@@ -2,7 +2,6 @@
 
 #if UNITY_EDITOR
 using UnityEditor;
-#endif
 
 public partial class Enemy_LaserTurret : MonoBehaviour {
 
@@ -27,3 +26,4 @@ public partial class Enemy_LaserTurret : MonoBehaviour {
 		Handles.DrawWireArc (transform.position + Vector3.up, transform.up, transform.forward, 360, aimDistance);
 	}
 }
+#endif
