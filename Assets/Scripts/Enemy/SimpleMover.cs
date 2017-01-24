@@ -84,7 +84,7 @@ public class SimpleMover : BaseMovingUnit {
 
     protected override void Death(int playerID)
     {
-        MessagingCenter.Instance.FireMessage("UnitKilled", new object[] { playerID, scorePerKilled });
+        messagingCenter.FireMessage("UnitKilled", new object[] { playerID, scorePerKilled });
 
 		Instantiate (deathGroup, transform.position, Quaternion.identity);
 

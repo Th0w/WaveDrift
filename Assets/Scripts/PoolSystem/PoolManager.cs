@@ -1,53 +1,23 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
-using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UniRx;
-
-[Serializable]
-public class PoolData
-{
-    [SerializeField]
-    private int quantity = -1;
-    [SerializeField]
-    private GameObject prefab = null;
-
-    [SerializeField]
-    private string name = "";
-
-    public int Quantity { get { return quantity; } }
-    public GameObject Prefab { get { return prefab; } }
-    public string Name { get { return name; } }
-
-    public bool IsValid { get { return quantity != -1 && prefab != null; } }
-
-    public PoolData() { }
-
-    public PoolData(string name, int quantity, GameObject prefab)
-    {
-        this.name = name;
-        this.prefab = prefab;
-        this.quantity = quantity;
-    }
-}
+using UnityEngine;
 
 public class PoolManager : MonoBehaviour
 {
-    public List<PoolData> poolsToSpawn;
+    #region Fields
+    private Dictionary<string, Pool> pools;
+    #endregion Fields
 
-    private List<Pool> pools;
-
+    #region Methods
+    #region MonoBehaviour
     private void Awake()
     {
-        pools = new List<Pool>();
-
-        poolsToSpawn.Where(pool => pool.IsValid)
-            .ForEach(data =>
-            {
-                pools.Add(CreatePool(data));
-            });
+        pools = new Dictionary<string, Pool>();
     }
+    #endregion MonoBehaviour
 
     public Pool CreatePool(PoolData data)
     {
@@ -64,27 +34,29 @@ public class PoolManager : MonoBehaviour
         p = new GameObject().AddComponent<Pool>();
         p.Init(quantity, prefab, name);
         p.transform.SetParent(transform);
-
+        pools.Add(name, p);
 		return p;
     }
 
-    public Pool this[GameObject prefab]
-    {
-        get
-        {
-            return pools
-                .Where(pool => pool.Prefab.gameObject == prefab)
-                .FirstOrDefault()
-                ?? CreatePool(new PoolData("Error", 10, prefab));
-
+    #region Getters
+    public Pool this[string name] {
+        get {
+            return pools.ContainsKey(name) ? pools[name] : null;
         }
     }
 
-    public Pool this[string name]
-    {
-        get
-        {
-            return pools.Where(pool => pool.Name == name).FirstOrDefault(); 
+    public Pool[] this[Regex regex] {
+        get {
+            return pools.Where(kvp => regex.Match(kvp.Value.name).Success)
+                .Select(kvp => kvp.Value)
+                .ToArray();
         }
     }
+
+    internal void RecycleAll() {
+        pools.ForEach(kvp => kvp.Value.Recycle(deep: true));
+        // Debug.LogWarningFormat("Remaining actives in {0}: {1}.", name, pools.Select(kvp => kvp.Value.ActiveCount).Aggregate((a, b) => a + b));
+    }
+    #endregion Getters
+    #endregion Methods
 }

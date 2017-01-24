@@ -40,11 +40,12 @@ public abstract class BaseMovingUnit : Poolable {
 
     public IObservable<Unit> OnTakeDamage { get { return onTakeDamage; } }
 
+
     public void TakeDamage(int v, int playerID)
     {
         health -= v;
 
-        MessagingCenter.Instance.FireMessage("UnitTookDamage", new object[] { playerID, scorePerHitPoint });
+        messagingCenter.FireMessage("UnitTookDamage", new object[] { playerID, scorePerHitPoint });
 
         if (health <= 0)
         {

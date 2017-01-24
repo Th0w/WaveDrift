@@ -1,13 +1,18 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UniRx.Triggers;
+﻿using UnityEngine;
+using UniRx;
 
 public class Crystal : MonoBehaviour {
+    private GameManager gameManager;
+    private void Awake() {
+        gameManager = FindObjectOfType<GameManager>();
+    }
+    private void Start() {
+        gameManager.OnGameEnd
+            .Subscribe(_ => transform.parent.gameObject.SetActive(true));
+    }
     private void OnParticleCollision(GameObject other)
     {
-        GameManager.Instance.EndLobby();
-//        Destroy(gameObject, 0.25f);
+        FindObjectOfType<GameManager>().EndLobby();
 		transform.parent.gameObject.SetActive(false);
     }
 }

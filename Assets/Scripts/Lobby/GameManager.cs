@@ -1,41 +1,9 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
-using System;
 using UniRx;
+using UnityEngine;
 
-[Serializable]
-public class PlayerData
-{
-    public ShipBehaviour_V2 behaviour;
-    public GameObject infoPanel;
-    public GameObject nitroGauge;
-    public GameObject cursor3d;
-    public GameObject barrier;
-    public UI_TextShadow[] shadows;
-
-    public void SetActive(bool val)
-    {
-        behaviour.IsFrozen = !val;
-        infoPanel.SetActive(val);
-        nitroGauge.SetActive(val);
-        cursor3d.SetActive(val);
-        barrier.SetActive(val);
-        shadows.ForEach(shadow =>
-        {
-            shadow.gameObject.SetActive(false);
-            shadow.enabled = true;
-            shadow.gameObject.SetActive(true);
-        });
-
-		GameObject.FindObjectOfType<CameraBehaviour> ().GetPlayers ();
-    }
-}
-
-public class GameManager : Singleton<GameManager> {
-    protected GameManager() { }
-    
+public class GameManager : MonoBehaviour {   
 
     [SerializeField]
     private PlayerData[] playersData;
@@ -65,7 +33,6 @@ public class GameManager : Singleton<GameManager> {
         yield return new WaitForSeconds(0.25f);
 
         spawnManager = FindObjectOfType<SpawnManager>();
-        spawnManager.Init();
 
         if (playersData.Length != 4) { Debug.LogError("Missing some players..."); }
 
@@ -78,22 +45,17 @@ public class GameManager : Singleton<GameManager> {
         activePlayers = players
             .Where(player => player.IsFrozen == false)
             .ToArray();
-        onGameBegin.OnNext(Unit.Default);
-
-        IsInGame = true;
 
         playersData.Where(player => player.behaviour.IsFrozen)
-            .ForEach(player =>
-            {
+            .ForEach(player => {
                 player.SetActive(false);
                 player.behaviour.gameObject.SetActive(false);
                 player.behaviour.invulnerability = true;
             });
 
+        onGameBegin.OnNext(Unit.Default);
 
-        Observable.Timer(TimeSpan.FromSeconds(1.0))
-            .Subscribe(_ => spawnManager.BeginSpawn())
-            .AddTo(this);
+        IsInGame = true;
     }
 
     internal void Unfreeze(int playerID)
@@ -103,6 +65,14 @@ public class GameManager : Singleton<GameManager> {
 
     internal void Reset()
     {
+        playersData.ForEach(player => {
+            if (player.behaviour.gameObject.activeSelf == true) {
+                player.behaviour.Death();
+            } else {
+                player.behaviour.gameObject.SetActive(true);
+            }
+            player.SetActive(false);
+        });
         onGameEnd.OnNext(Unit.Default);
     }
 }

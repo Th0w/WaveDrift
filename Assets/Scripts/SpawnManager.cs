@@ -1,77 +1,234 @@
-﻿using System;
-using System.Collections;
+﻿/*
+ *  Responsible for every in game spawning. From the enemy to their spawners and even the bonuses.
+ */
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 using UniRx;
 using UnityEngine;
 
-[Serializable]
-public class WaveData
-{
-    public int distFromSpawn;
-    public int randomToSpawn;
-    public int basicToSpawn;
-    public float delayTilNextWave;
-}
-
 public class SpawnManager : MonoBehaviour
 {
+    #region Fields
+    private const string BASE = "base";
+    #region Serialized
+
+    [Header("Wave to spawn")]
+
     [SerializeField]
-    private WaveData[] waveData;
-    [Header("Maximums")]
+    private WaveDataSO waveData;
+
+    [SerializeField]
+    private PoolData[] poolsToSpawn;
+
+    [Header("Maximum")]
+
     [SerializeField]
     private int maxPhaseId;
     [SerializeField]
     private int maxNormalSpawners = 10;
     [SerializeField]
     private int maxTPSpawners = 7;
+
     [Header("Prefab info")]
+
     [SerializeField]
     private string[] mobNames;
 
     [SerializeField]
-    private Spawner normalSpawnerPrefab;
+    private Poolable
+        normalSpawnerPrefab,
+        tpSpawnerPrefab,
+        powerUpPrefab,
+        multiplierPrefab;
+
+    [Header("Bonuses info")]
+    [SerializeField]
+    private float
+        powerUpSpawnInterval,
+        multSpawnInterval;
 
     [SerializeField]
-    private Spawner tpSpawnerPrefab;
-
+    private int spawnedMultValue;
     [SerializeField]
-    private Transform spawnedHolder;
+    private Vector3 powerUpOffset;
+
+    [Header("Misc")]
+    private float mapDimensions = 170.0f;
+    #endregion Serialized
 
     private int waveId = 0;
     private int phaseId = 0;
-    
+
     private List<Spawner> spawners;
     private PoolManager poolManager;
 
     private int normalCount;
     private int tpCount;
 
-    public Transform SpawnedHolder { get { return spawnedHolder; } }
+    private Subject<Unit> onEndSpawn;
+    private IDisposable nextSpawnTimer;
+    private IDisposable spawnInterval_powerUp;
+    private IDisposable spawnInterval_multiplier;
+
+    // Cached pools
+    private Pool
+        multiplierPool,
+        powerUpPool,
+        normalSpawnerPool,
+        tpSpawnerPool;
+
+    private GameManager gameManager;
+    private MessagingCenter messagingCenter;
+    public static Regex regex;
+
+    #endregion Fields
+
+    #region Properties
+
+    public IObservable<Unit> OnEndSpawn { get { return onEndSpawn; } }
 
     public bool IsSpawning { get; private set; }
 
-    public void Init()
-    {
-        spawners = new List<Spawner>(2);
+    #endregion Properties
+
+    #region Methods
+
+    #region MonoBehaviour
+
+    private void Awake() {
+        regex = new Regex(@"^pool_enemy_", RegexOptions.IgnoreCase);
+
+        onEndSpawn = new Subject<Unit>();
+
+        gameManager = FindObjectOfType<GameManager>();
         poolManager = FindObjectOfType<PoolManager>();
+        messagingCenter = FindObjectOfType<MessagingCenter>();
     }
 
-    public void BeginSpawn()
-    {
-        if (IsSpawning == true) { return; }
+    private void Start() {
+        // Pool creations
+        {
+            spawners = new List<Spawner>();
+
+            poolsToSpawn
+                .Where(pool => pool.IsValid)
+                .ForEach(data => poolManager.CreatePool(data));
+
+            multiplierPool = poolManager.CreatePool("MultiplierBonus", 3, multiplierPrefab);
+            powerUpPool = poolManager.CreatePool("PowerUpBonus", 3, powerUpPrefab);
+
+            normalSpawnerPool = poolManager.CreatePool("NormalSpawner", maxNormalSpawners, normalSpawnerPrefab);
+            tpSpawnerPool = poolManager.CreatePool("TPSpawner", maxTPSpawners, tpSpawnerPrefab);
+        }
+        // SpawnerPoolCallBacks
+        {
+            normalSpawnerPool.OnSpawn
+                .Subscribe(spawner => {
+                    spawners.Add((Spawner)spawner);
+                    normalCount++;
+                })
+                .AddTo(this);
+
+            tpSpawnerPool.OnSpawn
+                .Subscribe(spawner => {
+                    spawners.Add((Spawner)spawner);
+                    tpCount++;
+                })
+                .AddTo(this);
+
+            normalSpawnerPool.OnRecycle
+                .Subscribe(spawner => {
+                    spawners.Remove((Spawner)spawner);
+                    normalCount--;
+                })
+                .AddTo(this);
+
+            tpSpawnerPool.OnRecycle
+                .Subscribe(spawner => {
+                    spawners.Remove((Spawner)spawner);
+                    tpCount--;
+                })
+                .AddTo(this);
+        }
+        // GameManager callback settings
+        {
+            gameManager.OnGameBegin
+                .Subscribe(_ => {
+                    Observable.Timer(TimeSpan.FromSeconds(1.0))
+                        .Subscribe(BeginSpawn)
+                        .AddTo(this);
+                }).AddTo(this);
+
+            gameManager.OnGameEnd
+                .Subscribe(EndSpawn)
+                .AddTo(this);
+        }
+    }
+
+    #endregion MonoBehaviour
+
+    private void SpawnMult(object obj) {
+        if (obj is object[] == false) { return; }
+
+        multiplierPool.Spawn(obj);
+    }
+
+    private void BeginSpawn(long frameCount) {
+        messagingCenter.RegisterMessage("SpawnMult", SpawnMult);
+
+        AddSpawner(special: false);
+        AddSpawner(special: false);
+
+        spawnInterval_powerUp = Observable
+            .Interval(TimeSpan.FromSeconds(powerUpSpawnInterval))
+            .Subscribe(_ => {
+                Vector3 pos = Quaternion.Euler(0.0f, UnityEngine.Random.Range(0.0f, 360.0f), 0.0f) * Vector3.right
+                    * UnityEngine.Random.Range(15.0f, mapDimensions);
+
+                SpawnMult(new object[] { pos, spawnedMultValue });
+            })
+            .AddTo(this);
+
+        spawnInterval_multiplier = Observable
+            .Interval(TimeSpan.FromSeconds(multSpawnInterval))
+            .Subscribe(_ => {
+                Vector3 pos = Quaternion.Euler(0.0f, UnityEngine.Random.Range(0.0f, 360.0f), 0.0f) * Vector3.right
+                    * UnityEngine.Random.Range(15.0f, mapDimensions);
+
+                powerUpPool.Spawn(pos + powerUpOffset);
+            })
+            .AddTo(this);
 
         IsSpawning = true;
-
-        AddNormalSpawner();
-        AddNormalSpawner();
 
         NextPhase();
     }
 
-    private void NextPhase()
-    {
-        if ((++phaseId) > maxPhaseId)
-        {
+    private void EndSpawn(Unit @default) {
+        messagingCenter.UnregisterMessage("SpawnMult");
+        IsSpawning = false;
+
+        if (spawnInterval_powerUp != null) {
+            spawnInterval_powerUp.Dispose();
+            spawnInterval_powerUp = null;
+        }
+        if (spawnInterval_multiplier != null) {
+            spawnInterval_multiplier.Dispose();
+            spawnInterval_multiplier = null;
+        }
+
+        phaseId = 0;
+        waveId = 0;
+        
+        poolManager.RecycleAll();
+    }
+
+    private void NextPhase() {
+        if (IsSpawning == false) { return; }
+
+        if ((++phaseId) > maxPhaseId) {
             phaseId = 1;
             ++waveId;
             HandleNextWave();
@@ -79,70 +236,49 @@ public class SpawnManager : MonoBehaviour
         HandleSpawn();
     }
 
-    private void HandleNextWave()
-    {
-        if((waveId & 1) == 0)
-        {
-            AddNormalSpawner();
-        }
-        else
-        {
-            AddTPSpawner();
+    private void HandleNextWave() {
+        if ((waveId & 1) == 0) {
+            AddSpawner(special: false);
+        } else {
+            AddSpawner(special: true);
         }
     }
 
-    private void AddTPSpawner()
-    {
-        if (tpCount >= maxTPSpawners) { return; }
-
-        var spn = Instantiate(tpSpawnerPrefab);
-        spawners.Add(spn);
-        Vector3 pos = UnityEngine.Random.insideUnitSphere * 175.0f;
-        pos.y = 0.0f;
-        spn.transform.position = pos;
-        ++tpCount;
+    private void AddSpawner(bool special) {
+        if (special ? (tpCount >= maxTPSpawners) : (normalCount >= maxNormalSpawners)) { return; }
+        Vector3 pos = Quaternion.Euler(0.0f, UnityEngine.Random.Range(0.0f, 360.0f), 0.0f) *
+            Vector3.forward * UnityEngine.Random.Range(0.0f, mapDimensions);
+        normalSpawnerPool.Spawn(pos);
     }
 
-    private void AddNormalSpawner()
-    {
-        if(normalCount >= maxNormalSpawners) { return; }
-
-        var spn = Instantiate(normalSpawnerPrefab);
-        spawners.Add(spn);
-        Vector3 pos = UnityEngine.Random.insideUnitSphere * 175.0f;
-        pos.y = 0.0f;
-        spn.transform.position = pos;
-        ++normalCount;
-    }
-
-    private void HandleSpawn()
-    {
-        var data = waveData[phaseId - 1];
+    private void HandleSpawn() {
+        var data = waveData.WaveData[phaseId - 1];
         Spawn(data.distFromSpawn, data.randomToSpawn, data.basicToSpawn);
-        Observable.Timer(TimeSpan.FromSeconds(data.delayTilNextWave))
+
+        nextSpawnTimer = Observable.Timer(TimeSpan.FromSeconds(data.delayTilNextWave))
             .Subscribe(_ => NextPhase())
             .AddTo(this);
     }
 
-    private void Spawn(int distFromSpawn, int randomToSpawn, int basicToSpawn)
-    {
-        List<Pool> plz;
+    private void Spawn(int distFromSpawn, int randomToSpawn, int basicToSpawn) {
+        List<Pool> pools;
         int mobNameLength = mobNames.Length, total;
-        spawners.ForEach(spawner =>
-        {
+        spawners.ForEach(spawner => {
             total = randomToSpawn + basicToSpawn;
-            plz = null;
-            plz = new List<Pool>(total);
+            pools = null;
+            pools = new List<Pool>(total);
             for (int i = 0; i < basicToSpawn; ++i) {
-                plz.Add(poolManager["base"]);
+                pools.Add(poolManager[BASE]);
             }
-            for(int i=0; i < randomToSpawn; ++i)
-            {
-                string name = mobNames[UnityEngine.Random.Range(0, mobNameLength)];
-                Pool p = poolManager[name];
-                plz.Add(poolManager[name]);
+            for (int i = 0; i < randomToSpawn; ++i) {
+                Pool pool = poolManager[regex]
+                    .Where(p => p.Name.Contains(BASE) == false)
+                    .Random();
+                pools.Add(pool);
             }
-            spawner.Spawn(plz, distFromSpawn);
+            spawner.DoSpawn(pools, distFromSpawn);
         });
     }
+
+    #endregion Methods
 }

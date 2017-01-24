@@ -12,15 +12,18 @@ public class MultiplierBonus : Poolable {
     public override Poolable Init(Pool parent)
     {
         gameObject.SetActive(false);
+
         Regex regex = new Regex(@"^Ship_P(\w)$");
+
         this.OnTriggerEnterAsObservable()
             .Select(collider => regex.Match(collider.name))
             .Where(match => match.Success)
             .Subscribe(match => {
                 int pid = int.Parse(match.Groups[1].Value);
-                MessagingCenter.Instance.FireMessage("AddPlayerScoreMultiplier", new object[] { pid, multiplierValue });
+                messagingCenter.FireMessage("AddPlayerScoreMultiplier", new object[] { pid, multiplierValue });
                 parent.Recycle(this);
             }).AddTo(this);
+
         return this;
     }
 

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MessagingCenter : Singleton<MessagingCenter>
+public class MessagingCenter : MonoBehaviour
 {
     protected MessagingCenter() { }
 

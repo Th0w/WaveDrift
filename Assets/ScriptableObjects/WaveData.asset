@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d85bcc282b101647b70bec58680b1cd, type: 3}
+  m_Name: WaveData
+  m_EditorClassIdentifier: 
+  waveData:
+  - distFromSpawn: 5
+    randomToSpawn: 0
+    basicToSpawn: 5
+    delayTilNextWave: 2
+  - distFromSpawn: 7
+    randomToSpawn: 3
+    basicToSpawn: 7
+    delayTilNextWave: 3
+  - distFromSpawn: 9
+    randomToSpawn: 5
+    basicToSpawn: 9
+    delayTilNextWave: 4
+  - distFromSpawn: 11
+    randomToSpawn: 7
+    basicToSpawn: 11
+    delayTilNextWave: 5

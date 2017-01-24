@@ -96,17 +96,24 @@ public class ShipBehaviour_V2 : MonoBehaviour
     private IDisposable deathDisposable, invulDisposable;
 
     private Player thePlayer;
+    private GameManager gameManager;
+    private MessagingCenter messagingCenter;
 
     public bool IsFrozen { get; set; }
 
-    void Start() {
+    private void Awake() {
+        messagingCenter = FindObjectOfType<MessagingCenter>();
+        gameManager = FindObjectOfType<GameManager>();
+        selfRB = GetComponent<Rigidbody>();
+        selfAnimator = GetComponent<Animator>();
+        deathOL = FindObjectOfType<UI_DeathOL>();
+    }
 
+    void Start() {
         playerID = (int)player;
 
         thePlayer = ReInput.players.GetPlayer(playerID);
 
-        selfRB = GetComponent<Rigidbody>();
-        selfAnimator = GetComponent<Animator>();
 
         driftTime = maxDriftTime;
 
@@ -115,11 +122,10 @@ public class ShipBehaviour_V2 : MonoBehaviour
 
         baseMat = ship.GetComponent<MeshRenderer>().material;
 
-        deathOL = FindObjectOfType<UI_DeathOL>();
         IsFrozen = false;
 
         thePlayer.AddInputEventDelegate(
-            iaed => GameManager.Instance.Reset(), 
+            iaed => gameManager.Reset(), 
             UpdateLoopType.Update,
             InputActionEventType.ButtonJustPressedForTime,
             "Start",
@@ -136,16 +142,14 @@ public class ShipBehaviour_V2 : MonoBehaviour
             UpdateLoopType.Update,
             InputActionEventType.ButtonJustPressedForTime,
             "Select",
-            new object[] { 2.0f });
-
-        
+            new object[] { 2.0f });        
     }
     
     void Update() {
 
         if (IsFrozen == true) {
             if (thePlayer.GetButtonDown("Button A")) {
-                GameManager.Instance.Unfreeze(playerID);
+                gameManager.Unfreeze(playerID);
             }
             return;
         }
@@ -291,8 +295,8 @@ public class ShipBehaviour_V2 : MonoBehaviour
         deathOL.RenderDeathOL();
 
         // Only for lobby.
-        if (GameManager.Instance.IsInGame == false) {
-            GameManager.Instance.PlayersData[playerID].SetActive(false);
+        if (gameManager.IsInGame == false) {
+            gameManager.PlayersData[playerID].SetActive(false);
             invulnerability = false;
 
             ship.gameObject.SetActive(true);
@@ -307,9 +311,7 @@ public class ShipBehaviour_V2 : MonoBehaviour
             yield break;
         }
 
-        MessagingCenter.Instance.FireMessage(
-            "PlayerDeath",
-            new object[] { int.Parse(id), deathPos });
+        messagingCenter.FireMessage("PlayerDeath", new object[] { int.Parse(id), deathPos });
 
         yield return new WaitForSeconds(deathDelay);
 

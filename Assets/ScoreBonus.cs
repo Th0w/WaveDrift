@@ -14,12 +14,13 @@ public class ScoreBonus : Poolable
     public override Poolable Init(Pool parent)
     {
         Regex regex = new Regex(@"^Ship_P(\w)$");
+        MessagingCenter messageCenter = FindObjectOfType<MessagingCenter>();
         this.OnTriggerEnterAsObservable()
             .Select(collider => regex.Match(collider.name))
             .Where(match => match.Success)
             .Subscribe(match => {
                 int pid = int.Parse(match.Groups[1].Value);
-                MessagingCenter.Instance.FireMessage("PlayerGainScore", new object[] { pid, scoreValue });
+                messageCenter.FireMessage("PlayerGainScore", new object[] { pid, scoreValue });
                 Destroy(gameObject);
             }).AddTo(this);
         this.parent = parent;
