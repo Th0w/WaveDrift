@@ -1,5 +1,7 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using System.Linq;
+using UniRx;
+using UnityEngine;
 
 public class Enemy_Bumper : MonoBehaviour {
 
@@ -13,35 +15,57 @@ public class Enemy_Bumper : MonoBehaviour {
 
 	private LineRenderer lr;
 
-	void OnEnable () {
+    private GameManager gameManager;
+    private ShipBehaviour_V2[] activePlayers;
 
-		selfAnimator = GetComponent<Animator> ();
-		lr = circleLineRenderer.gameObject.GetComponent<LineRenderer> ();
+    void Start() {
 
-		StartCoroutine (Bump ());
-	}
+        selfAnimator = GetComponent<Animator>();
+        lr = circleLineRenderer.gameObject.GetComponent<LineRenderer>();
+        gameManager = FindObjectOfType<GameManager>();
 
-	void Update () {
+        gameManager.OnGameBegin.Subscribe(_ => {
+            activePlayers = gameManager.ActivePlayers;
+            gameObject.SetActive(true);
+            StartCoroutine(Bump());
+        });
 
-		circleLife += Time.deltaTime;
-		circleLineRenderer.radius = circleMaxRadius * circleLife / frequency;
+        gameManager.OnGameEnd.Subscribe(_ => {
+            StopAllCoroutines();
+            gameObject.SetActive(false);
+        });
 
-		Color col = new Color (1, 1, 1, 1 - Mathf.InverseLerp(frequency - 2, frequency - 1, circleLife));
-		if (circleLife > frequency || circleLife < 0.1f)
-			col = new Color (1, 1, 1, 0);
-		lr.startColor = col;
-		lr.endColor = col;
+        gameObject.SetActive(false);
+    }
 
-		foreach (ShipBehaviour_V2 sb in ShipDetector.allShipBehaviours) {
+    private void OnDisable() {
+    }
 
-			float playerDist = Vector3.Distance (sb.transform.position, transform.position);
-			if (!sb.death && !sb.invulnerability && !sb.airProtection && col.a > 0.5f && playerDist > circleLineRenderer.radius - 1 && playerDist < circleLineRenderer.radius + 1)
-				sb.Death ();
-		}
-	}
+    void Update() {
+
+        circleLife += Time.deltaTime;
+        circleLineRenderer.radius = circleMaxRadius * circleLife / frequency;
+
+        Color col = new Color(1, 1, 1, 1 - Mathf.InverseLerp(frequency - 2, frequency - 1, circleLife));
+        if (circleLife > frequency || circleLife < 0.1f)
+            col = new Color(1, 1, 1, 0);
+        lr.startColor = col;
+        lr.endColor = col;
+
+        if (col.a <= 0.5f) {
+            return;
+        }
+
+        activePlayers
+            .Where(player => (player.death || player.invulnerability || player.airProtection) == false)
+            .Where(player => {
+                float playerDist = Vector3.Distance(player.transform.position, transform.position);
+                return playerDist > circleLineRenderer.radius - 1.0f && playerDist < circleLineRenderer.radius + 1.0f;
+            })
+            .ForEach(player => player.Death());
+    }
 
 	public IEnumerator Bump () {
-
 		while (true) {
 
 			Color col = new Color (1, 1, 1, 0);

@@ -334,7 +334,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bd2542316ad3644bba437fe6919b547, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerz:
+  playersData:
   - behaviour: {fileID: 84067928}
     infoPanel: {fileID: 809998325}
     nitroGauge: {fileID: 234665689}
@@ -4193,7 +4193,7 @@ MonoBehaviour:
     customControllerMaps: []
     customControllers: []
     playerIdCounter: 5
-    actionIdCounter: 7
+    actionIdCounter: 8
     actionCategoryIdCounter: 1
     inputBehaviorIdCounter: 1
     mapCategoryIdCounter: 1
@@ -7572,13 +7572,13 @@ MonoBehaviour:
   poolsToSpawn:
   - quantity: 100
     prefab: {fileID: 1514316924640286, guid: 393a51adaeb622f43bbb5c7a07d3a7dc, type: 2}
-    name: 
+    name: base
   - quantity: 30
     prefab: {fileID: 1051244636954852, guid: 1edf87733cb146d4e8ffaf87dd21aa52, type: 2}
-    name: 
+    name: accelerating
   - quantity: 30
     prefab: {fileID: 1877441531805702, guid: 02db391ad8d2a0e4bbbbc701879d5aa5, type: 2}
-    name: 
+    name: slaloming
 --- !u!4 &1454461928
 Transform:
   m_ObjectHideFlags: 0

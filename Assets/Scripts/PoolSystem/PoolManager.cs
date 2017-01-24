@@ -56,9 +56,13 @@ public class PoolManager : MonoBehaviour
 
     public Pool CreatePool(string name, int quantity, Poolable prefab)
     {
-        Pool p = new GameObject().AddComponent<Pool>();
-        p.Init(quantity, prefab);
-        p.name = string.Format("Pool_{0}_{1}", prefab.name, name);
+        Pool p = this[name];
+        if (p != null) {
+            Debug.LogErrorFormat("A pool named '{0}' already exists! Giving already existing.", name);
+            return p;
+        }
+        p = new GameObject().AddComponent<Pool>();
+        p.Init(quantity, prefab, name);
         p.transform.SetParent(transform);
 
 		return p;
@@ -80,7 +84,7 @@ public class PoolManager : MonoBehaviour
     {
         get
         {
-            return pools.Where(pool => pool.name.Contains(name)).FirstOrDefault(); 
+            return pools.Where(pool => pool.Name == name).FirstOrDefault(); 
         }
     }
 }

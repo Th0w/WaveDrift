@@ -35,58 +35,60 @@ public class PlayerData
 
 public class GameManager : Singleton<GameManager> {
     protected GameManager() { }
-
-    private Enemy_LaserTurret[] laserz;
-    private Enemy_Bumper[] bumperz;
+    
 
     [SerializeField]
-    private PlayerData[] playerz;
-    public PlayerData[] Players { get { return playerz; } }
+    private PlayerData[] playersData;
+    public PlayerData[] PlayersData { get { return playersData; } }
 
+    private ShipBehaviour_V2[] players;
+    private ShipBehaviour_V2[] activePlayers;
+    
     [SerializeField]
     private SpawnManager spawnManager;
 
-    public bool IsInGame { get; private set; }
+    private Subject<Unit> onGameBegin, onGameEnd;
 
-	// Use this for initialization
-	private IEnumerator Start () {
+    public ShipBehaviour_V2[] ActivePlayers { get { return activePlayers; } }
+    public bool IsInGame { get; private set; }
+    public IObservable<Unit> OnGameBegin { get { return onGameBegin; } }
+    public IObservable<Unit> OnGameEnd { get { return onGameEnd; } }
+
+    // Use this for initialization
+    private void Awake() {
+        onGameBegin = new Subject<Unit>();
+        onGameEnd = new Subject<Unit>();
+    }
+    private IEnumerator Start () {
+        players = FindObjectsOfType<ShipBehaviour_V2>();
 
         yield return new WaitForSeconds(0.25f);
-
-        laserz = FindObjectsOfType<Enemy_LaserTurret>();
-        bumperz = FindObjectsOfType<Enemy_Bumper>();
-
-        laserz.ForEach(laser => laser.gameObject.SetActive(false));
-        bumperz.ForEach(bumper => bumper.gameObject.SetActive(false));
 
         spawnManager = FindObjectOfType<SpawnManager>();
         spawnManager.Init();
 
-        if (playerz.Length != 4) { Debug.LogError("Missing some players..."); }
+        if (playersData.Length != 4) { Debug.LogError("Missing some players..."); }
 
-        playerz = playerz.OrderBy(player => player.behaviour.playerID).ToArray();
-        playerz.ForEach(player => player.SetActive(false));
-    }
-
-    private void BeginSpawn()
-    {
-        spawnManager.BeginSpawn();
+        playersData = playersData.OrderBy(player => player.behaviour.playerID).ToArray();
+        playersData.ForEach(player => player.SetActive(false));
     }
 
     internal void EndLobby()
     {
+        activePlayers = players
+            .Where(player => player.IsFrozen == false)
+            .ToArray();
+        onGameBegin.OnNext(Unit.Default);
+
         IsInGame = true;
 
-        playerz.Where(player => player.behaviour.IsFrozen)
+        playersData.Where(player => player.behaviour.IsFrozen)
             .ForEach(player =>
             {
                 player.SetActive(false);
                 player.behaviour.gameObject.SetActive(false);
                 player.behaviour.invulnerability = true;
             });
-
-        laserz.ForEach(laser => laser.gameObject.SetActive(true));
-        bumperz.ForEach(bumper => bumper.gameObject.SetActive(true));
 
 
         Observable.Timer(TimeSpan.FromSeconds(1.0))
@@ -96,11 +98,11 @@ public class GameManager : Singleton<GameManager> {
 
     internal void Unfreeze(int playerID)
     {
-        playerz[playerID].SetActive(true);
+        playersData[playerID].SetActive(true);
     }
 
     internal void Reset()
     {
-        Application.LoadLevel(Application.loadedLevel);
+        onGameEnd.OnNext(Unit.Default);
     }
 }

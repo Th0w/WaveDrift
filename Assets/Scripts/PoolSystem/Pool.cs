@@ -22,12 +22,14 @@ public class Pool : MonoBehaviour
     public IObservable<Poolable> OnSpawn { get { return onSpawn; } }
     public IObservable<Poolable> OnRecycle { get { return onRecycle; } }
     public Poolable[] Pooled { get { return cached; } }
+    public string Name { get; private set; }
 
-    public void Init(int quantity, Poolable prefab)
+    public void Init(int quantity, Poolable prefab, string name)
     {
         this.prefab = prefab;
         this.quantity = quantity;
-
+        this.name = string.Format("Pool_{0}_{1}", prefab.name, name);
+        this.Name = name;
         inactives = new Queue<Poolable>(quantity);
         actives = new List<Poolable>(quantity);
         cached = new Poolable[quantity];

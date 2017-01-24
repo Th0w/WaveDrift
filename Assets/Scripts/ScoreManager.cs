@@ -47,68 +47,45 @@ public class ScoreManager : MonoBehaviour {
 
 	private Pool powerUpPool;
 
+    private GameManager gameManager;
+
+    // Bonus Spawner
+    private IDisposable
+        multiplierSpawner,
+        bonusSpawner;
+    
+    
+    #region MonoBehaviour
     private void Start () {
-        playerScoreBonusMultiplier = new [] { 1, 1, 1, 1 };
-        playerCachedScore = new[] { 0, 0, 0, 0 };
-        playerCachedDeath = new[] { 0, 0, 0, 0 };
-        playerPowerUpJauge = new[] { 0, 0, 0, 0 };
-
-        MessagingCenter.Instance.RegisterMessage("UnitKilled", HandleUnitKilled);
-        MessagingCenter.Instance.RegisterMessage("UnitTookDamage", HandleUnitTookDamage);
-        MessagingCenter.Instance.RegisterMessage("AddPlayerScoreMultiplier", HandlePlayerScoreMultiplier);
-        MessagingCenter.Instance.RegisterMessage("PlayerGainScore", GainScore);
-        MessagingCenter.Instance.RegisterMessage("PlayerDeath", HandlePlayerDeath);
-
+        ResetValues();
+        
         poolManager = FindObjectOfType<PoolManager>();
         multiplierPool = poolManager.CreatePool("scoreMultipliers", 5, multiplierPrefab);
 		powerUpPool = poolManager.CreatePool("powerUps", 3, powerUpPrefab);
 
-        Observable.Interval(TimeSpan.FromSeconds(15.0))
-            .Where(_ => GameManager.Instance.IsInGame == true)
-            .Where(_ => multiplierPool.empty == false)
-            .Subscribe(_ =>
-            {
-                Vector3 pos = Quaternion.Euler(0.0f, UnityEngine.Random.Range(0.0f, 360.0f), 0.0f) * Vector3.right
-                    * UnityEngine.Random.Range(15.0f, mapDimensions);
+        ResetTexts();
 
-                multiplierPool.Spawn(
-                    new object[] { pos, 30 });
-            })
-            .AddTo(this);
-
-		Observable.Interval(TimeSpan.FromSeconds(powerUpSpawnDelay))
-            .Where(_ => GameManager.Instance.IsInGame == true)
-			.Where(_ => powerUpPool.empty == false)
-			.Subscribe(_ =>
-            {
-                Vector3 pos = Quaternion.Euler(0.0f, UnityEngine.Random.Range(0.0f, 360.0f), 0.0f) * Vector3.right
-                    * UnityEngine.Random.Range(15.0f, mapDimensions);
-
-                powerUpPool.Spawn(pos + powerUpOffset);
-			})
-			.AddTo(this);
-
-		int i, max;
-        for(i = 0, max = 4; i < max; ++i)
-        {
-            UpdateDeathText(i);
-            UpdateGauge(i);
-            UpdatePlayerScoreMult(i);
-        }
+        gameManager = FindObjectOfType<GameManager>();
+        gameManager.OnGameBegin.Subscribe(_ => {
+            RegisterMessages();
+            BeginSpawnBonuses();
+        });
+        gameManager.OnGameEnd.Subscribe(_ => {
+            ResetValues();
+            ResetTexts();
+            EndSpawnBonuses();
+            UnregisterMessages();
+        });
     }
-
+    
     private void OnDestroy()
     {
         if (MessagingCenter.Instance == null) { return; }
 
-        MessagingCenter.Instance.UnregisterMessage(
-            "UnitKilled", 
-            "UnitTookDamage", 
-            "AddPlayerScoreMultiplier", 
-            "PlayerGainScore",
-            "PlayerDeath");
+        UnregisterMessages();
     }
-
+    #endregion MonoBehaviour
+    #region Handlers
     private void HandlePlayerDeath(object obj)
     {
         if (obj is object[] == false) {
@@ -189,7 +166,7 @@ public class ScoreManager : MonoBehaviour {
             }
             return;
         }
-        GainScore(ObjectToValues(obj));
+        HandleGainScore(ObjectToValues(obj));
     }
 
     private void HandleUnitKilled(object obj)
@@ -202,10 +179,10 @@ public class ScoreManager : MonoBehaviour {
             }
             return;
         }
-        GainScore(ObjectToValues(obj));
+        HandleGainScore(ObjectToValues(obj));
     }
 
-    private void GainScore(object obj)
+    private void HandleGainScore(object obj)
     {
         if (obj is object[] == false)
         {
@@ -215,10 +192,10 @@ public class ScoreManager : MonoBehaviour {
             }
             return;
         }
-        GainScore(ObjectToValues(obj));
+        HandleGainScore(ObjectToValues(obj));
     }
 
-    private void GainScore(Tuple<int, int> values)
+    private void HandleGainScore(Tuple<int, int> values)
     {
         playerCachedScore[values.Item1] += values.Item2 * playerScoreBonusMultiplier[values.Item1];
         string str = ("000000" + playerCachedScore[values.Item1].ToString());
@@ -226,6 +203,7 @@ public class ScoreManager : MonoBehaviour {
         playerScores[values.Item1].text = str;
 		playerScores [values.Item1].SendMessage ("PlayAnim");
     }
+    #endregion
 
     private Tuple<int, int> ObjectToValues(object obj)
     {
@@ -233,5 +211,70 @@ public class ScoreManager : MonoBehaviour {
         var id = (int)nobj[0] - 1;
         var score = (int)nobj[1];
         return new Tuple<int, int>(id, score);
+    }
+
+    private void ResetValues() {
+        playerScoreBonusMultiplier = new[] { 1, 1, 1, 1 };
+        playerCachedScore = new[] { 0, 0, 0, 0 };
+        playerCachedDeath = new[] { 0, 0, 0, 0 };
+        playerPowerUpJauge = new[] { 0, 0, 0, 0 };
+    }
+
+    private void RegisterMessages() {
+        MessagingCenter.Instance.RegisterMessage("UnitKilled", HandleUnitKilled);
+        MessagingCenter.Instance.RegisterMessage("UnitTookDamage", HandleUnitTookDamage);
+        MessagingCenter.Instance.RegisterMessage("AddPlayerScoreMultiplier", HandlePlayerScoreMultiplier);
+        MessagingCenter.Instance.RegisterMessage("PlayerGainScore", HandleGainScore);
+        MessagingCenter.Instance.RegisterMessage("PlayerDeath", HandlePlayerDeath);
+    }
+
+    private void UnregisterMessages() {
+        MessagingCenter.Instance.UnregisterMessage(
+            "UnitKilled",
+            "UnitTookDamage",
+            "AddPlayerScoreMultiplier",
+            "PlayerGainScore",
+            "PlayerDeath");
+    }
+
+    private void BeginSpawnBonuses() {
+        multiplierSpawner = Observable.Interval(TimeSpan.FromSeconds(15.0))
+            .Where(_ => GameManager.Instance.IsInGame == true)
+            .Where(_ => multiplierPool.empty == false)
+            .Subscribe(_ => {
+                Vector3 pos = Quaternion.Euler(0.0f, UnityEngine.Random.Range(0.0f, 360.0f), 0.0f) * Vector3.right
+                    * UnityEngine.Random.Range(15.0f, mapDimensions);
+
+                multiplierPool.Spawn(
+                    new object[] { pos, 30 });
+            })
+            .AddTo(this);
+        bonusSpawner = Observable.Interval(TimeSpan.FromSeconds(powerUpSpawnDelay))
+            .Where(_ => GameManager.Instance.IsInGame == true)
+            .Where(_ => powerUpPool.empty == false)
+            .Subscribe(_ => {
+                Vector3 pos = Quaternion.Euler(0.0f, UnityEngine.Random.Range(0.0f, 360.0f), 0.0f) * Vector3.right
+                    * UnityEngine.Random.Range(15.0f, mapDimensions);
+
+                powerUpPool.Spawn(pos + powerUpOffset);
+            })
+            .AddTo(this);
+    }
+
+    private void EndSpawnBonuses() {
+        multiplierSpawner.Dispose();
+        multiplierSpawner = null;
+
+        bonusSpawner.Dispose();
+        bonusSpawner = null;
+    }
+
+    private void ResetTexts() {
+        int i, max;
+        for (i = 0, max = 4; i < max; ++i) {
+            UpdateDeathText(i);
+            UpdateGauge(i);
+            UpdatePlayerScoreMult(i);
+        }
     }
 }

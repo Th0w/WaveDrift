@@ -117,25 +117,35 @@ public class ShipBehaviour_V2 : MonoBehaviour
 
         deathOL = FindObjectOfType<UI_DeathOL>();
         IsFrozen = false;
-    }
 
-    void Update() {
-        if (thePlayer.GetButtonTimedPressDown("Start", 2.0f)) {
-            GameManager.Instance.Reset();
-        }
+        thePlayer.AddInputEventDelegate(
+            iaed => GameManager.Instance.Reset(), 
+            UpdateLoopType.Update,
+            InputActionEventType.ButtonJustPressedForTime,
+            "Start",
+            new object[] { 2.0f });
 
-        if (thePlayer.GetButtonTimedPressDown("Select", 2.0f)) {
+        thePlayer.AddInputEventDelegate(
+            iaed => {
 #if UNITY_EDITOR
-            Debug.Log("QUITTING PLAYMODE");
-            UnityEditor.EditorApplication.isPlaying = false;
+                UnityEditor.EditorApplication.isPlaying = false;
+#else
+                Application.Quit()
 #endif
-            Application.Quit();
-        }
+            },
+            UpdateLoopType.Update,
+            InputActionEventType.ButtonJustPressedForTime,
+            "Select",
+            new object[] { 2.0f });
+
+        
+    }
+    
+    void Update() {
 
         if (IsFrozen == true) {
             if (thePlayer.GetButtonDown("Button A")) {
                 GameManager.Instance.Unfreeze(playerID);
-                Debug.Log("UNFREEZING!");
             }
             return;
         }
@@ -153,14 +163,11 @@ public class ShipBehaviour_V2 : MonoBehaviour
             return;
 
         // Inputs
-        //rightTriggerInput = Input.GetAxis (playerPrefix + "RightTrigger");
-        //leftStickHorizontalInput = Input.GetAxis (playerPrefix + "LeftStick_Horizontal");
         rightTriggerInput = thePlayer.GetAxis("Right Trigger");
         leftStickHorizontalInput = thePlayer.GetAxis("Left Stick X");
 
         // Drift input
         float targetRotStrength = rotStrength;
-        //if (Input.GetButton (playerPrefix + "Button_X"))
         if (thePlayer.GetButton("Button X")) {
 
             targetRotStrength += additionnalDriftRotStrength;
@@ -183,7 +190,6 @@ public class ShipBehaviour_V2 : MonoBehaviour
         }
 
         // Jump
-        //if (Input.GetButtonDown (playerPrefix + "Button_A") && !jump) 
         if (thePlayer.GetButtonDown("Button A") && !jump) {
 
             selfAnimator.Play("Anim_Ship_Jump", 0, 0);
@@ -286,7 +292,7 @@ public class ShipBehaviour_V2 : MonoBehaviour
 
         // Only for lobby.
         if (GameManager.Instance.IsInGame == false) {
-            GameManager.Instance.Players[playerID].SetActive(false);
+            GameManager.Instance.PlayersData[playerID].SetActive(false);
             invulnerability = false;
 
             ship.gameObject.SetActive(true);
