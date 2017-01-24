@@ -231,7 +231,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1603877302181682, guid: ca16bffd7cb3af648aa7a96db3ea3268, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114413985701272748, guid: ca16bffd7cb3af648aa7a96db3ea3268,
         type: 2}
@@ -3852,7 +3852,7 @@ MonoBehaviour:
       customControllerUid: 0
       actionElementMaps:
       - _actionCategoryId: 0
-        _actionId: 6
+        _actionId: 1
         _elementType: 0
         _elementIdentifierId: 0
         _axisRange: 0
@@ -5991,7 +5991,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1603877302181682, guid: ca16bffd7cb3af648aa7a96db3ea3268, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114413985701272748, guid: ca16bffd7cb3af648aa7a96db3ea3268,
         type: 2}
@@ -6179,7 +6179,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1603877302181682, guid: ca16bffd7cb3af648aa7a96db3ea3268, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114413985701272748, guid: ca16bffd7cb3af648aa7a96db3ea3268,
         type: 2}
@@ -6598,12 +6598,12 @@ Prefab:
     - target: {fileID: 114375897996053116, guid: 169b5b15ce89ff34495312de659f8b24,
         type: 2}
       propertyPath: circleMaxRadius
-      value: 170
+      value: 150
       objectReference: {fileID: 0}
     - target: {fileID: 114375897996053116, guid: 169b5b15ce89ff34495312de659f8b24,
         type: 2}
       propertyPath: frequency
-      value: 10
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 120899947267288350, guid: 169b5b15ce89ff34495312de659f8b24,
         type: 2}
@@ -7547,9 +7547,9 @@ MonoBehaviour:
     randomToSpawn: 7
     basicToSpawn: 11
     delayTilNextWave: 5
-  maxPhaseId: 4
-  maxNormalSpawners: 10
-  maxTPSpawners: 7
+  maxPhaseId: 2
+  maxNormalSpawners: 5
+  maxTPSpawners: 3
   mobNames:
   - accelerating
   - slaloming
@@ -7672,7 +7672,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1603877302181682, guid: ca16bffd7cb3af648aa7a96db3ea3268, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114413985701272748, guid: ca16bffd7cb3af648aa7a96db3ea3268,
         type: 2}
@@ -9918,12 +9918,12 @@ Prefab:
     - target: {fileID: 114375897996053116, guid: 169b5b15ce89ff34495312de659f8b24,
         type: 2}
       propertyPath: circleMaxRadius
-      value: 170
+      value: 150
       objectReference: {fileID: 0}
     - target: {fileID: 114375897996053116, guid: 169b5b15ce89ff34495312de659f8b24,
         type: 2}
       propertyPath: frequency
-      value: 10
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 120899947267288350, guid: 169b5b15ce89ff34495312de659f8b24,
         type: 2}

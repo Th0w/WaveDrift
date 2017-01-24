@@ -258,7 +258,7 @@ MonoBehaviour:
   waveEmitTime: 4
   delayBetweenWaves: 1
   wavePrefab: {fileID: 1853358008278510, guid: 8d361dd4e57abe54a925e9ae098794f8, type: 2}
-  shieldTime: 7
+  shieldTime: 14
 --- !u!114 &114756737182726244
 MonoBehaviour:
   m_ObjectHideFlags: 1
