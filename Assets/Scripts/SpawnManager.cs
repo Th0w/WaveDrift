@@ -55,7 +55,10 @@ public class SpawnManager : MonoBehaviour
     private Vector3 powerUpOffset;
 
     [Header("Misc")]
-    private float mapDimensions = 170.0f;
+    [SerializeField]
+    private float maxDistanceFromCenter = 170.0f;
+    [SerializeField]
+    private float minDistanceFromCenter = 30.0f;
     #endregion Serialized
 
     private int waveId = 0;
@@ -185,7 +188,7 @@ public class SpawnManager : MonoBehaviour
             .Interval(TimeSpan.FromSeconds(powerUpSpawnInterval))
             .Subscribe(_ => {
                 Vector3 pos = Quaternion.Euler(0.0f, UnityEngine.Random.Range(0.0f, 360.0f), 0.0f) * Vector3.right
-                    * UnityEngine.Random.Range(15.0f, mapDimensions);
+                    * UnityEngine.Random.Range(minDistanceFromCenter, maxDistanceFromCenter);
 
                 SpawnMult(new object[] { pos, spawnedMultValue });
             })
@@ -195,7 +198,7 @@ public class SpawnManager : MonoBehaviour
             .Interval(TimeSpan.FromSeconds(multSpawnInterval))
             .Subscribe(_ => {
                 Vector3 pos = Quaternion.Euler(0.0f, UnityEngine.Random.Range(0.0f, 360.0f), 0.0f) * Vector3.right
-                    * UnityEngine.Random.Range(15.0f, mapDimensions);
+                    * UnityEngine.Random.Range(minDistanceFromCenter, maxDistanceFromCenter);
 
                 powerUpPool.Spawn(pos + powerUpOffset);
             })
@@ -247,7 +250,7 @@ public class SpawnManager : MonoBehaviour
     private void AddSpawner(bool special) {
         if (special ? (tpCount >= maxTPSpawners) : (normalCount >= maxNormalSpawners)) { return; }
         Vector3 pos = Quaternion.Euler(0.0f, UnityEngine.Random.Range(0.0f, 360.0f), 0.0f) *
-            Vector3.forward * UnityEngine.Random.Range(0.0f, mapDimensions);
+            Vector3.forward * UnityEngine.Random.Range(0.0f, maxDistanceFromCenter);
         normalSpawnerPool.Spawn(pos);
     }
 

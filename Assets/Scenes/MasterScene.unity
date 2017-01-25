@@ -7571,23 +7571,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3528e0960779dd45b93ce651be379cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waveData:
-  - distFromSpawn: 5
-    randomToSpawn: 0
-    basicToSpawn: 5
-    delayTilNextWave: 2
-  - distFromSpawn: 7
-    randomToSpawn: 3
-    basicToSpawn: 7
-    delayTilNextWave: 3
-  - distFromSpawn: 9
-    randomToSpawn: 5
-    basicToSpawn: 9
-    delayTilNextWave: 4
-  - distFromSpawn: 11
-    randomToSpawn: 7
-    basicToSpawn: 11
-    delayTilNextWave: 5
+  waveData: {fileID: 11400000, guid: 67f810da8e7c3814cbd2e23ec0a19340, type: 2}
   poolsToSpawn:
   - quantity: 100
     prefab: {fileID: 1514316924640286, guid: 393a51adaeb622f43bbb5c7a07d3a7dc, type: 2}
@@ -7610,12 +7594,14 @@ MonoBehaviour:
     type: 2}
   powerUpPrefab: {fileID: 114736894538134016, guid: cc0f362cd9b8c0e4ab3c9a9d999d86ea,
     type: 2}
-  multiplierPrefab: {fileID: 114932350915726798, guid: 2368633a3c125da40a105e9232b1c6f3,
+  multiplierPrefab: {fileID: 114398955824174186, guid: d6d156f25c88f334c818f149963071f1,
     type: 2}
   powerUpSpawnInterval: 15
   multSpawnInterval: 20
   spawnedMultValue: 5
   powerUpOffset: {x: 0, y: 0, z: 0}
+  maxDistanceFromCenter: 150
+  minDistanceFromCenter: 20
 --- !u!114 &1454461927
 MonoBehaviour:
   m_ObjectHideFlags: 0
