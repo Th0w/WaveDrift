@@ -6,6 +6,12 @@
 [Tt]emp/
 [Ll]ibrary/
 
+# ============== #
+# User generated #
+# ============== #
+[Bb]uild[s]/
+/**/*.rar
+
 #Unity3D Generated File On Crash Reports
 sysinfo.txt
 

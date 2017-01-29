@@ -136,7 +136,7 @@ public class ShipBehaviour_V2 : MonoBehaviour
 #if UNITY_EDITOR
                 UnityEditor.EditorApplication.isPlaying = false;
 #else
-                Application.Quit()
+                Application.Quit();
 #endif
             },
             UpdateLoopType.Update,
