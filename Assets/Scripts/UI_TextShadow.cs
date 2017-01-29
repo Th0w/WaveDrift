@@ -1,6 +1,4 @@
-﻿using System;
-using UniRx;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public partial class UI_TextShadow : MonoBehaviour {

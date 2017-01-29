@@ -1,33 +1,60 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Linq;
 using UniRx;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour {   
+public class GameManager : MonoBehaviour {
+    #region Fields
+
+    #region Serialized
 
     [SerializeField]
     private PlayerData[] playersData;
-    public PlayerData[] PlayersData { get { return playersData; } }
+    [Header("GameMode data")]
+    [SerializeField]
+    private int scoreGoal;
+    
+    #endregion Serialized
 
     private ShipBehaviour_V2[] players;
     private ShipBehaviour_V2[] activePlayers;
-    
-    [SerializeField]
+    private Subject<Unit> onGameBegin, onGameEnd;
+    private ScoreManager scoreManager;
     private SpawnManager spawnManager;
 
-    private Subject<Unit> onGameBegin, onGameEnd;
+    #endregion Fields
 
+    #region Properties
+
+    public PlayerData[] PlayersData { get { return playersData; } }
     public ShipBehaviour_V2[] ActivePlayers { get { return activePlayers; } }
     public bool IsInGame { get; private set; }
     public IObservable<Unit> OnGameBegin { get { return onGameBegin; } }
     public IObservable<Unit> OnGameEnd { get { return onGameEnd; } }
-
-    // Use this for initialization
+    
+    #endregion Properties
+    
     private void Awake() {
         onGameBegin = new Subject<Unit>();
         onGameEnd = new Subject<Unit>();
     }
+
     private IEnumerator Start () {
+        scoreManager = FindObjectOfType<ScoreManager>();
+        if (scoreGoal > 0) {
+            scoreManager.SetScoreGoal(scoreGoal);
+            scoreManager.OnGoalScoreReached
+                .Subscribe(t => {
+                    Debug.LogWarningFormat("FYI: Winning player ID: #{0}, score: {1}.", t.Item1, t.Item2);
+                    Observable.Timer(TimeSpan.FromSeconds(0.5))
+                        .Subscribe(_ => Reset())
+                        .AddTo(this);
+                    scoreManager.CanScore = false;
+                    KillPlayers();
+                })
+                .AddTo(this);
+        }
         players = FindObjectsOfType<ShipBehaviour_V2>();
 
         yield return new WaitForSeconds(0.25f);
@@ -55,6 +82,7 @@ public class GameManager : MonoBehaviour {
 
         onGameBegin.OnNext(Unit.Default);
 
+        scoreManager.CanScore = true;
         IsInGame = true;
     }
 
@@ -65,6 +93,12 @@ public class GameManager : MonoBehaviour {
 
     internal void Reset()
     {
+        KillPlayers();
+        onGameEnd.OnNext(Unit.Default);
+        scoreManager.CanScore = true;
+    }
+
+    private void KillPlayers() {
         playersData.ForEach(player => {
             if (player.behaviour.gameObject.activeSelf == true) {
                 player.behaviour.Death();
@@ -73,6 +107,5 @@ public class GameManager : MonoBehaviour {
             }
             player.SetActive(false);
         });
-        onGameEnd.OnNext(Unit.Default);
     }
 }

@@ -1,4 +1,5 @@
-﻿using UniRx;
+﻿using System;
+using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -33,13 +34,24 @@ public class ScoreManager : MonoBehaviour {
     private int[] playerScoreBonusMultiplier;
     private int[] playerCachedDeath;
     private int[] playerPowerUpJauge;
+    private int scoreGoal = -1;
+    private int currentMaxScore = -1;
 
     private GameManager gameManager;
     private MessagingCenter messagingCenter;
+    private Subject<Tuple<int, int>> onGoalScoreReached;
+    private int leadingPlayerId;
     #endregion Fields
+    #region Properties
+    public IObservable<Tuple<int, int>> OnGoalScoreReached { get { return onGoalScoreReached; } }
+    public int LeadingPlayerID { get { return leadingPlayerId; } }
+
+    public bool CanScore { get; internal set; }
+    #endregion
     #region Methods
     #region MonoBehaviour
     private void Awake() {
+        onGoalScoreReached = new Subject<Tuple<int, int>>();
         messagingCenter = FindObjectOfType<MessagingCenter>();
         gameManager = FindObjectOfType<GameManager>();
     }
@@ -56,7 +68,11 @@ public class ScoreManager : MonoBehaviour {
             UnregisterMessages();
         });
     }
-    
+
+    internal void SetScoreGoal(int scoreGoal) {
+        this.scoreGoal = scoreGoal;
+    }
+
     private void OnDestroy()
     {
         UnregisterMessages();
@@ -92,6 +108,8 @@ public class ScoreManager : MonoBehaviour {
 
     private void HandlePlayerScoreMultiplier(object obj)
     {
+        if (CanScore == false) { return; }
+
         if (obj is object[] == false)
         {
             if (debug)
@@ -113,27 +131,11 @@ public class ScoreManager : MonoBehaviour {
         }
         UpdateGauge(id);
     }
-
-    private void UpdatePlayerScoreMult(int id)
-    {
-        string str = "000" + playerScoreBonusMultiplier[id].ToString();
-        playerMultText[id].text = str.Substring(str.Length - 3);
-    }
-
-    private void UpdateGauge(int id)
-    {
-        gauges[id].fillAmount = ((float)playerPowerUpJauge[id] / (float)powerUpPerPoint);
-    }
-
-    private void UpdateDeathText(int id)
-    {
-        if (playerDeath == null || playerDeath.Length == 0 || playerDeath.Length < id) { return; }
-        string str = "000" + playerCachedDeath[id];
-        playerDeath[id].text = str.Substring(str.Length - 3);
-    }
-
+    
     private void HandleUnitTookDamage(object obj)
     {
+        if (CanScore == false) { return; }
+
         if (obj is object[] == false)
         {
             if (debug)
@@ -147,6 +149,8 @@ public class ScoreManager : MonoBehaviour {
 
     private void HandleUnitKilled(object obj)
     {
+        if (CanScore == false) { return; }
+
         if (obj is object[] == false)
         {
             if (debug)
@@ -160,6 +164,8 @@ public class ScoreManager : MonoBehaviour {
 
     private void HandleGainScore(object obj)
     {
+        if (CanScore == false) { return; }
+
         if (obj is object[] == false)
         {
             if (debug)
@@ -171,18 +177,51 @@ public class ScoreManager : MonoBehaviour {
         HandleGainScore(ObjectToValues(obj));
     }
 
-    private void HandleGainScore(Tuple<int, int> values)
-    {
-        playerCachedScore[values.Item1] += values.Item2 * playerScoreBonusMultiplier[values.Item1];
-        UpdateScore(values.Item1);
+    private void HandleGainScore(Tuple<int, int> values) {
+
+        if (CanScore == false) { return; }
+
+        UpdatePlayerScore(values.Item1, values.Item2);
+
+        UpdatePlayerScoreView(values.Item1);
     }
     #endregion
+    private void UpdatePlayerScoreMult(int id) {
+        string str = "000" + playerScoreBonusMultiplier[id].ToString();
+        playerMultText[id].text = str.Substring(str.Length - 3);
+    }
 
-    private void UpdateScore(int playerId) {
+    private void UpdateGauge(int id) {
+        gauges[id].fillAmount = ((float)playerPowerUpJauge[id] / (float)powerUpPerPoint);
+    }
+
+    private void UpdateDeathText(int id) {
+        if (playerDeath == null || playerDeath.Length == 0 || playerDeath.Length < id) { return; }
+        string str = "000" + playerCachedDeath[id];
+        playerDeath[id].text = str.Substring(str.Length - 3);
+    }
+
+    private void UpdatePlayerScoreView(int playerId) {
         string str = ("000000" + playerCachedScore[playerId].ToString());
         str = str.Substring(str.Length - 6);
         playerScores[playerId].text = str;
         playerScores[playerId].SendMessage("PlayAnim", SendMessageOptions.DontRequireReceiver);
+
+    }
+
+    private void UpdatePlayerScore(int selectedPlayer, int gainedValue) {
+        int playerScore = (playerCachedScore[selectedPlayer] += (gainedValue * playerScoreBonusMultiplier[selectedPlayer]));
+        if (scoreGoal != -1) {
+            if (playerCachedScore[selectedPlayer] > currentMaxScore) {
+                if (playerScore >= scoreGoal) {
+                    //Tuple<int, int> result = ;
+                    onGoalScoreReached.OnNext(new Tuple<int, int>(selectedPlayer, playerScore));
+                    return;
+                }
+                currentMaxScore = playerCachedScore[selectedPlayer];
+                leadingPlayerId = selectedPlayer;
+            }
+        }
     }
 
     private Tuple<int, int> ObjectToValues(object obj)
@@ -224,7 +263,7 @@ public class ScoreManager : MonoBehaviour {
             UpdateDeathText(i);
             UpdateGauge(i);
             UpdatePlayerScoreMult(i);
-            UpdateScore(i);
+            UpdatePlayerScoreView(i);
         }
     }
     #endregion Methods
