@@ -145,10 +145,12 @@ public class ShipBehaviour_V2 : MonoBehaviour
                 .AddTo(this);
 
             // Prepared for ui opening and interaction.
-            //input.StartPressed
-            //    .Where(b => b == false)
-            //    .Subscribe()
-            //    .AddTo(this);
+            input.StartPressed
+                .Where(b => b == false)
+                .Subscribe(b => {
+                    gameManager.ToggleMenu();
+                })
+                .AddTo(this);
 
             // Prepared for ui opening and interaction.
             //input.SelectPressed
@@ -156,6 +158,14 @@ public class ShipBehaviour_V2 : MonoBehaviour
             //    .Subscribe()
             //    .AddTo(this);
         }
+        var audioManager = FindObjectOfType<AudioManager>();
+        thePlayer.AddInputEventDelegate(
+            iaed => {
+                audioManager.ChangeVolume(audioManager.Volume == 100.0f ? 0.0f : 100.0f);
+            },
+            UpdateLoopType.Update,
+            InputActionEventType.ButtonJustPressed,
+            "MuteMusic");
     }
 
     void Update() {

@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour {
     private Subject<Unit> onGameBegin, onGameEnd;
     private ScoreManager scoreManager;
     private SpawnManager spawnManager;
+    private UIManager uiManager;
 
     #endregion Fields
 
@@ -41,6 +42,7 @@ public class GameManager : MonoBehaviour {
     }
 
     private IEnumerator Start () {
+        uiManager = FindObjectOfType<UIManager>();
         scoreManager = FindObjectOfType<ScoreManager>();
         if (scoreGoal > 0) {
             scoreManager.SetScoreGoal(scoreGoal);
@@ -107,5 +109,11 @@ public class GameManager : MonoBehaviour {
             }
             player.SetActive(false);
         });
+    }
+
+    internal void ToggleMenu() {
+        bool menuOpen = uiManager.IsMenuOpen;
+        Time.timeScale = menuOpen ? 1.0f : 0.0f;
+        uiManager.ToggleMenu(!menuOpen);
     }
 }

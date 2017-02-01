@@ -1,5 +1,8 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UniRx.Triggers;
+using UnityEngine;
 using UnityStandardAssets.ImageEffects;
+using UniRx;
 
 public class SlowMo : MonoBehaviour {
 
@@ -9,16 +12,29 @@ public class SlowMo : MonoBehaviour {
 	public Fisheye fish;
 	public float fishStrength;
 
-	void Awake () {
+    public bool IsActive { get; private set; }
+
+    void Awake () {
 
 		selfAnimator = GetComponent<Animator> ();
-	}
 
-	void Update () {
+        var osmt = selfAnimator.GetBehaviour<ObservableStateMachineTrigger>();
 
-		Time.timeScale = ts;
+        osmt.OnStateEnterAsObservable()
+            .Subscribe(stateInfo => IsActive = true)
+            .AddTo(this);
 
-		fish.strengthX = fishStrength;
-		fish.strengthY = fishStrength;
-	}
+        osmt.OnStateExitAsObservable()
+            .Subscribe(stateInfo => IsActive = false)
+            .AddTo(this);
+
+        this.UpdateAsObservable()
+            .Where(_ => IsActive)
+            .Subscribe(_ => {
+                Time.timeScale = ts;
+                fish.strengthX = fishStrength;
+                fish.strengthY = fishStrength;
+            })
+            .AddTo(this);
+    }
 }

@@ -5,6 +5,7 @@ public partial class UI_TextShadow : MonoBehaviour {
     private Canvas canvas;
     private void OnEnable()
     {
+        Debug.LogWarningFormat("{0} (re-)enabled!", GetType());
         (selfRT = selfRT ?? GetComponent<RectTransform>()).anchoredPosition = selfRT.anchoredPosition + Vector2.one * float.Epsilon;
         (canvas = canvas ?? GetComponent<Canvas>()).sortingOrder = -1;
     }

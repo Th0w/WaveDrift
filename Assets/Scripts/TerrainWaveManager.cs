@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UniRx;
 using UnityEngine;
 
 public enum drawType { Line, Circle };
@@ -47,8 +48,14 @@ public class TerrainWaveManager : MonoBehaviour {
 
 	List<SoundVisual> ranges = new List<SoundVisual>();
 
-	// Use this for initialization
-	IEnumerator Start () {
+    private Subject<Unit> onInitDone;
+    public IObservable<Unit> OnInitDone { get { return onInitDone; } }
+
+    private void Awake() {
+        onInitDone = new Subject<Unit>();
+    }
+    // Use this for initialization
+    IEnumerator Start () {
 		SpawnWaveRange();
 		if (generationType == modifierType.randomSeperate)
 		{
@@ -60,6 +67,8 @@ public class TerrainWaveManager : MonoBehaviour {
 		yield return null;
 		transform.rotation = Quaternion.LookRotation(Vector3.up);
 		transform.position = basePosition;
+        yield return null;
+        onInitDone.OnNext(Unit.Default);
 	}
 
 	// Update is called once per frame
