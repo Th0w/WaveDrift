@@ -15,6 +15,13 @@ namespace Wift {
         public const string SELECT = "Select";
         public const string RIGHT_TRIGGER = "Right Trigger";
         public const string LEFT_STICK_X = "Left Stick X";
+        public const string AXIS_Y = "Y Axis";
+        public const string MENU_UP = "MenuUp";
+        public const string MENU_DOWN = "MenuDown";
+        public const string MENU_LEFT = "MenuLeft";
+        public const string MENU_RIGHT = "MenuRight";
+        public const string MENU_CONFIRM = "MenuConfirm";
+        public const string MENU_CANCEL = "MenuCancel";
     }
 }
 

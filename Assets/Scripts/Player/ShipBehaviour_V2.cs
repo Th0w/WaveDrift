@@ -1,6 +1,8 @@
 ﻿using Rewired;
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -100,7 +102,11 @@ public class ShipBehaviour_V2 : MonoBehaviour
     private MessagingCenter messagingCenter;
 
     private PlayerInput input;
+    private ControllerMap kbCtrlDefault;
+    private ControllerMap kbCtrlMenu;
+
     public bool IsFrozen { get; set; }
+    public bool HasLayoutSwitched { get; private set; }
 
     private void Awake() {
         messagingCenter = FindObjectOfType<MessagingCenter>();
@@ -131,13 +137,8 @@ public class ShipBehaviour_V2 : MonoBehaviour
 
             input.SelectPressed
                 .Where(b => b)
-                .Subscribe(b =>
-#if UNITY_EDITOR
-                UnityEditor.EditorApplication.isPlaying = false
-#else
-                Application.Quit()
-#endif
-                ).AddTo(this);
+                .Subscribe(b => gameManager.Quit())
+                .AddTo(this);
 
             input.StartPressed
                 .Where(b => b)
@@ -147,9 +148,7 @@ public class ShipBehaviour_V2 : MonoBehaviour
             // Prepared for ui opening and interaction.
             input.StartPressed
                 .Where(b => b == false)
-                .Subscribe(b => {
-                    gameManager.ToggleMenu();
-                })
+                .Subscribe(b => gameManager.ToggleMenu(playerID))
                 .AddTo(this);
 
             // Prepared for ui opening and interaction.
@@ -160,15 +159,53 @@ public class ShipBehaviour_V2 : MonoBehaviour
         }
         var audioManager = FindObjectOfType<AudioManager>();
         thePlayer.AddInputEventDelegate(
-            iaed => {
-                audioManager.ChangeVolume(audioManager.Volume == 100.0f ? 0.0f : 100.0f);
-            },
+            iaed => audioManager.ChangeVolume(audioManager.Volume == 100.0f ? 0.0f : 100.0f),
             UpdateLoopType.Update,
             InputActionEventType.ButtonJustPressed,
             "MuteMusic");
+
+        //var maps = new Dictionary<ControllerType, List<Tuple<int, bool, ControllerMap>>> {
+        //    { ControllerType.Joystick, new List<Tuple<int, bool, ControllerMap>>() },
+        //    {ControllerType.Keyboard, new List<Tuple<int, bool, ControllerMap>>() }
+        //};
+
+        //thePlayer.controllers.maps.GetAllMaps()
+        //    .ForEach(map => {
+        //        maps[map.controllerType].Add(map.id)
+        //    });
+
+        var maps = thePlayer.controllers.maps.GetAllMaps(ControllerType.Keyboard);
+        if (maps.Count() == 2) {
+            maps.ForEach(map => {
+                if (map.enabled) {
+                    kbCtrlDefault = map;
+                } else {
+                    kbCtrlMenu = map;
+                }
+            });
+        }
+    }
+
+    public void SwitchLayout() {
+        if (kbCtrlDefault == null) { return; }
+        
+        HasLayoutSwitched = !HasLayoutSwitched;
+
+        thePlayer.controllers.maps.SetMapsEnabled(
+            HasLayoutSwitched,
+            ControllerType.Keyboard,
+            kbCtrlMenu.categoryId,
+            kbCtrlMenu.layoutId);
+
+        thePlayer.controllers.maps.SetMapsEnabled(
+            !HasLayoutSwitched,
+            ControllerType.Keyboard,
+            kbCtrlDefault.categoryId,
+            kbCtrlDefault.layoutId);
     }
 
     void Update() {
+        if (gameManager.IsPaused == true) { return; }
 
         if (IsFrozen == true) {
             if (thePlayer.GetButtonDown("Button A")) {

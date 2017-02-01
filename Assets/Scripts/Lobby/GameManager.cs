@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Linq;
 using UniRx;
+using UniRx.Triggers;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour {
@@ -23,6 +24,7 @@ public class GameManager : MonoBehaviour {
     private ScoreManager scoreManager;
     private SpawnManager spawnManager;
     private UIManager uiManager;
+    private SlowMo slowMo;
 
     #endregion Fields
 
@@ -33,15 +35,18 @@ public class GameManager : MonoBehaviour {
     public bool IsInGame { get; private set; }
     public IObservable<Unit> OnGameBegin { get { return onGameBegin; } }
     public IObservable<Unit> OnGameEnd { get { return onGameEnd; } }
-    
+
+    public bool IsPaused { get; private set; }
+
     #endregion Properties
-    
+
     private void Awake() {
         onGameBegin = new Subject<Unit>();
         onGameEnd = new Subject<Unit>();
     }
 
     private IEnumerator Start () {
+        slowMo = FindObjectOfType<SlowMo>();
         uiManager = FindObjectOfType<UIManager>();
         scoreManager = FindObjectOfType<ScoreManager>();
         if (scoreGoal > 0) {
@@ -111,9 +116,25 @@ public class GameManager : MonoBehaviour {
         });
     }
 
-    internal void ToggleMenu() {
-        bool menuOpen = uiManager.IsMenuOpen;
-        Time.timeScale = menuOpen ? 1.0f : 0.0f;
-        uiManager.ToggleMenu(!menuOpen);
+    internal void ToggleMenu(int playerID) {
+        Debug.LogFormat("PlayerID: {0}", playerID);
+        if (slowMo.IsActive) { return; }
+
+        bool shouldOpenMenu = uiManager.IsMenuOpen == false;
+        TogglePause(shouldOpenMenu);
+        uiManager.ToggleMenu(shouldOpenMenu, playerID);
+    }
+
+    private void TogglePause(bool val) {
+        IsPaused = val;
+        Time.timeScale = IsPaused ? 0.0f : 1.0f;
+    }
+
+    internal void Quit() {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+                Application.Quit();
+#endif
     }
 }

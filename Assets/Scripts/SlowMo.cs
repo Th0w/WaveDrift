@@ -6,6 +6,8 @@ using UniRx;
 
 public class SlowMo : MonoBehaviour {
 
+    private Subject<Unit> onSlowMoBegin, onSlowMoEnd;
+    
 	public static Animator selfAnimator;
 	public float ts;
 
@@ -14,18 +16,30 @@ public class SlowMo : MonoBehaviour {
 
     public bool IsActive { get; private set; }
 
-    void Awake () {
+    public IObservable<Unit> OnSlowMoBegin { get { return onSlowMoBegin; } }
 
-		selfAnimator = GetComponent<Animator> ();
+    public IObservable<Unit> OnSlowMoEnd { get { return onSlowMoEnd; } }
+
+    void Awake() {
+        onSlowMoBegin = new Subject<Unit>();
+        onSlowMoEnd = new Subject<Unit>();
+
+        selfAnimator = GetComponent<Animator>();
 
         var osmt = selfAnimator.GetBehaviour<ObservableStateMachineTrigger>();
 
         osmt.OnStateEnterAsObservable()
-            .Subscribe(stateInfo => IsActive = true)
+            .Subscribe(stateInfo => {
+                IsActive = true;
+                onSlowMoBegin.OnNext(Unit.Default);
+            })
             .AddTo(this);
 
         osmt.OnStateExitAsObservable()
-            .Subscribe(stateInfo => IsActive = false)
+            .Subscribe(stateInfo => {
+                IsActive = false;
+                onSlowMoEnd.OnNext(Unit.Default);
+            })
             .AddTo(this);
 
         this.UpdateAsObservable()
