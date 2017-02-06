@@ -104,6 +104,8 @@ public class ShipBehaviour_V2 : MonoBehaviour
     private PlayerInput input;
     private ControllerMap kbCtrlDefault;
     private ControllerMap kbCtrlMenu;
+    private ControllerMap jsCtrlDefault;
+    private ControllerMap jsCtrlMenu;
 
     public bool IsFrozen { get; set; }
     public bool HasLayoutSwitched { get; private set; }
@@ -164,9 +166,9 @@ public class ShipBehaviour_V2 : MonoBehaviour
             InputActionEventType.ButtonJustPressed,
             "MuteMusic");
 
-        var maps = thePlayer.controllers.maps.GetAllMaps(ControllerType.Keyboard);
-        if (maps.Count() == 2) {
-            maps.ForEach(map => {
+        var kbMaps = thePlayer.controllers.maps.GetAllMaps(ControllerType.Keyboard);
+        if (kbMaps.Count() == 2) {
+            kbMaps.ForEach(map => {
                 if (map.enabled) {
                     kbCtrlDefault = map;
                 } else {
@@ -174,22 +176,47 @@ public class ShipBehaviour_V2 : MonoBehaviour
                 }
             });
         }
+        var jsMaps = thePlayer.controllers.maps.GetAllMaps(ControllerType.Joystick);
+        if (jsMaps.Count() == 2) {
+            jsMaps.ForEach(map => {
+                if (map.enabled) {
+                    jsCtrlDefault = map;
+                } else {
+                    jsCtrlMenu = map;
+                }
+            });
+        }
     }
 
     public void SwitchLayout(bool gameLayout) {
-        if (kbCtrlDefault == null) { return; }
+        if (kbCtrlDefault != null) {
 
-        thePlayer.controllers.maps.SetMapsEnabled(
-            !gameLayout,
-            ControllerType.Keyboard,
-            kbCtrlMenu.categoryId,
-            kbCtrlMenu.layoutId);
+            thePlayer.controllers.maps.SetMapsEnabled(
+                !gameLayout,
+                ControllerType.Keyboard,
+                kbCtrlMenu.categoryId,
+                kbCtrlMenu.layoutId);
 
-        thePlayer.controllers.maps.SetMapsEnabled(
-            gameLayout,
-            ControllerType.Keyboard,
-            kbCtrlDefault.categoryId,
-            kbCtrlDefault.layoutId);
+            thePlayer.controllers.maps.SetMapsEnabled(
+                gameLayout,
+                ControllerType.Keyboard,
+                kbCtrlDefault.categoryId,
+                kbCtrlDefault.layoutId);
+        }
+        if (jsCtrlDefault != null) {
+
+            thePlayer.controllers.maps.SetMapsEnabled(
+                !gameLayout,
+                ControllerType.Joystick,
+                jsCtrlMenu.categoryId,
+                jsCtrlMenu.layoutId);
+
+            thePlayer.controllers.maps.SetMapsEnabled(
+                gameLayout,
+                ControllerType.Joystick,
+                jsCtrlDefault.categoryId,
+                jsCtrlDefault.layoutId);
+        }
     }
 
     void Update() {
