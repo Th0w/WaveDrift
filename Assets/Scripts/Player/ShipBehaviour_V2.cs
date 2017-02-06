@@ -164,16 +164,6 @@ public class ShipBehaviour_V2 : MonoBehaviour
             InputActionEventType.ButtonJustPressed,
             "MuteMusic");
 
-        //var maps = new Dictionary<ControllerType, List<Tuple<int, bool, ControllerMap>>> {
-        //    { ControllerType.Joystick, new List<Tuple<int, bool, ControllerMap>>() },
-        //    {ControllerType.Keyboard, new List<Tuple<int, bool, ControllerMap>>() }
-        //};
-
-        //thePlayer.controllers.maps.GetAllMaps()
-        //    .ForEach(map => {
-        //        maps[map.controllerType].Add(map.id)
-        //    });
-
         var maps = thePlayer.controllers.maps.GetAllMaps(ControllerType.Keyboard);
         if (maps.Count() == 2) {
             maps.ForEach(map => {
@@ -189,8 +179,6 @@ public class ShipBehaviour_V2 : MonoBehaviour
     public void SwitchLayout(bool gameLayout) {
         if (kbCtrlDefault == null) { return; }
 
-        Debug.LogWarningFormat("Switching to {0} layout!", gameLayout ? "game" : "Menu");
-
         thePlayer.controllers.maps.SetMapsEnabled(
             !gameLayout,
             ControllerType.Keyboard,
@@ -202,14 +190,6 @@ public class ShipBehaviour_V2 : MonoBehaviour
             ControllerType.Keyboard,
             kbCtrlDefault.categoryId,
             kbCtrlDefault.layoutId);
-
-        if (gameLayout) {
-            if (kbCtrlDefault.enabled) {
-                Debug.LogWarning("Game controls enabled");
-            } else {
-                Debug.LogError("Wrong layout enabled.");
-            }
-        }
     }
 
     void Update() {

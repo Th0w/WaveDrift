@@ -73,7 +73,6 @@ public abstract class UILayer : MonoBehaviour
     }
 
     protected void OpenTarget<T>() where T : UILayer {
-        Debug.LogFormat("Target type: {0}", typeof(T).ToString());
         IsFocused = false;
         manager.OpenLayer<T>();
     }

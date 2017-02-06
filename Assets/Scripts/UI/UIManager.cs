@@ -19,6 +19,8 @@ public class UIManager : MonoBehaviour {
     private List<UILayer> layers;
     private Stack<UILayer> activeLayers;
 
+    private UI_TextShadow[] shadows;
+
     [Header("Layer behavior")]
     [SerializeField]
     private float layerUnfocusedOpacity = 0.5f;
@@ -90,6 +92,7 @@ public class UIManager : MonoBehaviour {
     }
 
     private void Start() {
+        shadows = Resources.FindObjectsOfTypeAll<UI_TextShadow>();
         gameManager = FindObjectOfType<GameManager>();
         layers.ForEach(layer => layer.Init(this));
         menuLayer = layers.Where(layer => layer is UIMenuLayer).FirstOrDefault();
@@ -161,6 +164,13 @@ public class UIManager : MonoBehaviour {
     private void ToggleGameUI(bool val) {
         infoPanels.SetActive(val);
         gauges.SetActive(val);
+        if (val) {
+            shadows.ForEach(shadow => {
+                shadow.gameObject.SetActive(false);
+                shadow.enabled = true;
+                shadow.gameObject.SetActive(true);
+            });
+        }
     }
 
     private void Clear(IDisposable toDispose) {

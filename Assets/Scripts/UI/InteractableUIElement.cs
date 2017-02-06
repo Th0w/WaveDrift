@@ -21,7 +21,11 @@ public class InteractableUIElement : UIElement {
         }
     }
 
-    public void Init(bool isSelectable, Action onInteraction = null, Action<InteractableUIElement> onSelection = null, Action<InteractableUIElement> onDeselection = null) {
+    public void Init(bool isSelectable, 
+                     Action onInteraction = null, 
+                     Action<InteractableUIElement> onSelection = null, 
+                     Action<InteractableUIElement> onDeselection = null) {
+
         IsSelectable = isSelectable;
         this.onInteraction = onInteraction ?? Empty;
         this.onSelection = OnSelection;
