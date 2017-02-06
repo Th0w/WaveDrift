@@ -1,7 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class UIElement : MonoBehaviour {
-    public bool IsSelectable { get; protected set; }
-}
+public class UIElement : MonoBehaviour { }

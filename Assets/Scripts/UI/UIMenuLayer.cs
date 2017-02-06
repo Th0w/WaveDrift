@@ -1,21 +1,48 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class UIMenuLayer : UILayer
 {
     [SerializeField]
     private UILayer optionsLayer, leaderboardLayer;
 
+    private GameManager gameManager;
+
     public override void Init(UIManager manager) {
         base.Init(manager);
 
-        if (Elements.Count != 4) {
-            Debug.LogError("NOT ELEMENTS IN BASE MENU LAYER!");
-        }
+        gameManager = FindObjectOfType<GameManager>();
+        InitElement("Resume", true, manager.CloseLayer);
+        InitElement("GameAction", false, () => { });
+        InitElement("Options", true, () => OpenTarget(optionsLayer));
+        InitElement("Leaderboard", false, () => OpenTarget(leaderboardLayer));
+        InitElement("Exit", true, gameManager.Quit);
+    }
 
-        var gm = FindObjectOfType<GameManager>();
-        Elements[0].Init(true, manager.CloseLayer);
-        Elements[1].Init(true, () => OpenTarget(optionsLayer));
-        Elements[2].Init(true, () => OpenTarget(leaderboardLayer));
-        Elements[3].Init(true, gm.Quit);
+    private void InitElement(string name, bool isSelectable,
+                             Action onInteraction = null,
+                             Action<InteractableUIElement> onSelection = null,
+                             Action<InteractableUIElement> onDeselection = null) {
+
+        var elem = Elements.Find(name);
+        if (elem == null) {
+#if UNITY_EDITOR
+            Debug.LogErrorFormat("Missing element {0}.", name);
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            return;
+#endif
+        } else {
+            elem.Init(isSelectable, onInteraction, onSelection, onDeselection);
+        }
+    }
+
+    protected override void OnEnable_() {
+        base.OnEnable_();
+        if (gameManager.IsInGame) {
+            //
+        } else {
+            //
+        }
     }
 }

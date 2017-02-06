@@ -27,6 +27,12 @@ public static class ArrayExtensions
             .Where(t => t.name == name)
             .FirstOrDefault();
     }
+
+    public static IEnumerable<T> ForEach<T>(this IEnumerable<T> enumerable, Action<T, int> action) {
+        int i = 0;
+        enumerable.ForEach(t => action(t, i++));
+        return enumerable;
+    }
 }
 
 public static class Utils

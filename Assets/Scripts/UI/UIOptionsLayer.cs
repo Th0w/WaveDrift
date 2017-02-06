@@ -19,25 +19,12 @@ public class UIOptionsLayer : UILayer
     public override void Init(UIManager manager) {
         base.Init(manager);
 
-        if (Elements.Count != 2) {
-            Debug.LogError("NOT ELEMENTS IN BASE MENU LAYER!");
-        }
         var gm = FindObjectOfType<GameManager>();
         audioManager = FindObjectOfType<AudioManager>();
 
         musicSlider.value = 100;
 
-        if (musicElement != null && Elements.Contains(musicElement) == false) {
-            Elements.Add(musicElement);
-        } else {
-            musicElement = Elements.Find("Music");
-            if (musicElement == null) {
-#if UNITY_EDITOR
-                Debug.LogError("Missing music element.");
-                UnityEditor.EditorApplication.isPlaying = false;
-#endif
-            }
-        }
+        musicElement = Elements.Find("Music");
 
         musicElement.Init(true,
             onSelection: e => currentlySelected = e,

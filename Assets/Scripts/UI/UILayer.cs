@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,13 +13,12 @@ public abstract class UILayer : MonoBehaviour
     }
 
     protected List<IDisposable> disposables;
+    
+    private InteractableUIElement[] elements;
 
-    [SerializeField]
-    private List<InteractableUIElement> elements;
-
-    protected List<InteractableUIElement> Elements { get { return elements; } }
+    protected InteractableUIElement[] Elements { get { return elements; } }
     protected InteractableUIElement element = null;
-    private int selectedIndex = -1;
+    private int selectedIndex = -2;
     private UIManager manager;
     private bool isFocused;
     private List<GraphTuple> graphics;
@@ -34,6 +34,13 @@ public abstract class UILayer : MonoBehaviour
     public bool IsEnabled { get; private set; }
     
     public virtual void Init(UIManager manager) {
+        elements = GetComponentsInChildren<InteractableUIElement>()
+            .ForEach((e, i) => e.SetId(i))
+            .ToArray();
+
+#if UNITY_EDITOR
+        Debug.LogFormat("{0} elements in {1}.", elements.Length, name);
+#endif
         this.manager = manager;
 
         graphics = new List<GraphTuple>();
@@ -48,10 +55,10 @@ public abstract class UILayer : MonoBehaviour
         disposables = new List<IDisposable>();
         disposables.Add(manager.OnUp
             .Where(_ => IsEnabled && IsFocused)
-            .Subscribe(_ => SelectElement(--selectedIndex)));
+            .Subscribe(_ => SelectElement(selectedIndex - 1)));
         disposables.Add(manager.OnDown
             .Where(_ => IsEnabled && IsFocused)
-            .Subscribe(_ => SelectElement(++selectedIndex)));
+            .Subscribe(_ => SelectElement(selectedIndex + 1)));
         disposables.Add(manager.OnConfirm
             .Where(_ => IsEnabled && IsFocused)
             .Where(_ => element != null)
@@ -127,6 +134,7 @@ public abstract class UILayer : MonoBehaviour
 
     // TODO: To refactor.
     private void SelectElement(int id) {
+        // If deselected, prevent further actions.
         if (id == -2) {
             selectedIndex = id;
             if (element != null) {
@@ -135,13 +143,26 @@ public abstract class UILayer : MonoBehaviour
             }
             return;
         }
+        // If ID is actually current selected index;
+        if (id == selectedIndex) { return; }
 
-        if (element != null) {
-            element.IsSelected = false;
-        }
-        selectedIndex = Mathf.Clamp(id, 0, elements.Count - 1);
 
-        element = elements[selectedIndex];
+        var next = FindNextValid(id);
+
+        // If no new element found exit.
+        if ((next == null || element == next) == true) { return; }
+
+        if (element != null) { element.IsSelected = false; }
+        element = next;
         element.IsSelected = true;
+        selectedIndex = element.ID;
+    }
+
+    private InteractableUIElement FindNextValid(int id) {
+        return (((id - selectedIndex) > 0) ? 
+                Elements.Where(e => e.ID > selectedIndex) :
+                Elements.Reverse().Where(e => e.ID < selectedIndex))
+            .Where(e => e.IsSelectable)
+            .FirstOrDefault();
     }
 }
