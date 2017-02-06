@@ -148,7 +148,7 @@ public class ShipBehaviour_V2 : MonoBehaviour
             // Prepared for ui opening and interaction.
             input.StartPressed
                 .Where(b => b == false)
-                .Subscribe(b => gameManager.ToggleMenu(playerID))
+                .Subscribe(b => gameManager.OpenMenu(playerID))
                 .AddTo(this);
 
             // Prepared for ui opening and interaction.
@@ -186,22 +186,30 @@ public class ShipBehaviour_V2 : MonoBehaviour
         }
     }
 
-    public void SwitchLayout() {
+    public void SwitchLayout(bool gameLayout) {
         if (kbCtrlDefault == null) { return; }
-        
-        HasLayoutSwitched = !HasLayoutSwitched;
+
+        Debug.LogWarningFormat("Switching to {0} layout!", gameLayout ? "game" : "Menu");
 
         thePlayer.controllers.maps.SetMapsEnabled(
-            HasLayoutSwitched,
+            !gameLayout,
             ControllerType.Keyboard,
             kbCtrlMenu.categoryId,
             kbCtrlMenu.layoutId);
 
         thePlayer.controllers.maps.SetMapsEnabled(
-            !HasLayoutSwitched,
+            gameLayout,
             ControllerType.Keyboard,
             kbCtrlDefault.categoryId,
             kbCtrlDefault.layoutId);
+
+        if (gameLayout) {
+            if (kbCtrlDefault.enabled) {
+                Debug.LogWarning("Game controls enabled");
+            } else {
+                Debug.LogError("Wrong layout enabled.");
+            }
+        }
     }
 
     void Update() {

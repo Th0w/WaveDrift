@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class InteractableUIElement : UIElement {
     private Action onInteraction;
-    private Action onSelection, onDeselection;
+    private Action<InteractableUIElement> onSelection, onDeselection;
     private Vector3 originalScale;
 
     [SerializeField]
@@ -16,12 +16,12 @@ public class InteractableUIElement : UIElement {
         get { return isSelected; }
         set {
             isSelected = value;
-            if (isSelected) { onSelection(); }
-            else { onDeselection(); }
+            if (isSelected) { onSelection(this); }
+            else { onDeselection(this); }
         }
     }
 
-    public void Init(bool isSelectable, Action onInteraction = null, Action onSelection = null, Action onDeselection = null) {
+    public void Init(bool isSelectable, Action onInteraction = null, Action<InteractableUIElement> onSelection = null, Action<InteractableUIElement> onDeselection = null) {
         IsSelectable = isSelectable;
         this.onInteraction = onInteraction ?? Empty;
         this.onSelection = OnSelection;
@@ -31,11 +31,11 @@ public class InteractableUIElement : UIElement {
         originalScale = GetComponent<RectTransform>().localScale;
     }
 
-    private void OnSelection() {
+    private void OnSelection(InteractableUIElement element) {
         transform.localScale = originalScale * selectedScaleFactor;
     }
 
-    private void OnDeselection() {
+    private void OnDeselection(InteractableUIElement element) {
         transform.localScale = originalScale;
     }
 

@@ -9,6 +9,7 @@ public class AudioManager : MonoBehaviour {
     private Transform sourceTransform;
 	// Use this for initialization
 	void Start () {
+        Volume = 100.0f;
         var twm = FindObjectOfType<TerrainWaveManager>();
 
         sourceTransform = twm.transform;

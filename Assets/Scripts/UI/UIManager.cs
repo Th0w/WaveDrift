@@ -16,11 +16,12 @@ public class UIManager : MonoBehaviour {
 
     [Header("Menu 'buttons'")]
     [SerializeField]
-    private InteractableUIElement[] menuElements;
-    private InteractableUIElement[] optionsElements;
-    private InteractableUIElement[] currentlySelectedElements;
+    private List<UILayer> layers;
+    private Stack<UILayer> activeLayers;
 
-    private InteractableUIElement currentlySelectedElement;
+    [Header("Layer behavior")]
+    [SerializeField]
+    private float layerUnfocusedOpacity = 0.5f;
 
     private int currentlySelectedIndex = -1;
 
@@ -36,12 +37,22 @@ public class UIManager : MonoBehaviour {
     private GameManager gameManager;
     private List<IDisposable> toDispose;
     private IDisposable onCancelDisposable;
+    private UILayer menuLayer;
+
+    public IObservable<Unit> OnUp { get { return onUp; } }
+    public IObservable<Unit> OnDown { get { return onDown; } }
+    public IObservable<Unit> OnLeft { get { return onLeft; } }
+    public IObservable<Unit> OnRight { get { return onRight; } }
+    public IObservable<Unit> OnConfirm { get { return onConfirm; } }
+    public IObservable<Unit> OnCancel { get { return onCancel; } }
+    internal bool IsMenuOpen { get { return activeLayers.Count > 0; } }
+    public float LayerUnfocusedOpacity { get { return layerUnfocusedOpacity; } }
 
     #region Methods
 
     #region MonoBehaviours
     private void Awake() {
-
+        activeLayers = new Stack<UILayer>();
         onUp = new Subject<Unit>();
         onDown = new Subject<Unit>();
         onLeft = new Subject<Unit>();
@@ -80,53 +91,94 @@ public class UIManager : MonoBehaviour {
 
     private void Start() {
         gameManager = FindObjectOfType<GameManager>();
-
-        onUp.Subscribe(_ => {
-            currentlySelectedIndex--;
-            SelectElement(currentlySelectedIndex);
-        }).AddTo(this);
-        onDown.Subscribe(_ => {
-            currentlySelectedIndex++;
-            SelectElement(currentlySelectedIndex);
-        }).AddTo(this);
-
-        onConfirm.Subscribe(_ => { currentlySelectedElement.Interact(); })
-            .AddTo(this);
-
-        onCancel.Subscribe(_ => { gameManager.ToggleMenu(selectedPlayerIndex); })
-            .AddTo(this);
-
-        if (menuElements.Length != 4) {
-            Debug.LogError("Too much elements in menuElements");
-#if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
-#endif
+        layers.ForEach(layer => layer.Init(this));
+        menuLayer = layers.Where(layer => layer is UIMenuLayer).FirstOrDefault();
+    }
+    public void CloseLayer() {
+        int cnt = activeLayers.Count;
+        if (cnt == 0) {
+            Debug.LogError("Calling CloseMenu while nothing should be opened. Check your calls.");
+        } else if (cnt == 1) {
+            CloseMenu();
         } else {
-            menuElements[0].Init(true, () => gameManager.ToggleMenu(selectedPlayerIndex));
-            menuElements[1].Init(true, () => { Debug.LogWarning("Will be options. Soon\u2122"); });
-            menuElements[2].Init(true, () => { Debug.LogWarning("Will be Leaderboard. Soon\u2122"); });
-            menuElements[3].Init(true, () => { gameManager.Quit(); });
-            currentlySelectedElements = menuElements;
-            SelectElement(0);
+            activeLayers.Pop().Disable();
+            activeLayers.Peek().Focus();
         }
     }
 
 #endregion MonoBehaviours
     
-    private void SelectElement(int id) {
-        if (currentlySelectedElement != null) {
-            currentlySelectedElement.IsSelected = false;
+    internal void OpenMenu(int playerID) {
+        if (OpenLayer<UIMenuLayer>() == false) {
+#if UNITY_EDITOR
+            Debug.LogWarning("Failed to open menu.");
+#endif
+            return;
         }
-        currentlySelectedIndex = Mathf.Clamp(id, 0, currentlySelectedElements.Length - 1);
-        currentlySelectedElement = currentlySelectedElements[currentlySelectedIndex];
-        currentlySelectedElement.IsSelected = true;
+        
+        gameManager.PlayersData[playerID].behaviour.SwitchLayout(false);
+        selectedPlayerIndex = playerID;
+        ToggleGameUI(false);
     }
 
+    public bool OpenLayer<T>(T target) where T : UILayer {
+        return OpenLayer<T>();
+    }
+
+    public bool OpenLayer<T>() where T : UILayer {
+        UILayer l = layers.Where(layer => layer is T)
+            .Where(layer => layer.IsEnabled == false)
+            .FirstOrDefault();
+        
+        if (l == null) {
+#if UNITY_EDITOR
+            Debug.LogError("No layer of this type to open");
+#endif
+            return false;
+        }
+
+        activeLayers.Push(l);
+        l.Enable();
+        return true;
+    }
+
+    internal void CloseMenu() {
+#if UNITY_EDITOR
+        if (activeLayers.Count > 1) {
+            Debug.LogError("Too much menu opened. Abnormal behaviour. Fix ASAP.");
+            Debug.Break();
+        }
+#endif
+        while(activeLayers.Count != 0) {
+            activeLayers.Pop().Disable();
+        }
+
+        gameManager.PlayersData[selectedPlayerIndex].behaviour.SwitchLayout(true);
+        gameManager.TogglePause(false);
+        ToggleGameUI(true);
+    }
+
+    private void ToggleGameUI(bool val) {
+        infoPanels.SetActive(val);
+        gauges.SetActive(val);
+    }
+
+    private void Clear(IDisposable toDispose) {
+        if (toDispose == null) { return; }
+
+        toDispose.Dispose();
+        toDispose = null;
+    }
+
+#endregion Methods
+}
+
+public static class ObservableExtensions
+{
     public static IObservable<bool> Latch(
-        IObservable<Unit> tick,
-        IObservable<Unit> latchTrue,
-        bool initialValue)
-    {
+       IObservable<Unit> tick,
+       IObservable<Unit> latchTrue,
+       bool initialValue) {
         return Observable.Create<bool>(observer => {
             var value = initialValue;
 
@@ -146,40 +198,4 @@ public class UIManager : MonoBehaviour {
             });
         });
     }
-    
-    internal bool IsMenuOpen { get; private set; }
-
-    internal void ToggleMenu(bool val, int playerID) {
-        Debug.LogWarning("Toggling menu.");
-        if (val) { selectedPlayerIndex = playerID; }
-
-        IsMenuOpen = val;
-        gameManager.PlayersData[playerID].behaviour.SwitchLayout();
-        
-        infoPanels.SetActive(!val);
-        gauges.SetActive(!val);
-        menu.SetActive(val);
-        
-        //if (val) {
-
-        //    onCancelDisposable = onCancel
-        //        .Subscribe(_ => ToggleMenu(false, playerID))
-        //        .AddTo(this);
-
-        //} else {
-        if (val == false) { 
-            Clear(onCancelDisposable);
-            
-            selectedPlayerIndex = -1;
-        }
-    }
-
-    private void Clear(IDisposable toDispose) {
-        if (toDispose == null) { return; }
-
-        toDispose.Dispose();
-        toDispose = null;
-    }
-
-#endregion Methods
 }

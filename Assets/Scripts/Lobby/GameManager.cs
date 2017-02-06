@@ -116,16 +116,13 @@ public class GameManager : MonoBehaviour {
         });
     }
 
-    internal void ToggleMenu(int playerID) {
-        Debug.LogFormat("PlayerID: {0}", playerID);
+    internal void OpenMenu(int playerID) {
         if (slowMo.IsActive) { return; }
-
-        bool shouldOpenMenu = uiManager.IsMenuOpen == false;
-        TogglePause(shouldOpenMenu);
-        uiManager.ToggleMenu(shouldOpenMenu, playerID);
+        TogglePause(true);
+        uiManager.OpenMenu(playerID);
     }
 
-    private void TogglePause(bool val) {
+    internal void TogglePause(bool val) {
         IsPaused = val;
         Time.timeScale = IsPaused ? 0.0f : 1.0f;
     }
